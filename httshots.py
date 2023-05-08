@@ -7,11 +7,9 @@ from getpass import getuser
 
 from configobj import ConfigObj
 from os import path, sep, listdir
-import mpyq
 
-# Others
-import heroprotocol
-from heroprotocol import versions
+# Httshots
+from httshots import parser
 
 
 # ======================================================================
@@ -24,8 +22,8 @@ hots_accounts_folder = f"c:\\Users\\{current_user}\\OneDrive\\Documents\\Heroes 
 if not path.isdir(hots_accounts_folder):
     hots_accounts_folder = f"c:\\Users\\{current_user}\\Documents\\Heroes of the Storm\\Accounts\\"
 
-
-hots_replays_folder = hots_accounts_folder + "2-Hero-1-\d*\\Replays\Multiplayer\\"
+current_dir = path.dirname(__file__)
+config_data = ConfigObj(current_dir + '\\data\\replay.ini')
 
 
 # ======================================================================
@@ -37,68 +35,16 @@ def load():
         replay = x.replays_path + list(x.replays)[0]
         break
 
-    archive = mpyq.MPQArchive(replay)
+    replay, protocol = parser.get_replay(replay)
 
-    contents = archive.header['user_data_header']['content']
-    header = heroprotocol.versions.latest().decode_replay_header(contents)
+    info = parser.get_match_info(replay, protocol)
 
-    baseBuild = header['m_version']['m_baseBuild']
-    try:
-        protocol = heroprotocol.versions.build(baseBuild)
-    except:
-        print('Unsupported base build: %d' % baseBuild, file=sys.stderr)
-        sys.exit(1)
+    for x in dir(info):
+        print(x, "=", getattr(info, x))
 
-    contents = archive.read_file('replay.details')
-    details = protocol.decode_replay_details(contents)
-
-    print(details['m_playerList'][0]['m_hero'])
-
-    print(details['m_playerList'][0]['m_hero'].decode('utf-8'))
-
-
-    # Print protocol details
-    # if args.details:
-        # contents = archive.read_file('replay.details')
-        # details = protocol.decode_replay_details(contents)
-        # logger.log(sys.stdout, details)
-
-    # Print protocol init data
-    # if args.initdata:
-        # contents = archive.read_file('replay.initData')
-        # initdata = protocol.decode_replay_initdata(contents)
-        # logger.log(
-            # sys.stdout,
-            # initdata['m_syncLobbyState']['m_gameDescription']['m_cacheHandles'],
-        # )
-        # logger.log(sys.stdout, initdata)
-
-    # Print game events and/or game events stats
-    # if args.gameevents:
-        # contents = archive.read_file('replay.game.events')
-        # for event in protocol.decode_replay_game_events(contents):
-            # logger.log(sys.stdout, event)
-
-    # Print message events
-    # if args.messageevents:
-        # contents = archive.read_file('replay.message.events')
-        # for event in protocol.decode_replay_message_events(contents):
-            # logger.log(sys.stdout, event)
-
-    # Print tracker events
-    # if args.trackerevents:
-        # if hasattr(protocol, 'decode_replay_tracker_events'):
-            # contents = archive.read_file('replay.tracker.events')
-            # for event in protocol.decode_replay_tracker_events(contents):
-                # logger.log(sys.stdout, event)
-
-    # Print attributes events
-    # if args.attributeevents:
-        # contents = archive.read_file('replay.attributes.events')
-        # attributes = protocol.decode_replay_attributes_events(contents)
-        # logger.log(sys.stdout, attributes)
-
-    print(details)
+    # for player in info.players.values():
+        # for x in dir(player):
+            # print(x, " = ", getattr(player, x))
 
 
 # ======================================================================
