@@ -23,3 +23,9 @@ class Match:
 
     def add_header(self, data):
         self.header = classes.Header(data)
+
+    def add_event(self, data):
+        classes.TrackerEvents(data, self.players.values())
+
+    def add_lobby(self, data):
+        self.lobby = classes.Lobby(data)

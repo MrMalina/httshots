@@ -11,6 +11,7 @@ import httshots
 from httshots import httshots
 # from httshots import config_data
 
+
 # ======================================================================
 # >> Functions
 # ======================================================================
@@ -57,4 +58,4 @@ class TYPE:
     B = bool
     F = float
     N = lambda x: x
-    A = Args 
+    A = Args

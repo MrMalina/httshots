@@ -3,52 +3,77 @@
 # ======================================================================
 
 # Python
+import asyncio
 from getpass import getuser
+from imgurpython import ImgurClient
+from time import strftime
 
 from configobj import ConfigObj
 from os import path, sep, listdir
 
+
 # Httshots
-from httshots import parser
+from httshots import bot, parser, score
 
 
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
-__version__ = "0.0"
+__name__ = "HTTSHoTS"
+__version__ = "0.3.1b"
+__author__ = "MrMalina"
 
 current_user = getuser()
 hots_accounts_folder = f"c:\\Users\\{current_user}\\OneDrive\\Documents\\Heroes of the Storm\\Accounts\\"
 if not path.isdir(hots_accounts_folder):
     hots_accounts_folder = f"c:\\Users\\{current_user}\\Documents\\Heroes of the Storm\\Accounts\\"
 
+icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
 config_data = ConfigObj(current_dir + '\\data\\replay.ini')
+current_date = strftime('%Y-%m-%d')
+accounts = None
+strings = ConfigObj(current_dir + '\\config\\strings.ini')
+config = ConfigObj(current_dir + '\\config\\config.ini')
+data_info = ConfigObj(current_dir + '\\data\\info.ini')
+heroes = ConfigObj(current_dir + '\\data\\heroes.ini')
+my_accounts = ConfigObj(current_dir + '\\data\\accounts.ini')
+log_level = 5
+stream_replays = []
+streak = [0, 0]
+excel_path = current_dir + "\\accounts.xlsx"
+imgur = None
 
 
 # ======================================================================
 # >> Load
 # ======================================================================
 def load():
+    global accounts
     accounts = get_accounts_list(hots_accounts_folder)
-    for x in accounts:
-        replay = x.replays_path + list(x.replays)[0]
-        break
+    # for x in accounts:
+        # ...
+        # replay_name = x.replays_path + list(x.replays)[0]
+        # break
 
-    replay, protocol = parser.get_replay(replay)
+    # replay, protocol = parser.get_replay(replay_name)
+    # info = parser.get_match_info(replay, protocol)
 
-    info = parser.get_match_info(replay, protocol)
+    global imgur
+    if config['IMGUR_USE']:
+        imgur = ImgurClient(config['IMGUR_CLIENT_ID'], config['IMGUR_CLIENT_SECRET'])
+        print_log('ImgurLogin', 1)
+    else:
+        imgur = None
+        print_log('ImgurNoUsing', 1)
 
-    for x in dir(info):
-        print(x, "=", getattr(info, x))
-
-    # for player in info.players.values():
-        # for x in dir(player):
-            # print(x, " = ", getattr(player, x))
+    global bot
+    bot = bot.TwitchBot(config['TWITCH_ACCESS_TOKEN'], '!', config['CHANNELS'])
+    bot.run()
 
 
 # ======================================================================
-# >> Get Functions
+# >> Functions
 # ======================================================================
 def get_accounts_list(path):
     accounts = []
@@ -62,19 +87,38 @@ def get_accounts_list(path):
     return accounts
 
 
+def print_log(string, log_level, *args):
+    if log_level <= log_level:
+        print(strings[string].format(*args))
+
+
+def get_end(number, t):
+    inumber = number % 100
+    if inumber >= 11 and inumber <=19:
+        y = strings[t][2]
+    else:
+        iinumber = inumber % 10
+        if iinumber == 1:
+            y = strings[t][0]
+        elif iinumber == 2 or iinumber == 3 or iinumber == 4:
+            y = strings[t][1]
+        else:
+            y = strings[t][2]
+    return y
+
+
 # ======================================================================
 # >> Classes
 # ======================================================================
 class Account:
     def __init__(self, id):
         self.id = id
-        self.replays = []
         self.path = hots_accounts_folder + str(id) + "\\"
 
         self.get_unique_folder()
         self.replays_path = self.path + self.unique_folder + "\\Replays\Multiplayer\\"
 
-        self.get_replays()
+        self.replays = self.get_replays()
 
     def get_unique_folder(self):
         tmp = listdir(self.path)
@@ -86,13 +130,49 @@ class Account:
         self.unique_folder = folder
 
     def get_replays(self):
-        self.replays = set(listdir(self.replays_path))
+        return set(filter(lambda x: x.startswith(current_date), listdir(self.replays_path)))
 
     def check_new_replays(self):
-        replays = set(listdir(self.replays_path))
+        replays = self.get_replays()
         check = replays.symmetric_difference(self.replays)
-        self.replays = replays
-        return check
+        if check:
+            self.replays = replays
+            if not path.isfile(self.replays_path + list(check)[0]):
+                return 0
+            return self.replays_path + list(check)[0]
+        return 0
 
 
+class StreamReplay:
+    def __init__(self, title, me, info):
+        self.title = title
+        self.account = me
+        self.info = info
+
+        self.heroes = map(lambda x: x.hero, self.info.players.values())
+        status = strings['GameResult%s'%{1:'Win',2:'Lose'}[int(me.result)]]
+        self.short_info = f"{self.info.details.title} - {self.account.hero} - {status}"
+
+    def try_find_hero(self, hero_name_part):
+        for player in self.info.players.values():
+            if player.hero.lower().startswith(hero_name_part):
+                return player
+
+        for _hero in heroes['heroes_names']:
+            if _hero.lower().startswith(hero_name_part):
+                hero_name_part = heroes['heroes_names'][_hero].lower()
+                break
+
+        for player in self.info.players.values():
+            if player.hero.lower().startswith(hero_name_part):
+                return player
+        return None
+
+    def get_players_with_heroes(self):
+        return ', '.join([f'{player.name} ({player.hero})' for player in self.info.players.values()])
+
+
+# ======================================================================
+# >> Start
+# ======================================================================
 load()

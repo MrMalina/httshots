@@ -3,6 +3,9 @@
 # ======================================================================
 
 # HttsHots
+import httshots
+from httshots import httshots
+
 from . import parse
 
 
@@ -10,6 +13,48 @@ from . import parse
 # ======================================================================
 # >> Classes
 # ======================================================================
+class TrackerEvents:
+    def __init__(self, event, players):
+        # Перевернуть?
+        cfg = httshots.config_data['instance-list']
+
+        # Это NNet.Replay.Tracker.SScoreResultEvent
+        for info in event:
+            name = parse.decode_string(info['m_name'])
+            if name in cfg:
+                for n, player in enumerate(players):
+                    setattr(player, cfg[name], info['m_values'][n][0]['m_value'])
+
+        for player in players:
+            player.time = info['m_values'][n][0]['m_time']
+            player.talents = [player.talent1, player.talent2, player.talent3,
+                              player.talent4, player.talent5, player.talent6,
+                              player.talent7]
+
+
+class Lobby:
+    class Ban:
+        def __init__(self, info):
+            self.hero = parse.decode_string(info['m_hero'])
+            self.team = info['m_controllingTeam']
+    class Pick:
+        def __init__(self, info):
+            self.hero = parse.decode_string(info['m_hero'])
+            self.player = info['m_controllingPlayer']
+
+    def __init__(self, events):
+        self.bans = []
+        self.picks = []
+        for event in events:
+            if event['_eventid'] == 13:
+                ban = self.Ban(event)
+                self.bans.append(ban)
+            elif event['_eventid'] == 14:
+                pick = self.Pick(event)
+                self.picks.append(pick)
+
+
+
 class Header(parse.Parse):
     def __init__(self, data):
         self.parse_data('headers', data)
