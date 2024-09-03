@@ -20,10 +20,12 @@ from httshots import bot, parser, score
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.3.1b"
+__version__ = "0.3.2"
 __author__ = "MrMalina"
 
 current_user = getuser()
+
+# default hots folder
 hots_accounts_folder = f"c:\\Users\\{current_user}\\OneDrive\\Documents\\Heroes of the Storm\\Accounts\\"
 if not path.isdir(hots_accounts_folder):
     hots_accounts_folder = f"c:\\Users\\{current_user}\\Documents\\Heroes of the Storm\\Accounts\\"
@@ -32,8 +34,6 @@ icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
 config_data = ConfigObj(current_dir + '\\data\\replay.ini')
 current_date = strftime('%Y-%m-%d')
-accounts = None
-strings = ConfigObj(current_dir + '\\config\\strings.ini')
 config = ConfigObj(current_dir + '\\config\\config.ini')
 data_info = ConfigObj(current_dir + '\\data\\info.ini')
 heroes = ConfigObj(current_dir + '\\data\\heroes.ini')
@@ -42,29 +42,26 @@ log_level = 5
 stream_replays = []
 streak = [0, 0]
 excel_path = current_dir + "\\accounts.xlsx"
+accounts = None
+strings = None
 imgur = None
+language = None
 
 
 # ======================================================================
 # >> Load
 # ======================================================================
 def load():
-    global accounts
+    global accounts, strings, language
     accounts = get_accounts_list(hots_accounts_folder)
-    # for x in accounts:
-        # ...
-        # replay_name = x.replays_path + list(x.replays)[0]
-        # break
-
-    # replay, protocol = parser.get_replay(replay_name)
-    # info = parser.get_match_info(replay, protocol)
+    language = config['LANGUAGE']
+    strings = Strings(current_dir + '\\config\\strings.ini', language)
 
     global imgur
     if config['IMGUR_USE']:
         imgur = ImgurClient(config['IMGUR_CLIENT_ID'], config['IMGUR_CLIENT_SECRET'])
         print_log('ImgurLogin', 1)
     else:
-        imgur = None
         print_log('ImgurNoUsing', 1)
 
     global bot
@@ -110,6 +107,23 @@ def get_end(number, t):
 # ======================================================================
 # >> Classes
 # ======================================================================
+class Strings:
+    def __init__(self, path, lang):
+        strings = ConfigObj(current_dir + '\\config\\strings.ini')
+
+        if lang in strings:
+            self.strings = strings[lang]
+        else:
+            self.strings = strings['ru']
+
+    def __getitem__(self, key):
+        return self.strings.get(key, f"No string '{key}' in strings.ini")
+
+    def __call__(self, key, *args):
+        _str = self.strings.get(key, f"No string '{key}' in strings.ini")
+        return _str.format(*args)
+
+
 class Account:
     def __init__(self, id):
         self.id = id
@@ -154,7 +168,8 @@ class StreamReplay:
         self.short_info = f"{self.info.details.title} - {self.account.hero} - {status}"
 
     def try_find_hero(self, hero_name_part):
-        for player in self.info.players.values():
+        players = self.info.players.values()
+        for player in players:
             if player.hero.lower().startswith(hero_name_part):
                 return player
 
@@ -163,7 +178,7 @@ class StreamReplay:
                 hero_name_part = heroes['heroes_names'][_hero].lower()
                 break
 
-        for player in self.info.players.values():
+        for player in players:
             if player.hero.lower().startswith(hero_name_part):
                 return player
         return None

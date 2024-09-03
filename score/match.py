@@ -136,13 +136,14 @@ def add_heroes(image, replay, max_stats):
     red = Image.open(score_files+'red.png')
     rplayer = Image.open(score_files+'playerred.png').convert('RGBA')
     glow = Image.open(score_files+'portrait.png').convert('RGBA')
+    language = httshots.language
 
     add = 100
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
-        hero_name = httshots.heroes['heroes_en'][player.hero].lower()
-        hero = Image.open(heroes_files+hero_name+'.png').convert('RGBA')
+        hero_name = httshots.heroes['heroes_en'][player.hero]
+        hero = Image.open(heroes_files+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
 
@@ -165,7 +166,14 @@ def add_heroes(image, replay, max_stats):
             color = (234,140,140)
             postfix = 'red'
 
-        draw.text((155, add+(x*rng)+10), httshots.heroes['heroes_short'].get(player.hero, player.hero), (255,255,255), font=font)
+        if 'heroes_'+language in httshots.heroes:
+            hero_short_name = httshots.heroes['heroes_'+language].get(hero_name, hero_name)
+        elif language == 'ru':
+            hero_short_name = httshots.heroes['heroes_short'].get(player.hero, player.hero)
+        else:
+            hero_short_name = hero_name
+
+        draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
         for mvp in httshots.score.mvps:
             if getattr(player, 'award_'+mvp):
@@ -266,6 +274,7 @@ def get_shift(value):
 def add_other_info(image, replay):
     redkills = Image.open(stats_files+'redkills.png')
     bluekills = Image.open(stats_files+'bluekills.png')
+    language = httshots.language
 
     red_kills = 0
     blue_kills = 0
@@ -281,36 +290,45 @@ def add_other_info(image, replay):
     time = player.time
     
     draw = ImageDraw.Draw(image)
-    draw.text((80, 710), 'Синяя команда', (185,213,255), font=large_font)
-    draw.text((105, 740), f"{blue_level}-й уровень", (39,153,165), font=large_font)
+    if language == 'RU':
+        coords = (80, 710)
+    else:
+        coords = (105, 710)
+
+    draw.text(coords, httshots.strings['ImageBlueTeam'], (185,213,255), font=large_font)
+    draw.text((105, 740), httshots.strings('ImageLevelTeam', blue_level), (39,153,165), font=large_font)
     draw.text((290, 715), str(blue_kills), (185,213,255), font=big_font)
     image.paste(bluekills, (360, 725), mask=bluekills)
 
-    draw.text((1350-250, 710), 'Красная команда', (234,140,140), font=large_font)
-    draw.text((1350-250, 740), f"{red_level}-й уровень", (175,76,105), font=large_font)
+    draw.text((1350-250, 710), httshots.strings['ImageRedTeam'], (234,140,140), font=large_font)
+    draw.text((1350-250, 740), httshots.strings('ImageLevelTeam', red_level), (175,76,105), font=large_font)
     draw.text((1350-330, 715), str(red_kills), (185,213,255), font=big_font)
     image.paste(redkills, (1350-390, 725), mask=redkills)
 
-    draw.text((555, 720), 'Длительность матча', (138,166,251), font=large_font)
+    if language == 'RU':
+        coords = (555, 720)
+    else:
+        coords = (580, 720)
+
+    draw.text(coords, httshots.strings['ImageMatchDuration'], (138,166,251), font=large_font)
     draw.text((610, 750), f"{time//60}:{time%60}", (255, 255, 255), font=big_font)
 
     if player.result == 1:
         if player.team_id == 0:
-            text = "Победа синих"
+            text = httshots.strings['ImageBlueWin']
             color = (39,153,165)
         else:
-            text = "Победа красных"
+            text = httshots.strings['ImageRedWin']
             color = (175,76,105)
     else:
         if player.team_id == 0:
-            text = "Победа красных"
+            text = httshots.strings['ImageRedWin']
             color = (175,76,105)
         else:
-            text = "Победа синих"
+            text = httshots.strings['ImageBlueWin']
             color = (39,153,165)
 
     draw.text((40, 50), text, color, font=large_font)
-
 
 
 def upload_image():

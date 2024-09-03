@@ -14,6 +14,8 @@ from httshots import httshots
 # >> Functions
 # ======================================================================
 async def start_update_info(replay_name):
+    language = httshots.language
+
     replay, protocol = httshots.parser.get_replay(replay_name)
     info = httshots.parser.get_match_info(replay, protocol)
 
@@ -42,13 +44,16 @@ async def start_update_info(replay_name):
             httshots.streak[0] = 'Loses'
             httshots.streak[1] = 1
 
-    # get gero_name
+    # get hero_name
     status = httshots.strings['GameResult%s'%{1:'Win',2:'Lose'}[int(me.result)]]
-    hero_name = httshots.heroes['heroes_ru'].get(me.hero, None)[2]
-    if hero_name is None:
-        for hero_name in httshots.heroes['heroes_ru']:
-            if hero_name.startswith(me.hero):
-                break
+    if language == 'ru':
+        hero_name = httshots.heroes['heroes_ru'].get(me.hero, None)[2]
+        if hero_name is None:
+            for hero_name in httshots.heroes['heroes_ru']:
+                if hero_name.startswith(me.hero):
+                    break
+    else:
+        hero_name = httshots.heroes[f'heroes_{language}'].get(me.hero, None)
 
     # send match info
 

@@ -20,8 +20,6 @@ from httshots import httshots
 from . import replays
 
 
-match_heroes = ['герои', 'heroes']
-
 # ======================================================================
 # >> TwitchBot
 # ======================================================================
@@ -152,7 +150,7 @@ class TwitchBot(commands.Bot):
 
         else:
             hero = hero.lower().strip()
-            if hero in match_heroes:
+            if hero in ('heroes', 'герои'):
                 blue = [x.hero for x in _game.info.players.values() if x.team_id == 0]
                 red = [x.hero for x in _game.info.players.values() if x.team_id == 1]
                 text = httshots.strings['GameHeroes'].format(', '.join(blue), ', '.join(red))
@@ -220,9 +218,14 @@ class TwitchBot(commands.Bot):
     @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
     @commands.command(aliases=("матчи", ))
     async def games(self, ctx: commands.Context):
+        matches = len(httshots.stream_replays)
+        if not matches:
+            text = httshots.strings['GameNotFound']
+            await ctx.send(text)
+            return
+
         wins = len(list(filter(lambda x: x.account.result == 1, httshots.stream_replays)))
         loses = len(list(filter(lambda x: x.account.result == 2, httshots.stream_replays)))
-        matches = len(httshots.stream_replays)
         url_games = httshots.stream_replays[-1].url_games
         if matches == 1:
             win_text = httshots.get_end(wins, 'Wins')

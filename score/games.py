@@ -71,7 +71,7 @@ def create_board():
 def create_icons(image):
     draw = ImageDraw.Draw(image)
     draw.text((360, 50), "Карта", (255,255,255), font=font)
-    draw.text((675, 50), "Команда", (255,255,255), font=font)
+    draw.text((675, 50), "Сторона", (255,255,255), font=font)
     draw.text((825, 50), "Результат", (255,255,255), font=font)
     draw.text((975, 50), "Длительность", (255,255,255), font=font)
 
