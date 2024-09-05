@@ -30,7 +30,6 @@ class TwitchBot(commands.Bot):
     async def event_ready(self):
         channels = self.connected_channels
         if channels:
-            print(channels, list(self.connected_channels))
             self.channel = channels[0]
             channel = self.channel.name
             httshots.print_log('ReadyInfo', 1, self.nick, self.user_id, channel)
@@ -48,6 +47,50 @@ class TwitchBot(commands.Bot):
             httshots.print_log('SpotifyReadyError', 1)
             self.sp_socket = None
 
+        if int(httshots.config['ADD_PREVIOUS_GAMES']) == 1:
+            found = 0
+            for acc in httshots.accounts:
+                replays = list(acc.get_replays())
+                replays.sort()
+                for replay_name in replays:
+                    replay, protocol = httshots.parser.get_replay(acc.replays_path + replay_name)
+                    info = httshots.parser.get_match_info(replay, protocol)
+                    if info.init_data.game_options.amm_id == 50091:
+                        for player in info.players.values():
+                            if player.name in httshots.config['ACCOUNTS']:
+                                me = player
+                                break
+
+                        if me.result == 1:
+                            if httshots.streak[0] == 'Wins':
+                                httshots.streak[1] += 1
+                            else:
+                                httshots.streak[0] = 'Wins'
+                                httshots.streak[1] = 1
+                        else:
+                            if httshots.streak[0] == 'Loses':
+                                httshots.streak[1] += 1
+                            else:
+                                httshots.streak[0] = 'Loses'
+                                httshots.streak[1] = 1
+
+                        found = 1
+
+                        sreplay = httshots.StreamReplay(replay_name, me, info)
+                        httshots.stream_replays.append(sreplay)
+                        sreplay.url_games = None
+                        httshots.print_log('FoundRankedPreviousGame', 1, replay_name)
+                    else:
+                        httshots.print_log('FoundNoRankedPreviousGames', 1, replay_name)
+
+
+            if found:
+                url_games = httshots.score.games.create_image(False)
+                sreplay.url_games = url_games
+                httshots.print_log('FoundPreviousGames', 1, len(httshots.stream_replays))
+            else:
+                httshots.print_log('FoundZeroPreviousGames', 1)
+
         httshots.print_log('BotStart', 1, httshots.__name__, 
                            httshots.__author__, httshots.__version__)
         await self.endless_loop()
@@ -55,7 +98,7 @@ class TwitchBot(commands.Bot):
     async def endless_loop(self):
         while True:
             await replays.check_replays()
-            await asyncio.sleep(2)
+            await asyncio.sleep(httshots.replay_check_period)
 
     async def event_reconnect(self):
         httshots.print_log('BotReconnect', 1)
@@ -188,12 +231,12 @@ class TwitchBot(commands.Bot):
                 await ctx.send(text)
                 return
 
-            if info is None:
+            if not info:
                 hero_name = httshots.heroes['heroes_ru'].get(player.hero, [0,0,0,0,0])[0]
                 hero_name_eng = httshots.heroes['heroes_en'].get(player.hero, None)
                 talents = ''.join(map(str, player.talents))
                 tmp = f" [T{talents},{hero_name_eng}]"
-                icy_hero = httshots.heroes['heroes_icy'].get(hero_name, hero_name_eng.lower())
+                icy_hero = httshots.heroes['heroes_icy'].get(player.hero, hero_name_eng.lower())
                 icy_url = httshots.icy_url.format(icy_hero, talents.replace('0', '-'))
                 text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
                 await ctx.send(text)

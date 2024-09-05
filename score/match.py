@@ -166,12 +166,12 @@ def add_heroes(image, replay, max_stats):
             color = (234,140,140)
             postfix = 'red'
 
-        if 'heroes_'+language in httshots.heroes:
-            hero_short_name = httshots.heroes['heroes_'+language].get(hero_name, hero_name)
-        elif language == 'ru':
-            hero_short_name = httshots.heroes['heroes_short'].get(player.hero, player.hero)
-        else:
-            hero_short_name = hero_name
+        # if 'heroes_'+language in httshots.heroes:
+            # hero_short_name = httshots.heroes['heroes_'+language].get(hero_name, hero_name)
+        # elif language == 'ru':
+        hero_short_name = httshots.heroes['heroes_short'].get(player.hero, player.hero)
+        # else:
+            # hero_short_name = hero_name
 
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
@@ -364,4 +364,5 @@ def create_image(replay):
 
     httshots.print_log('ImgurUploadImageMatch', 1)
     url = upload_image()
+
     return url

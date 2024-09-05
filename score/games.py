@@ -219,30 +219,39 @@ def upload_image():
         return None
 
 
-def create_image():
-    httshots.print_log('ImgurStartCreateImage', 1)
-    httshots.print_log('ImgurCreateBorder', 1)
+def create_image(print_info=True):
+    if print_info:
+        httshots.print_log('ImgurStartCreateImage', 1)
+        httshots.print_log('ImgurCreateBorder', 1)
     image = create_board()
 
-    httshots.print_log('ImgurGetReplays', 1)
+    if print_info:
+        httshots.print_log('ImgurGetReplays', 1)
     replays = httshots.stream_replays
     if len(replays) <= 10:
         replays = replays[:10]
     else:
         replays = replays[len(replays)-10:len(replays)]
 
-    httshots.print_log('ImgurCreateIcons', 1)
+    if print_info:
+        httshots.print_log('ImgurCreateIcons', 1)
     create_icons(image)
 
-    httshots.print_log('ImgurAddGames', 1, len(replays))
+    if print_info:
+        httshots.print_log('ImgurAddGames', 1, len(replays))
     add_games(image, replays)
 
-    httshots.print_log('ImgurAddOtherInfo', 1)
+    if print_info:
+        httshots.print_log('ImgurAddOtherInfo', 1)
     add_other_info(image, replays)
 
-    httshots.print_log('ImgurSaveImageGames', 1)
+    if print_info:
+        httshots.print_log('ImgurSaveImageGames', 1)
     image.save(screens_files + 'vavaviva_games.png')
 
-    httshots.print_log('ImgurUploadImageGames', 1)
+    if print_info:
+        httshots.print_log('ImgurUploadImageGames', 1)
+
     url = upload_image()
+
     return url

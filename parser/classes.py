@@ -54,7 +54,6 @@ class Lobby:
                 self.picks.append(pick)
 
 
-
 class Header(parse.Parse):
     def __init__(self, data):
         self.parse_data('headers', data)

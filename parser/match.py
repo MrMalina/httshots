@@ -29,3 +29,6 @@ class Match:
 
     def add_lobby(self, data):
         self.lobby = classes.Lobby(data)
+
+    def add_game_options(self, data):
+        self.game_options = classes.GameOptions(data)

@@ -25,7 +25,6 @@ async def start_update_info(replay_name):
             me = player
             check = True
             break
-
     if not check:
         httshots.print_log('GameNoFoundAccount', 3)
         return
@@ -120,3 +119,4 @@ async def check_replays():
         if new_replay:
             httshots.print_log('NewReplay', 3, new_replay, acc.id)
             await start_update_info(new_replay)
+            break

@@ -13,14 +13,14 @@ from os import path, sep, listdir
 
 
 # Httshots
-from httshots import bot, parser, score
+from httshots import bot, parser, score, test
 
 
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.3.2"
+__version__ = "0.4.0"
 __author__ = "MrMalina"
 
 current_user = getuser()
@@ -46,16 +46,18 @@ accounts = None
 strings = None
 imgur = None
 language = None
+replay_check_period = None
 
 
 # ======================================================================
 # >> Load
 # ======================================================================
 def load():
-    global accounts, strings, language
+    global accounts, strings, language, replay_check_period
     accounts = get_accounts_list(hots_accounts_folder)
     language = config['LANGUAGE']
-    strings = Strings(current_dir + '\\config\\strings.ini', language)
+    strings = Strings(current_dir + '\\data\\strings.ini', language)
+    replay_check_period = int(config['REPLAY_CHECK_PERIOD'])
 
     global imgur
     if config['IMGUR_USE']:
@@ -109,7 +111,7 @@ def get_end(number, t):
 # ======================================================================
 class Strings:
     def __init__(self, path, lang):
-        strings = ConfigObj(current_dir + '\\config\\strings.ini')
+        strings = ConfigObj(path)
 
         if lang in strings:
             self.strings = strings[lang]
