@@ -1,5 +1,7 @@
 from . import match
 from . import games
+from . import talents
+from . import battlelobby
 
 mvps = {
     'mvp':'mvp',
@@ -37,3 +39,4 @@ mvps = {
     'kill_streak': 'finisher',
     'seeds': 'gardenterror',
 }
+

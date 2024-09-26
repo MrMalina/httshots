@@ -4,7 +4,6 @@
 
 # Python
 import asyncio
-import xlwings as xw
 
 # Spotipy
 import spotipy
@@ -18,6 +17,7 @@ from twitchio.ext import commands
 import httshots
 from httshots import httshots
 from . import replays
+from . import tracker
 
 
 # ======================================================================
@@ -83,13 +83,14 @@ class TwitchBot(commands.Bot):
                     else:
                         httshots.print_log('FoundNoRankedPreviousGames', 1, replay_name)
 
-
             if found:
                 url_games = httshots.score.games.create_image(False)
                 sreplay.url_games = url_games
                 httshots.print_log('FoundPreviousGames', 1, len(httshots.stream_replays))
             else:
                 httshots.print_log('FoundZeroPreviousGames', 1)
+
+        tracker.add_command(self)
 
         httshots.print_log('BotStart', 1, httshots.__name__, 
                            httshots.__author__, httshots.__version__)
@@ -98,19 +99,8 @@ class TwitchBot(commands.Bot):
     async def endless_loop(self):
         while True:
             await replays.check_replays()
+            await replays.check_battle_lobby()
             await asyncio.sleep(httshots.replay_check_period)
-
-    async def event_reconnect(self):
-        httshots.print_log('BotReconnect', 1)
-        if httshots.config['SPOTIFY_USE']:
-            client_id = httshots.config['SPOTIFY_CLIENT_ID']
-            client_secret = httshots.config['SPOTIFY_CLIENT_SECRET']
-            redirect_uri = httshots.config['SPOTIFY_REDIRECT_URI']            
-            self.sp_socket = spotify_get_socket(client_id, client_secret, redirect_uri)
-            httshots.print_log('SpotifyReadyInfo', 1)
-        else:
-            httshots.print_log('SpotifyReadyError', 1)
-            self.sp_socket = None
 
     async def event_message(self, message: twitchio.Message):
         # content = message.content
@@ -148,35 +138,6 @@ class TwitchBot(commands.Bot):
         else:
             text = httshots.strings['SpotifyNoSocket']
         await ctx.send(text)
-
-    @commands.cooldown(rate=1, per=5, bucket=commands.Bucket.channel)
-    @commands.command(aliases=("аккаунт", ))
-    async def acc(self, ctx: commands.Context, name: str = None):
-        if name is None:
-            text = httshots.strings['AccInfoCount'].format(len(httshots.my_accounts))
-            await ctx.send(text)
-            return
-
-        if name in httshots.my_accounts:
-            app = xw.App(visible=False)
-            book = xw.Book(httshots.excel_path)
-            excel = book.sheets[0]
-            for line in range(2, 100):
-                if excel['A%s'%line].value == name:
-                    rank = excel['B%s'%line].value
-                    tmp = httshots.strings['Rank%s'%rank[0]] + rank[1:]
-                    text = httshots.strings['AccInfoRank'].format(name, tmp, httshots.my_accounts[name])
-                    book.close()
-                    app.quit()
-                    await ctx.send(text)
-                    return
-
-            text = httshots.strings['AccInfo'].format(name, httshots.my_accounts[name])
-            await ctx.send(text)
-        else:
-            text = httshots.strings['AccInfoNone'].format(ctx.author.name)
-            await ctx.send(text)
-
 
     @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
     @commands.command(aliases=("матч", ))
@@ -232,11 +193,11 @@ class TwitchBot(commands.Bot):
                 return
 
             if not info:
-                hero_name = httshots.heroes['heroes_ru'].get(player.hero, [0,0,0,0,0])[0]
-                hero_name_eng = httshots.heroes['heroes_en'].get(player.hero, None)
+                hero_name = httshots.data_heroes['names'].get(player.hero, [0,0,0,0,0])[0]
+                hero_name_eng = httshots.data_heroes['en'].get(player.hero, None)
                 talents = ''.join(map(str, player.talents))
                 tmp = f" [T{talents},{hero_name_eng}]"
-                icy_hero = httshots.heroes['heroes_icy'].get(player.hero, hero_name_eng.lower())
+                icy_hero = httshots.data_heroes['icy'].get(player.hero, hero_name_eng.lower())
                 icy_url = httshots.icy_url.format(icy_hero, talents.replace('0', '-'))
                 text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
                 await ctx.send(text)

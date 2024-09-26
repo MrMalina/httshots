@@ -6,9 +6,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-import httshots
 from httshots import httshots
-
 
 # ======================================================================
 # >> CONFIGS
@@ -21,6 +19,7 @@ heroes_files = path + "heroes/"
 font_files = path + "ttf/"
 screens_files = path + "screens/"
 mvp_files = path + "mvp/"
+
 font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 16)
 large_font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 24)
 big_font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 46)
@@ -95,7 +94,7 @@ def add_games(image, replays):
     add = 100
     rng = 60
 
-    for x, replay in enumerate(replays):
+    for x, replay in enumerate(reversed(replays)):
         red_kills = 0
         blue_kills = 0
 
@@ -106,7 +105,7 @@ def add_games(image, replays):
 
         player = me
 
-        hero_name = httshots.heroes['heroes_en'][player.hero].lower()
+        hero_name = httshots.data_heroes['en'][player.hero].lower()
         hero = Image.open(heroes_files+hero_name+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -131,7 +130,8 @@ def add_games(image, replays):
             color = (234,140,140)
             postfix = 'red'
 
-        draw.text((155, add+(x*rng)+10), httshots.heroes['heroes_short'].get(player.hero, player.hero), (255,255,255), font=font)
+        hero_short_name = httshots.data_heroes['short_names'].get(player.hero, player.hero)
+        draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
         for mvp in httshots.score.mvps:
             if getattr(player, 'award_'+mvp):
@@ -199,13 +199,13 @@ def add_other_info(image, replays):
 
     draw = ImageDraw.Draw(image)
     draw.text((125, 700), 'Побед', (185,213,255), font=large_font)
-    draw.text((150, 730), f"{wins}", (39,153,165), font=big_font)
+    draw.text((150, 725), f"{wins}", (39,153,165), font=big_font)
 
     draw.text((1350-260, 700), 'Поражений', (234,140,140), font=large_font)
-    draw.text((1350-200, 730), f"{loses}", (175,76,105), font=big_font)
+    draw.text((1350-200, 725), f"{loses}", (175,76,105), font=big_font)
 
     draw.text((1350/2-40, 700), 'Всего игр', (138,166,251), font=large_font)
-    draw.text((1350/2, 730), f"{len(replays)}", (255, 255, 255), font=big_font)
+    draw.text((1350/2, 725), f"{len(replays)}", (255, 255, 255), font=big_font)
 
 
 def upload_image():
@@ -221,7 +221,7 @@ def upload_image():
 
 def create_image(print_info=True):
     if print_info:
-        httshots.print_log('ImgurStartCreateImage', 1)
+        httshots.print_log('ImgurStartCreateGamesImage', 1)
         httshots.print_log('ImgurCreateBorder', 1)
     image = create_board()
 

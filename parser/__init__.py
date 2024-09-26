@@ -12,7 +12,7 @@ from configobj import ConfigObj
 import heroprotocol
 from heroprotocol import versions
 
-from . import classes, parse, match
+from . import classes, parse, match, battlelobby
 
 
 # ======================================================================
@@ -83,3 +83,9 @@ def get_replay_headers(replay):
     header = versions.latest().decode_replay_header(contents)
 
     return header
+
+
+def get_battle_lobby(file):
+    info = battlelobby.get_battle_lobby_info(file)
+
+    return info

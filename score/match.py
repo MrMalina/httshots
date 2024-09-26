@@ -14,13 +14,11 @@ from httshots import httshots
 # >> CONFIGS
 # ======================================================================
 path = r"d:\games\python\httshots\files/"
-border_files = path + "border/"
+bg_files = path + "background/"
 stats_files = path + "stats/"
 score_files = path + "scorescreen/"
-heroes_files = path + "heroes/"
 font_files = path + "ttf/"
 screens_files = path + "screens/"
-mvp_files = path + "mvp/"
 font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 16)
 large_font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 24)
 big_font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 46)
@@ -29,7 +27,12 @@ big_font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 46)
 # ======================================================================
 # >> FUNCTIONS
 # ======================================================================
+def load_background():
+    return Image.open(bg_files+'match_background.png')
+
+
 def create_board():
+    border_files = path + "border/"
     vborder = Image.open(border_files+'verticalborder.png')
     vborder_size = vborder.size
     bghex = Image.open(border_files+'backgroundhex.png')
@@ -131,6 +134,9 @@ def get_max_stats(replay):
 
 
 def add_heroes(image, replay, max_stats):
+    heroes_files = path + "heroes/"
+    mvp_files = path + "mvp/"
+
     blue = Image.open(score_files+'blue.png')
     bplayer = Image.open(score_files+'playerblue.png').convert('RGBA')
     red = Image.open(score_files+'red.png')
@@ -142,7 +148,7 @@ def add_heroes(image, replay, max_stats):
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
-        hero_name = httshots.heroes['heroes_en'][player.hero]
+        hero_name = httshots.data_heroes['en'][player.hero]
         hero = Image.open(heroes_files+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -169,7 +175,7 @@ def add_heroes(image, replay, max_stats):
         # if 'heroes_'+language in httshots.heroes:
             # hero_short_name = httshots.heroes['heroes_'+language].get(hero_name, hero_name)
         # elif language == 'ru':
-        hero_short_name = httshots.heroes['heroes_short'].get(player.hero, player.hero)
+        hero_short_name = httshots.data_heroes['short_names'].get(player.hero, player.hero)
         # else:
             # hero_short_name = hero_name
 
@@ -311,7 +317,7 @@ def add_other_info(image, replay):
         coords = (580, 720)
 
     draw.text(coords, httshots.strings['ImageMatchDuration'], (138,166,251), font=large_font)
-    draw.text((610, 750), f"{time//60}:{time%60}", (255, 255, 255), font=big_font)
+    draw.text((610, 745), f"{time//60}:{time%60}", (255, 255, 255), font=big_font)
 
     if player.result == 1:
         if player.team_id == 0:
@@ -333,7 +339,7 @@ def add_other_info(image, replay):
 
 def upload_image():
     try:
-        url = httshots.imgur.upload_from_path(screens_files + 'vavaviva.png')
+        url = httshots.imgur.upload_from_path(screens_files + 'vavaviva_match.png')
         if 'link' in url:
             return url['link'].replace('i.', '')
         return None
@@ -343,9 +349,9 @@ def upload_image():
 
 
 def create_image(replay):
-    httshots.print_log('ImgurStartCreateImage', 1)
-    httshots.print_log('ImgurCreateBorder', 1)
-    image = create_board()
+    httshots.print_log('ImgurStartCreateMatchImage', 1)
+    httshots.print_log('ImgurLoadBackGround', 1)
+    image = load_background()
 
     httshots.print_log('ImgurCreateIcons', 1)
     create_icons(image)
@@ -360,7 +366,7 @@ def create_image(replay):
     add_other_info(image, replay)
 
     httshots.print_log('ImgurSaveImageMatch', 1)
-    image.save(screens_files + 'vavaviva.png')
+    image.save(screens_files + 'vavaviva_match.png')
 
     httshots.print_log('ImgurUploadImageMatch', 1)
     url = upload_image()

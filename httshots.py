@@ -10,17 +10,18 @@ from time import strftime
 
 from configobj import ConfigObj
 from os import path, sep, listdir
+from json import load as json_load
 
 
 # Httshots
-from httshots import bot, parser, score, test
+from . import bot, parser, score, test
 
 
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.4.0"
+__version__ = "0.6.0"
 __author__ = "MrMalina"
 
 current_user = getuser()
@@ -30,34 +31,38 @@ hots_accounts_folder = f"c:\\Users\\{current_user}\\OneDrive\\Documents\\Heroes 
 if not path.isdir(hots_accounts_folder):
     hots_accounts_folder = f"c:\\Users\\{current_user}\\Documents\\Heroes of the Storm\\Accounts\\"
 
+battle_lobby_file = r"c:\Users\Pytho\AppData\Local\Temp\Heroes of the Storm\TempWriteReplayP1\replay.server.battlelobby"
 icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
-config_data = ConfigObj(current_dir + '\\data\\replay.ini')
-current_date = strftime('%Y-%m-%d')
 config = ConfigObj(current_dir + '\\config\\config.ini')
+data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
 data_info = ConfigObj(current_dir + '\\data\\info.ini')
-heroes = ConfigObj(current_dir + '\\data\\heroes.ini')
-my_accounts = ConfigObj(current_dir + '\\data\\accounts.ini')
-log_level = 5
+data_heroes = ConfigObj(current_dir + '\\data\\heroes.ini')
+
 stream_replays = []
 streak = [0, 0]
-excel_path = current_dir + "\\accounts.xlsx"
 accounts = None
 strings = None
 imgur = None
 language = None
 replay_check_period = None
+battle_lobby_hash = None
+herodata = None
 
 
 # ======================================================================
 # >> Load
 # ======================================================================
 def load():
-    global accounts, strings, language, replay_check_period
+    global accounts, strings, language, replay_check_period, log_level, herodata
     accounts = get_accounts_list(hots_accounts_folder)
     language = config['LANGUAGE']
+    log_level = int(config['LOG_LEVEL'])
     strings = Strings(current_dir + '\\data\\strings.ini', language)
     replay_check_period = int(config['REPLAY_CHECK_PERIOD'])
+
+    with open(current_dir + '\\files\\herodata.json') as f:
+        herodata = json_load(f)
 
     global imgur
     if config['IMGUR_USE']:
@@ -86,8 +91,8 @@ def get_accounts_list(path):
     return accounts
 
 
-def print_log(string, log_level, *args):
-    if log_level <= log_level:
+def print_log(string, level, *args):
+    if level <= log_level:
         print(strings[string].format(*args))
 
 
@@ -146,6 +151,7 @@ class Account:
         self.unique_folder = folder
 
     def get_replays(self):
+        current_date = strftime('%Y-%m-%d')
         return set(filter(lambda x: x.startswith(current_date), listdir(self.replays_path)))
 
     def check_new_replays(self):
@@ -175,9 +181,9 @@ class StreamReplay:
             if player.hero.lower().startswith(hero_name_part):
                 return player
 
-        for _hero in heroes['heroes_names']:
+        for _hero in data_heroes['rofl_names']:
             if _hero.lower().startswith(hero_name_part):
-                hero_name_part = heroes['heroes_names'][_hero].lower()
+                hero_name_part = data_heroes['rofl_names'][_hero].lower()
                 break
 
         for player in players:

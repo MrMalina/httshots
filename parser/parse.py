@@ -9,7 +9,6 @@ from configobj import ConfigObj
 
 import httshots
 from httshots import httshots
-# from httshots import config_data
 
 
 # ======================================================================
@@ -26,7 +25,7 @@ def decode_string(string):
 # ======================================================================
 class Parse:
     def parse_data(self, section, data, cls=object):
-        cfg = httshots.config_data[section]
+        cfg = httshots.data_replay[section]
 
         for name, attr in cfg.items():
             key, _type = attr
@@ -39,6 +38,8 @@ class Parse:
 
             if _type != 'A':
                 method = getattr(TYPE, _type)
+                if name == 'amm_id' and value is None:
+                    value = 0
                 attribute = method(value)
             else:
                 attribute = Args(name, value)

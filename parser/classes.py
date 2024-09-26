@@ -16,7 +16,7 @@ from . import parse
 class TrackerEvents:
     def __init__(self, event, players):
         # Перевернуть?
-        cfg = httshots.config_data['instance-list']
+        cfg = httshots.data_replay['instance-list']
 
         # Это NNet.Replay.Tracker.SScoreResultEvent
         for info in event:
@@ -158,7 +158,8 @@ class Player:
         """
 
         self.userid = userid
-        self.name = parse.decode_string(info['m_name'])
+        # self.name = parse.decode_string(info['m_name'])
+        self.name = info['m_name'].decode('utf8')
         self.toon = Region(info['m_toon'])
         self.race = parse.decode_string(info['m_race'])
         self.color = Color(info['m_color'])

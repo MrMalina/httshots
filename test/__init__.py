@@ -38,7 +38,7 @@ class TestReplay:
         red_level = randint(10, 20)
 
         self.players = {}
-        tmp = list(httshots.heroes['heroes_ru'].keys())
+        tmp = list(httshots.data_heroes['names'].keys())
 
         heroes = tmp[(0+count)*10:(1+count)*10]
         if len(heroes) < 10:
