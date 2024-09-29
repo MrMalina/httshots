@@ -5,10 +5,6 @@
 # Python
 import asyncio
 
-# Spotipy
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-
 # twitchio
 import twitchio
 from twitchio.ext import commands
@@ -17,7 +13,9 @@ from twitchio.ext import commands
 import httshots
 from httshots import httshots
 from . import replays
+from . import pregame
 from . import tracker
+from . import spotify
 
 
 # ======================================================================
@@ -32,22 +30,12 @@ class TwitchBot(commands.Bot):
         if channels:
             self.channel = channels[0]
             channel = self.channel.name
-            httshots.print_log('ReadyInfo', 1, self.nick, self.user_id, channel)
+            httshots.print_log('ReadyInfo', self.nick, self.user_id, channel)
         else:
-            httshots.print_log('ReadyError', 1)
+            httshots.print_log('ReadyError')
             return
 
-        if httshots.config['SPOTIFY_USE']:
-            client_id = httshots.config['SPOTIFY_CLIENT_ID']
-            client_secret = httshots.config['SPOTIFY_CLIENT_SECRET']
-            redirect_uri = httshots.config['SPOTIFY_REDIRECT_URI']            
-            self.sp_socket = spotify_get_socket(client_id, client_secret, redirect_uri)
-            httshots.print_log('SpotifyReadyInfo', 1)
-        else:
-            httshots.print_log('SpotifyReadyError', 1)
-            self.sp_socket = None
-
-        if int(httshots.config['ADD_PREVIOUS_GAMES']) == 1:
+        if httshots.config.add_previous_games == 1:
             found = 0
             for acc in httshots.accounts:
                 replays = list(acc.get_replays())
@@ -57,7 +45,7 @@ class TwitchBot(commands.Bot):
                     info = httshots.parser.get_match_info(replay, protocol)
                     if info.init_data.game_options.amm_id == 50091:
                         for player in info.players.values():
-                            if player.name in httshots.config['ACCOUNTS']:
+                            if player.name in httshots.config.accounts:
                                 me = player
                                 break
 
@@ -79,32 +67,33 @@ class TwitchBot(commands.Bot):
                         sreplay = httshots.StreamReplay(replay_name, me, info)
                         httshots.stream_replays.append(sreplay)
                         sreplay.url_games = None
-                        httshots.print_log('FoundRankedPreviousGame', 1, replay_name)
+                        httshots.print_log('FoundRankedPreviousGame', replay_name)
                     else:
-                        httshots.print_log('FoundNoRankedPreviousGames', 1, replay_name)
+                        httshots.print_log('FoundNoRankedPreviousGames', replay_name)
 
             if found:
                 url_games = httshots.score.games.create_image(False)
                 sreplay.url_games = url_games
-                httshots.print_log('FoundPreviousGames', 1, len(httshots.stream_replays))
+                httshots.print_log('FoundPreviousGames', len(httshots.stream_replays))
             else:
-                httshots.print_log('FoundZeroPreviousGames', 1)
+                httshots.print_log('FoundZeroPreviousGames')
 
-        tracker.add_command(self)
+        if httshots.config.add_tracker_commands == 1:
+            tracker.add_command(self)
+        if httshots.config.add_spotify_commands == 1:
+            spotify.add_command(self)
 
-        httshots.print_log('BotStart', 1, httshots.__name__, 
+        httshots.print_log('BotStart', httshots.__name__, 
                            httshots.__author__, httshots.__version__)
         await self.endless_loop()
 
     async def endless_loop(self):
         while True:
             await replays.check_replays()
-            await replays.check_battle_lobby()
+            await pregame.check_battle_lobby()
             await asyncio.sleep(httshots.replay_check_period)
 
     async def event_message(self, message: twitchio.Message):
-        # content = message.content
-        # print(message.content)
         if hasattr(message.author, 'name'): 
             await httshots.bot.handle_commands(message)
             return
@@ -112,32 +101,6 @@ class TwitchBot(commands.Bot):
     # async def event_command_error(self, ctx, error: Exception) -> None:
         # if isinstance(error, commands.CommandOnCooldown):
             # ...
-
-    @commands.cooldown(rate=1, per=5, bucket=commands.Bucket.channel)
-    @commands.command(aliases=("песня", ))
-    async def song(self, ctx: commands.Context):
-        if self.sp_socket:
-            song = spotify_get_playing_track(self.sp_socket)
-            if song:
-                text = httshots.strings['SpotifyTrack'].format(song)
-            else:
-                text = httshots.strings['SpotifyNoTrack']
-        else:
-            text = httshots.strings['SpotifyNoSocket']
-        await ctx.send(text)
-
-    @commands.cooldown(rate=1, per=5, bucket=commands.Bucket.channel)
-    @commands.command()
-    async def prevsongs(self, ctx: commands.Context):
-        if self.sp_socket:
-            song = spotify_get_recently_tracks(self.sp_socket, 3)
-            if song:
-                text = httshots.strings['SpotifyPrevTracks'].format(song)
-            else:
-                text = httshots.strings['SpotifyNoPrevTrack']
-        else:
-            text = httshots.strings['SpotifyNoSocket']
-        await ctx.send(text)
 
     @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
     @commands.command(aliases=("матч", ))
@@ -259,44 +222,3 @@ class TwitchBot(commands.Bot):
 
 
         await ctx.send(text)
-
-
-# ======================================================================
-# >> Functions
-# ======================================================================
-def spotify_get_socket(client_id, client_secret, redirect_uri):
-    scope = "user-read-currently-playing user-read-private user-read-recently-played"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,
-                         client_id=client_id,
-                         client_secret=client_secret,
-                         redirect_uri=redirect_uri,
-                         cache_path=httshots.current_dir + "\\files\\cache"))
-    return sp
-
-
-def spotify_get_playing_track(sp):
-    track_info = sp.current_user_playing_track()
-    if track_info is not None:
-        item = track_info['item']
-        track_name = item['name']
-        artists = []
-        for art in item['artists']:
-            artists.append(art['name'])
-        return f"{', '.join(artists)} - {track_name}"
-    return None
-
-
-def spotify_get_recently_tracks(sp, count):
-    tracks = sp.current_user_recently_played(count)
-    if tracks is not None:
-        info = []
-        for number, track in enumerate(tracks['items']):
-            track_info = track['track']
-            track_name = track_info['name']
-            artists = []
-            for art in track_info['artists']:
-                artists.append(art['name'])
-            info.append(f"{number+1}. {', '.join(artists)} - {track_name}")
-        return '  '.join(info)
-    return None
-

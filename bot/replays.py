@@ -22,13 +22,13 @@ async def send_replay_info(replay_name):
         replay, protocol = httshots.parser.get_replay(replay_name)
         info = httshots.parser.get_match_info(replay, protocol)
     except:
-        httshots.print_log('GameTryOpenReplay', 1)
+        httshots.print_log('GameTryOpenReplay')
         await asyncio.sleep(2)
         try:
             replay, protocol = httshots.parser.get_replay(replay_name)
             info = httshots.parser.get_match_info(replay, protocol)
         except:
-            httshots.print_log('GameUvi', 1)
+            httshots.print_log('GameUvi')
             return
 
     if info.init_data.game_options.amm_id == 0:
@@ -36,12 +36,12 @@ async def send_replay_info(replay_name):
 
     check = False
     for player in info.players.values():
-        if player.name in httshots.config['ACCOUNTS']:
+        if player.name in httshots.config.accounts:
             me = player
             check = True
             break
     if not check:
-        httshots.print_log('GameNoFoundAccount', 3)
+        httshots.print_log('GameNoFoundAccount')
         return
 
     # streak
@@ -121,14 +121,8 @@ async def send_replay_info(replay_name):
                                                             win_text, loses, lose_text,
                                                             streak[1], streak_text)
 
-    httshots.print_log('SendReplayInfo', 3)
+    httshots.print_log('SendReplayInfo')
 
-    await httshots.bot.channel.send(text)
-
-
-async def send_battle_lobby_info(info):
-    url = httshots.score.battlelobby.create_image(info)
-    text = httshots.strings['LobbyInfo'].format(url)
     await httshots.bot.channel.send(text)
 
 
@@ -137,21 +131,6 @@ async def check_replays():
         # new_replay = acc.replays_path + list(acc.get_replays())[0]
         new_replay = acc.check_new_replays()
         if new_replay:
-            httshots.print_log('NewReplay', 3, new_replay, acc.id)
+            httshots.print_log('NewReplay', new_replay, acc.id)
             await send_replay_info(new_replay)
             break
-
-
-async def check_battle_lobby():
-    try:
-        if os.path.isfile(httshots.battle_lobby_file):
-            file = open(httshots.battle_lobby_file, 'rb')
-            contents = file.read()
-            file.close()
-            hash = hashlib.md5(contents).hexdigest()
-            if httshots.battle_lobby_hash is None or httshots.battle_lobby_hash != hash:
-                httshots.battle_lobby_hash = hash
-                info = httshots.parser.get_battle_lobby(contents)
-                await send_battle_lobby_info(info)
-    except Exception as e:
-        print('Oooooops', e)

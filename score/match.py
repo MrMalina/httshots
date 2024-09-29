@@ -337,38 +337,27 @@ def add_other_info(image, replay):
     draw.text((40, 50), text, color, font=large_font)
 
 
-def upload_image():
-    try:
-        url = httshots.imgur.upload_from_path(screens_files + 'vavaviva_match.png')
-        if 'link' in url:
-            return url['link'].replace('i.', '')
-        return None
-    except Exception as e:
-        print(e)
-        return None
-
-
 def create_image(replay):
-    httshots.print_log('ImgurStartCreateMatchImage', 1)
-    httshots.print_log('ImgurLoadBackGround', 1)
+    httshots.print_log('ImgurStartCreateMatchImage')
+    httshots.print_log('ImgurLoadBackGround')
     image = load_background()
 
-    httshots.print_log('ImgurCreateIcons', 1)
+    httshots.print_log('ImgurCreateIcons')
     create_icons(image)
 
-    httshots.print_log('ImgurGetMaxStats', 1)
+    httshots.print_log('ImgurGetMaxStats')
     max_stats = get_max_stats(replay)
 
-    httshots.print_log('ImgurAddHeroes', 1)
+    httshots.print_log('ImgurAddHeroes')
     add_heroes(image, replay, max_stats)
 
-    httshots.print_log('ImgurAddOtherInfo', 1)
+    httshots.print_log('ImgurAddOtherInfo')
     add_other_info(image, replay)
 
-    httshots.print_log('ImgurSaveImageMatch', 1)
-    image.save(screens_files + 'vavaviva_match.png')
+    httshots.print_log('ImgurSaveImageMatch')
+    image.save(screens_files + 'match.png')
 
-    httshots.print_log('ImgurUploadImageMatch', 1)
-    url = upload_image()
+    httshots.print_log('ImgurUploadImageMatch')
+    url = httshots.score.upload_image(screens_files + 'match.png')
 
     return url

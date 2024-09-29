@@ -148,6 +148,7 @@ def add_heroes(image, replay):
             else:
                 image.paste(talent_bg, (start+11, add+(x*rng+6)), mask=talent_bg)
                 image.paste(talent_unavailable, (start, add+(x*rng-6)), mask=talent_unavailable)
+                start += 100
                 continue
 
             if level != 10:
@@ -207,35 +208,24 @@ def add_other_info(image, replay):
     draw.text((40, 50), text, color, font=large_font)
 
 
-def upload_image():
-    try:
-        url = httshots.imgur.upload_from_path(screens_files + 'vavaviva_talents.png')
-        if 'link' in url:
-            return url['link'].replace('i.', '')
-        return None
-    except Exception as e:
-        print(e)
-        return None
-
-
 def create_image(replay):
-    httshots.print_log('ImgurStartCreateTalentsImage', 1)
-    httshots.print_log('ImgurCreateBorder', 1)
+    httshots.print_log('ImgurStartCreateTalentsImage')
+    httshots.print_log('ImgurCreateBorder')
     image = create_board()
 
-    httshots.print_log('ImgurCreateIcons', 1)
+    httshots.print_log('ImgurCreateIcons')
     create_icons(image)
 
-    httshots.print_log('ImgurAddHeroes', 1)
+    httshots.print_log('ImgurAddHeroes')
     add_heroes(image, replay)
 
-    httshots.print_log('ImgurAddOtherInfo', 1)
+    httshots.print_log('ImgurAddOtherInfo')
     add_other_info(image, replay)
 
-    httshots.print_log('ImgurSaveImageMatch', 1)
-    image.save(screens_files + 'vavaviva_talents.png')
+    httshots.print_log('ImgurSaveImageMatch')
+    image.save(screens_files + 'talents.png')
 
-    httshots.print_log('ImgurUploadImageMatch', 1)
-    url = upload_image()
+    httshots.print_log('ImgurUploadImageMatch')
+    url = httshots.score.upload_image(screens_files + 'talents.png')
 
     return url

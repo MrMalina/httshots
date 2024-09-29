@@ -3,13 +3,13 @@
 # ======================================================================
 
 # HttsHots
-from . import classes
+from . import classes, battlelobby
 
 
 # ======================================================================
 # >> Classes
 # ======================================================================
-class Match:
+class Game:
     def __init__(self):
         ...
 
@@ -29,3 +29,11 @@ class Match:
 
     def add_lobby(self, data):
         self.lobby = classes.Lobby(data)
+
+
+class PreGame:
+    def __init__(self):
+        ...
+
+    def add_battle_lobby(self, info):
+        self.players = info

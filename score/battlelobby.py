@@ -70,28 +70,17 @@ def add_users(image, info):
         draw.text((coords, add+(x*rng)), blplayer.battle_tag, (255,255,255), font=font)
 
 
-def upload_image():
-    try:
-        url = httshots.imgur.upload_from_path(screens_files + 'vavaviva_battlelobby.png')
-        if 'link' in url:
-            return url['link'].replace('i.', '')
-        return None
-    except Exception as e:
-        print(e)
-        return None
-
-
 def create_image(info):
-    httshots.print_log('ImgurStartCreateLobbyImage', 1)
+    httshots.print_log('ImgurStartCreateLobbyImage')
     image = load_background()
 
-    httshots.print_log('ImgurAddUsers', 1)
+    httshots.print_log('ImgurAddUsers')
     add_users(image, info)
 
-    httshots.print_log('ImgurSaveImageMatch', 1)
-    image.save(screens_files + 'vavaviva_battlelobby.png')
+    httshots.print_log('ImgurSaveImageMatch')
+    image.save(screens_files + 'battlelobby.png')
 
-    httshots.print_log('ImgurUploadImageMatch', 1)
-    url = upload_image()
+    httshots.print_log('ImgurUploadImageMatch')
+    url = httshots.score.upload_image(screens_files + 'battlelobby.png')
 
     return url

@@ -1,3 +1,7 @@
+import httshots
+
+from httshots import httshots
+
 from . import match
 from . import games
 from . import talents
@@ -40,3 +44,26 @@ mvps = {
     'seeds': 'gardenterror',
 }
 
+
+def upload_image(file_name):
+    upl = httshots.config.image_upload
+    if not upl:
+        return None
+
+    elif upl == 1:
+        url = upload_image_imgur(file_name)
+        if url is None and httshots.config.try_reupload_image:
+            url = upload_image_imgur(file_name)
+
+    return url
+
+
+def upload_image_imgur(file_name):
+    try:
+        url = httshots.imgur.upload_from_path(file_name)
+        if 'link' in url:
+            return url['link'].replace('i.', '')
+        return None
+    except Exception as e:
+        print(e)
+        return None

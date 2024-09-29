@@ -39,7 +39,7 @@ def get_match_info(replay, protocol):
     contents = replay.read_file('replay.details')
     details = protocol.decode_replay_details(contents)
 
-    game = match.Match()
+    game = match.Game()
     game.add_details(details)
 
     contents = replay.read_file('replay.initData')
@@ -86,6 +86,8 @@ def get_replay_headers(replay):
 
 
 def get_battle_lobby(file):
-    info = battlelobby.get_battle_lobby_info(file)
+    pre_game = match.PreGame()
+    info = battlelobby.get_battle_lobby_players(file)
+    pre_game.add_battle_lobby(info)
 
-    return info
+    return pre_game

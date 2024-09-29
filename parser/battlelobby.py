@@ -9,7 +9,7 @@ class BLPlayer:
         return f"{self.battle_tag} ({self.tag}) - party {self.party} - level {self.level}"
 
 
-def get_battle_lobby_info(contents):
+def get_battle_lobby_players(contents):
     blplayers = []
 
     buffer = BitPackedBuffer(contents, 'big')

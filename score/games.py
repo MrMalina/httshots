@@ -99,7 +99,7 @@ def add_games(image, replays):
         blue_kills = 0
 
         for player in replay.info.players.values():
-            if player.name in httshots.config['ACCOUNTS']:
+            if player.name in httshots.config.accounts:
                 me = player
                 break
 
@@ -190,7 +190,7 @@ def add_other_info(image, replays):
 
     for replay in replays:
         for player in replay.info.players.values():
-            if player.name in httshots.config['ACCOUNTS']:
+            if player.name in httshots.config.accounts:
                 if player.result == 1:
                     wins += 1
                 else:
@@ -208,25 +208,14 @@ def add_other_info(image, replays):
     draw.text((1350/2, 725), f"{len(replays)}", (255, 255, 255), font=big_font)
 
 
-def upload_image():
-    try:
-        url = httshots.imgur.upload_from_path(screens_files + 'vavaviva_games.png')
-        if 'link' in url:
-            return url['link'].replace('i.imgur', 'imgur')
-        return None
-    except Exception as e:
-        print(e)
-        return None
-
-
 def create_image(print_info=True):
     if print_info:
-        httshots.print_log('ImgurStartCreateGamesImage', 1)
-        httshots.print_log('ImgurCreateBorder', 1)
+        httshots.print_log('ImgurStartCreateGamesImage')
+        httshots.print_log('ImgurCreateBorder')
     image = create_board()
 
     if print_info:
-        httshots.print_log('ImgurGetReplays', 1)
+        httshots.print_log('ImgurGetReplays')
     replays = httshots.stream_replays
     if len(replays) <= 10:
         replays = replays[:10]
@@ -234,24 +223,24 @@ def create_image(print_info=True):
         replays = replays[len(replays)-10:len(replays)]
 
     if print_info:
-        httshots.print_log('ImgurCreateIcons', 1)
+        httshots.print_log('ImgurCreateIcons')
     create_icons(image)
 
     if print_info:
-        httshots.print_log('ImgurAddGames', 1, len(replays))
+        httshots.print_log('ImgurAddGames', len(replays))
     add_games(image, replays)
 
     if print_info:
-        httshots.print_log('ImgurAddOtherInfo', 1)
+        httshots.print_log('ImgurAddOtherInfo')
     add_other_info(image, replays)
 
     if print_info:
-        httshots.print_log('ImgurSaveImageGames', 1)
-    image.save(screens_files + 'vavaviva_games.png')
+        httshots.print_log('ImgurSaveImageGames')
+    image.save(screens_files + 'games.png')
 
     if print_info:
-        httshots.print_log('ImgurUploadImageGames', 1)
+        httshots.print_log('ImgurUploadImageGames')
 
-    url = upload_image()
+    url = httshots.score.upload_image(screens_files + 'games.png')
 
     return url

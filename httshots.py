@@ -4,6 +4,7 @@
 
 # Python
 import asyncio
+import hashlib
 from getpass import getuser
 from imgurpython import ImgurClient
 from time import strftime
@@ -34,12 +35,12 @@ if not path.isdir(hots_accounts_folder):
 battle_lobby_file = r"c:\Users\Pytho\AppData\Local\Temp\Heroes of the Storm\TempWriteReplayP1\replay.server.battlelobby"
 icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
-config = ConfigObj(current_dir + '\\config\\config.ini')
 data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
 data_info = ConfigObj(current_dir + '\\data\\info.ini')
 data_heroes = ConfigObj(current_dir + '\\data\\heroes.ini')
 
 stream_replays = []
+pregame_info = []
 streak = [0, 0]
 accounts = None
 strings = None
@@ -54,25 +55,35 @@ herodata = None
 # >> Load
 # ======================================================================
 def load():
-    global accounts, strings, language, replay_check_period, log_level, herodata
+    global accounts, strings, language, \
+           replay_check_period, herodata, \
+           battle_lobby_hash, config
+
+    config = Config(current_dir + '\\config\\config.ini')
     accounts = get_accounts_list(hots_accounts_folder)
-    language = config['LANGUAGE']
-    log_level = int(config['LOG_LEVEL'])
+    language = config.language
+
     strings = Strings(current_dir + '\\data\\strings.ini', language)
-    replay_check_period = int(config['REPLAY_CHECK_PERIOD'])
 
     with open(current_dir + '\\files\\herodata.json') as f:
         herodata = json_load(f)
 
+    if not config.send_previous_battle_lobby:
+        if path.isfile(battle_lobby_file):
+            file = open(battle_lobby_file, 'rb')
+            contents = file.read()
+            file.close()
+            battle_lobby_hash = hashlib.md5(contents).hexdigest()
+
     global imgur
-    if config['IMGUR_USE']:
-        imgur = ImgurClient(config['IMGUR_CLIENT_ID'], config['IMGUR_CLIENT_SECRET'])
-        print_log('ImgurLogin', 1)
-    else:
-        print_log('ImgurNoUsing', 1)
+    if config.image_upload == 1:
+        imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
+        print_log('ImgurLogin')
+
+    replay_check_period = config.replay_check_period
 
     global bot
-    bot = bot.TwitchBot(config['TWITCH_ACCESS_TOKEN'], '!', config['CHANNELS'])
+    bot = bot.TwitchBot(config.twitch_access_token, '!', config.channels)
     bot.run()
 
 
@@ -91,8 +102,8 @@ def get_accounts_list(path):
     return accounts
 
 
-def print_log(string, level, *args):
-    if level <= log_level:
+def print_log(string, *args):
+    if config.use_logs:
         print(strings[string].format(*args))
 
 
@@ -114,6 +125,25 @@ def get_end(number, t):
 # ======================================================================
 # >> Classes
 # ======================================================================
+class Config:
+    def __init__(self, path):
+        self.config = ConfigObj(path)
+
+        self.config.indent_type = '    '
+        self.config.encoding = 'UTF-8'
+        self.config.initial_comment = ["../httshots/httshots.py"]
+
+        for cvar, value in self.config.items():
+            object.__setattr__(self, cvar, self.change_type(value))
+            
+    def change_type(self, value):
+        if type(value) == str:
+            if value.isdigit():
+                value = int(value)
+
+        return value
+
+
 class Strings:
     def __init__(self, path, lang):
         strings = ConfigObj(path)
