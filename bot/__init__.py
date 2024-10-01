@@ -22,7 +22,7 @@ from . import spotify
 # >> TwitchBot
 # ======================================================================
 class TwitchBot(commands.Bot):
-    def __init__(self, token, prefix, channels):
+    def __init__(self, token: str, prefix: str, channels: list):
         super().__init__(token=token, prefix=prefix, initial_channels=channels)
 
     async def event_ready(self):

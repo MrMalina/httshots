@@ -22,7 +22,7 @@ from . import bot, parser, score, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.6.0"
+__version__ = "0.8.0"
 __author__ = "MrMalina"
 
 current_user = getuser()
@@ -32,7 +32,8 @@ hots_accounts_folder = f"c:\\Users\\{current_user}\\OneDrive\\Documents\\Heroes 
 if not path.isdir(hots_accounts_folder):
     hots_accounts_folder = f"c:\\Users\\{current_user}\\Documents\\Heroes of the Storm\\Accounts\\"
 
-battle_lobby_file = r"c:\Users\Pytho\AppData\Local\Temp\Heroes of the Storm\TempWriteReplayP1\replay.server.battlelobby"
+battle_lobby_file = fr"c:\\Users\\{current_user}\AppData\Local\Temp\Heroes of the Storm\TempWriteReplayP1\replay.server.battlelobby"
+tracker_events_file = fr"c:\\Users\\{current_user}\AppData\Local\Temp\Heroes of the Storm\TempWriteReplayP1\replay.tracker.events"
 icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
 data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
@@ -40,7 +41,7 @@ data_info = ConfigObj(current_dir + '\\data\\info.ini')
 data_heroes = ConfigObj(current_dir + '\\data\\heroes.ini')
 
 stream_replays = []
-pregame_info = []
+stream_pregame = []
 streak = [0, 0]
 accounts = None
 strings = None
@@ -56,7 +57,7 @@ herodata = None
 # ======================================================================
 def load():
     global accounts, strings, language, \
-           replay_check_period, herodata, \
+           replay_check_period, hero_data, \
            battle_lobby_hash, config
 
     config = Config(current_dir + '\\config\\config.ini')
@@ -65,8 +66,7 @@ def load():
 
     strings = Strings(current_dir + '\\data\\strings.ini', language)
 
-    with open(current_dir + '\\files\\herodata.json') as f:
-        herodata = json_load(f)
+    hero_data = HeroData(current_dir + '\\files\\herodata.json')
 
     if not config.send_previous_battle_lobby:
         if path.isfile(battle_lobby_file):
@@ -90,7 +90,7 @@ def load():
 # ======================================================================
 # >> Functions
 # ======================================================================
-def get_accounts_list(path):
+def get_accounts_list(path: str):
     accounts = []
 
     folders = listdir(hots_accounts_folder)
@@ -107,7 +107,7 @@ def print_log(string, *args):
         print(strings[string].format(*args))
 
 
-def get_end(number, t):
+def get_end(number: int, t: int):
     inumber = number % 100
     if inumber >= 11 and inumber <=19:
         y = strings[t][2]
@@ -125,9 +125,30 @@ def get_end(number, t):
 # ======================================================================
 # >> Classes
 # ======================================================================
+class HeroData:
+    def __init__(self, file_name):
+        with open(file_name) as f:
+            self.hero_data = json_load(f)
+
+        self.hashtalents = {}
+
+        for hero in self.hero_data.keys():
+            talents = self.hero_data[hero]['talents']
+            self.hashtalents[hero] = {}
+            for x, level in enumerate([1, 4, 7, 10, 13, 16, 20]):
+                for talent in talents['level%s'%level]:
+                    self.hashtalents[hero][talent['nameId']] = [talent['sort'], x]
+
+    def __getitem__(self, key):
+        return self.hero_data[key]
+
+    def get_talent_info_by_name(self, hero_name, talent_name):
+        return self.hashtalents[hero_name][talent_name]
+
+
 class Config:
-    def __init__(self, path):
-        self.config = ConfigObj(path)
+    def __init__(self, file_name):
+        self.config = ConfigObj(file_name)
 
         self.config.indent_type = '    '
         self.config.encoding = 'UTF-8'

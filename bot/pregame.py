@@ -23,6 +23,8 @@ async def send_battle_lobby_info(pre_game):
     
     pre_game.url = url
 
+    httshots.stream_pregame.append(pre_game)
+
     await httshots.bot.channel.send(text)
 
 

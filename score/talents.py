@@ -130,7 +130,7 @@ def add_heroes(image, replay):
         team_level = player.team_level
 
         data_hero_name = httshots.data_heroes['herodata'].get(hero_name, hero_name)
-        info = httshots.herodata[data_hero_name]['talents']
+        info = httshots.hero_data[data_hero_name]['talents']
         talents = player.talents
         start = 500 - 30
         for z in zip([1, 4, 7, 10, 13, 16, 20], talents):

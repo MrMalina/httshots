@@ -32,8 +32,12 @@ class Game:
 
 
 class PreGame:
-    def __init__(self):
-        ...
+    def __init__(self, bl_players):
+        self.players = bl_players
 
-    def add_battle_lobby(self, info):
-        self.players = info
+    def get_player_by_index(self, index):
+        ret = list(filter(lambda x: x.userid == index, self.players))
+        if len(ret):
+            return ret[0]
+        else:
+            return None

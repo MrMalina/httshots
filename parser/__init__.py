@@ -12,7 +12,7 @@ from configobj import ConfigObj
 import heroprotocol
 from heroprotocol import versions
 
-from . import classes, parse, match, battlelobby
+from . import classes, parse, match, battlelobby, ingame
 
 
 # ======================================================================
@@ -23,11 +23,11 @@ def get_replay(replay):
     replay = mpyq.MPQArchive(replay)
 
     contents = replay.header['user_data_header']['content']
-    header = heroprotocol.versions.latest().decode_replay_header(contents)
+    header = versions.latest().decode_replay_header(contents)
 
     baseBuild = header['m_version']['m_baseBuild']
     try:
-        protocol = heroprotocol.versions.build(baseBuild)
+        protocol = versions.build(baseBuild)
     except:
         print('Unsupported base build: %d' % baseBuild, file=sys.stderr)
         return None
@@ -80,14 +80,13 @@ def get_replay_initdata(replay, protocol):
 
 def get_replay_headers(replay):
     contents = replay.header['user_data_header']['content']
-    header = versions.latest().decode_replay_header(contents)
+    header = latest().decode_replay_header(contents)
 
     return header
 
 
 def get_battle_lobby(file):
-    pre_game = match.PreGame()
     info = battlelobby.get_battle_lobby_players(file)
-    pre_game.add_battle_lobby(info)
+    pre_game = match.PreGame(info)
 
     return pre_game

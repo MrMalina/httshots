@@ -4,6 +4,7 @@ from heroprotocol.decoders import BitPackedBuffer
 class BLPlayer:
     def __init__(self, index):
         self.userid = index
+        self.talents = [0, 0, 0, 0, 0, 0, 0]
 
     def __repr__(self):
         return f"{self.battle_tag} ({self.tag}) - party {self.party} - level {self.level}"
