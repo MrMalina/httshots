@@ -105,7 +105,7 @@ def add_games(image, replays):
 
         player = me
 
-        hero_name = httshots.data_heroes['en'][player.hero].lower()
+        hero_name = httshots.hero_names.get_eng_hero(player.hero)
         hero = Image.open(heroes_files+hero_name+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -130,7 +130,7 @@ def add_games(image, replays):
             color = (234,140,140)
             postfix = 'red'
 
-        hero_short_name = httshots.data_heroes['short_names'].get(player.hero, player.hero)
+        hero_short_name = httshots.hero_names.get_short_hero(player.hero)
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
         for mvp in httshots.score.mvps:

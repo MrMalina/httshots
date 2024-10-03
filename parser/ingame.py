@@ -31,6 +31,4 @@ def parse_content(content, pre_game):
     for player in pre_game.players:
         heroes[player.hero] = player.talents
 
-    print(heroes)
-
     return heroes

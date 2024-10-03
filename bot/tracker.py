@@ -19,30 +19,6 @@ def add_command(bot):
     bot.add_command(command)
 
 
-def try_find_hero(hero_name_part):
-    print(hero_name_part)
-    for hero in httshots.data_heroes['names']:
-        if hero.lower().startswith(hero_name_part):
-            print(1, hero)
-            return hero
-
-    for _hero in httshots.data_heroes['rofl_names']:
-        if _hero.lower().startswith(hero_name_part):
-            hero_name_part = httshots.data_heroes['rofl_names'][_hero].lower()
-            break
-
-    for hero in httshots.data_heroes['names']:
-        if hero.lower().startswith(hero_name_part):
-            return hero
-
-    return None
-
-
-def rus_to_eng_hero_name(hero_name):
-    hero = httshots.data_heroes['en'][hero_name]
-    return httshots.data_heroes['herodata'].get(hero, hero)
-
-
 @commands.cooldown(rate=1, per=5, bucket=commands.Bucket.channel)
 async def talent(ctx: commands.Context, hero=None):
     # if len(httshots.stream_replays) == len(httshots.stream_pregame):
@@ -53,7 +29,7 @@ async def talent(ctx: commands.Context, hero=None):
     if hero is None:
         return
 
-    hero = try_find_hero(hero.lower().strip())
+    hero = httshots.hero_names.get_hero_by_part(hero.lower().strip())
     if hero is None:
         text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
         await ctx.send(text)
@@ -73,23 +49,20 @@ async def talent(ctx: commands.Context, hero=None):
             pre_game = httshots.stream_pregame[-1]
 
         heroes = httshots.parser.ingame.parse_content(contents, pre_game)
-        hero_eng = rus_to_eng_hero_name(hero)
+
+        hero_eng = httshots.hero_names.get_eng_hero(hero)
 
         if hero_eng in heroes:
-            print(heroes[hero_eng])
-
             talents = heroes[hero_eng]
 
-            hero_name = httshots.data_heroes['names'].get(hero, [0,0,0,0,0])[0]
-            hero_name_eng = httshots.data_heroes['en'].get(hero, None)
-
-            # print(
-
+            hero_name = httshots.hero_names.get_hero(hero, 0)
+            hero_name_eng = httshots.hero_names.get_eng_hero(hero)
             talents = ''.join(map(str, talents))
             tmp = f" [T{talents},{hero_name_eng}]"
-            icy_hero = httshots.data_heroes['icy'].get(hero, hero_name_eng.lower())
+            icy_hero = httshots.hero_names.get_icy_hero(hero, hero_name_eng.lower())
             icy_url = httshots.icy_url.format(icy_hero, talents.replace('0', '-'))
             text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
+
             await ctx.send(text)
             return
 

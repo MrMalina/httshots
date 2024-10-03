@@ -22,7 +22,7 @@ from . import bot, parser, score, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 __author__ = "MrMalina"
 
 current_user = getuser()
@@ -38,7 +38,6 @@ icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
 data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
 data_info = ConfigObj(current_dir + '\\data\\info.ini')
-data_heroes = ConfigObj(current_dir + '\\data\\heroes.ini')
 
 stream_replays = []
 stream_pregame = []
@@ -58,7 +57,8 @@ herodata = None
 def load():
     global accounts, strings, language, \
            replay_check_period, hero_data, \
-           battle_lobby_hash, config
+           battle_lobby_hash, config, \
+           hero_names
 
     config = Config(current_dir + '\\config\\config.ini')
     accounts = get_accounts_list(hots_accounts_folder)
@@ -67,6 +67,7 @@ def load():
     strings = Strings(current_dir + '\\data\\strings.ini', language)
 
     hero_data = HeroData(current_dir + '\\files\\herodata.json')
+    hero_names = HeroesStrings(current_dir + '\\data\\heroes.ini', config.replay_language)
 
     if not config.send_previous_battle_lobby:
         if path.isfile(battle_lobby_file):
@@ -125,6 +126,64 @@ def get_end(number: int, t: int):
 # ======================================================================
 # >> Classes
 # ======================================================================
+class HeroesStrings:
+    def __init__(self, file_name, replay_lang):
+        self.heroes = ConfigObj(file_name)
+        self.language = replay_lang
+
+        if not replay_lang in self.heroes:
+            self.language = 'ru'
+            print_log('HeroesStringsNoLanguage', replay_lang)
+
+        self.heroes = self.heroes[self.language]
+
+        self.names = self.heroes['names']
+        self.rofl_names = self.heroes.get('rofl_names', {})
+        self.short_names = self.heroes.get('short_names', {})
+        self.data_names = self.heroes.get('data_names', {})
+        self.icy_names = self.heroes.get('icy_names', {})
+
+    def get_eng_hero(self, hero):
+        if self.language == 'en':
+            return self.names[hero][0]
+        else:
+            return self.heroes['en'][hero]
+
+    def get_icy_hero(self, hero, eng_name):
+        return self.icy_names.get(hero, eng_name)
+
+    def get_hero_data(self, hero):
+        return self.data_names.get(hero, hero)
+
+    def get_short_hero(self, hero):
+        return self.short_names.get(hero, hero)
+
+    def get_hero(self, hero, case=None):
+        if self.language == 'en':
+            return self.names[hero][0]
+
+        if case is not None:
+            return self.names[hero][case]
+        return self.names[hero]
+
+    def get_hero_by_part(self, hero_part_name):
+        for hero in self.names:
+            if hero.lower().startswith(hero_name_part):
+                return hero
+
+        for hero in self.rofl_names:
+            if hero.lower().startswith(hero_name_part):
+                hero_name_part = self.rofl_names[hero].lower()
+                break
+
+        for hero in self.names:
+            if hero.lower().startswith(hero_name_part):
+                return hero
+
+    def __getitem__(self, key):
+        return self.heroes[key]
+
+
 class HeroData:
     def __init__(self, file_name):
         with open(file_name) as f:
@@ -232,9 +291,9 @@ class StreamReplay:
             if player.hero.lower().startswith(hero_name_part):
                 return player
 
-        for _hero in data_heroes['rofl_names']:
+        for _hero in hero_names.rofl_names:
             if _hero.lower().startswith(hero_name_part):
-                hero_name_part = data_heroes['rofl_names'][_hero].lower()
+                hero_name_part = hero_names.rofl_names[_hero].lower()
                 break
 
         for player in players:

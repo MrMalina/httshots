@@ -100,7 +100,7 @@ def add_heroes(image, replay):
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
-        hero_name = httshots.data_heroes['en'][player.hero]
+        hero_name = httshots.hero_names.get_eng_hero(player.hero)
         hero = Image.open(heroes_files+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -124,12 +124,12 @@ def add_heroes(image, replay):
             color = (234,140,140)
             postfix = 'red'
 
-        hero_short_name = httshots.data_heroes['short_names'].get(player.hero, player.hero)
+        hero_short_name = httshots.hero_names.get_short_hero(player.hero)
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
         team_level = player.team_level
 
-        data_hero_name = httshots.data_heroes['herodata'].get(hero_name, hero_name)
+        data_hero_name = httshots.hero_names.get_hero_data(hero_name)
         info = httshots.hero_data[data_hero_name]['talents']
         talents = player.talents
         start = 500 - 30

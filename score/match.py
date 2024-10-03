@@ -148,7 +148,7 @@ def add_heroes(image, replay, max_stats):
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
-        hero_name = httshots.data_heroes['en'][player.hero]
+        hero_name = httshots.hero_names.get_eng_hero(player.hero)
         hero = Image.open(heroes_files+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -172,12 +172,7 @@ def add_heroes(image, replay, max_stats):
             color = (234,140,140)
             postfix = 'red'
 
-        # if 'heroes_'+language in httshots.heroes:
-            # hero_short_name = httshots.heroes['heroes_'+language].get(hero_name, hero_name)
-        # elif language == 'ru':
-        hero_short_name = httshots.data_heroes['short_names'].get(player.hero, player.hero)
-        # else:
-            # hero_short_name = hero_name
+        hero_short_name = httshots.hero_names.get_short_hero(player.hero)
 
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 

@@ -60,11 +60,7 @@ async def send_replay_info(replay_name):
 
     # get hero_name
     status = httshots.strings['GameResult%s'%{1:'Win',2:'Lose'}[int(me.result)]]
-    hero_name = httshots.data_heroes['names'].get(me.hero, None)[2]
-    if hero_name is None:
-        for hero_name in httshots.data_heroes['names']:
-            if hero_name.startswith(me.hero):
-                break
+    hero_name = httshots.hero_names.get_hero(me.hero, 1)
     # send match info
 
     if httshots.imgur is not None:
