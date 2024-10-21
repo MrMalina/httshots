@@ -22,7 +22,7 @@ from . import bot, parser, score, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.9.0"
+__version__ = "0.9.0a"
 __author__ = "MrMalina"
 
 current_user = getuser()
