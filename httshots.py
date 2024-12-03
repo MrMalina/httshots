@@ -8,6 +8,7 @@ import hashlib
 from getpass import getuser
 from imgurpython import ImgurClient
 from time import strftime
+from ftplib import FTP
 
 from configobj import ConfigObj
 from os import path, sep, listdir
@@ -15,14 +16,15 @@ from json import load as json_load
 
 
 # Httshots
-from . import bot, parser, score, test
+from . import bot
+from . import parser, visual, test
 
 
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.9.0a"
+__version__ = "0.10.0rc1"
 __author__ = "MrMalina"
 
 current_user = getuser()
@@ -48,8 +50,10 @@ imgur = None
 language = None
 replay_check_period = None
 battle_lobby_hash = None
-herodata = None
-
+tracker_events_hash = None
+# Date, time
+cur_game = [0, 0]
+check_talents_task = None
 
 # ======================================================================
 # >> Load
@@ -58,7 +62,7 @@ def load():
     global accounts, strings, language, \
            replay_check_period, hero_data, \
            battle_lobby_hash, config, \
-           hero_names
+           hero_names, imgur, tracker_events_hash
 
     config = Config(current_dir + '\\config\\config.ini')
     accounts = get_accounts_list(hots_accounts_folder)
@@ -70,22 +74,40 @@ def load():
     hero_names = HeroesStrings(current_dir + '\\data\\heroes.ini', config.replay_language)
 
     if not config.send_previous_battle_lobby:
+        # if check battle_lobby -> all files found
         if path.isfile(battle_lobby_file):
+            # Battle lobby
             file = open(battle_lobby_file, 'rb')
             contents = file.read()
             file.close()
             battle_lobby_hash = hashlib.md5(contents).hexdigest()
 
-    global imgur
+            # Tracker events
+            file = open(tracker_events_file, 'rb')
+            contents = file.read()
+            file.close()
+            tracker_events_hash = hashlib.md5(contents).hexdigest()
+
     if config.image_upload == 1:
         imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
         print_log('ImgurLogin')
 
+    elif config.image_upload == 2:
+        ftp = FTP(config.ftp_ip)
+        ftp.login(config.ftp_login, config.ftp_passwd)
+        ftp.cwd(f'www/{config.site_name}')
+        folders = ftp.nlst()
+        channel = config.ftp_folder
+        if not channel in folders:
+            ftp.mkd(channel)
+        ftp.close()
+        print_log('FTPLogin')
+
     replay_check_period = config.replay_check_period
 
-    global bot
-    bot = bot.TwitchBot(config.twitch_access_token, '!', config.channels)
-    bot.run()
+    global tw_bot
+    tw_bot = bot.TwitchBot(config.twitch_access_token, '!', config.twitch_channel)
+    tw_bot.run()
 
 
 # ======================================================================
@@ -103,8 +125,8 @@ def get_accounts_list(path: str):
     return accounts
 
 
-def print_log(string, *args):
-    if config.use_logs:
+def print_log(string, *args, uwaga=True):
+    if config.use_logs and (not config.only_uwaga_logs or uwaga):
         print(strings[string].format(*args))
 
 
@@ -142,6 +164,7 @@ class HeroesStrings:
         self.short_names = self.heroes.get('short_names', {})
         self.data_names = self.heroes.get('data_names', {})
         self.icy_names = self.heroes.get('icy_names', {})
+        self.data_names_revers = self.heroes.get('data_names_revers', {})
 
     def get_eng_hero(self, hero):
         if self.language == 'en':
@@ -152,8 +175,11 @@ class HeroesStrings:
     def get_icy_hero(self, hero, eng_name):
         return self.icy_names.get(hero, eng_name)
 
-    def get_hero_data(self, hero):
+    def get_data_name(self, hero):
         return self.data_names.get(hero, hero)
+
+    def get_data_revers_name(self, hero):
+        return self.data_names_revers.get(hero, hero)
 
     def get_short_hero(self, hero):
         return self.short_names.get(hero, hero)
@@ -166,17 +192,17 @@ class HeroesStrings:
             return self.names[hero][case]
         return self.names[hero]
 
-    def get_hero_by_part(self, hero_part_name):
-        for hero in self.names:
+    def get_hero_by_part(self, hero_name_part):
+        for hero in self.names.keys():
             if hero.lower().startswith(hero_name_part):
                 return hero
 
-        for hero in self.rofl_names:
+        for hero in self.rofl_names.keys():
             if hero.lower().startswith(hero_name_part):
                 hero_name_part = self.rofl_names[hero].lower()
                 break
 
-        for hero in self.names:
+        for hero in self.names.keys():
             if hero.lower().startswith(hero_name_part):
                 return hero
 

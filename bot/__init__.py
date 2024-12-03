@@ -4,6 +4,7 @@
 
 # Python
 import asyncio
+import time
 
 # twitchio
 import twitchio
@@ -72,9 +73,15 @@ class TwitchBot(commands.Bot):
                         httshots.print_log('FoundNoRankedPreviousGames', replay_name)
 
             if found:
-                url_games = httshots.score.games.create_image(False)
+                # 2024-11-28 21.35.03 Завод Вольской -> 24-11-28 21-35
+                tmp = replay_name.split()
+                httshots.cur_game[0] = tmp[0][2:]
+                httshots.cur_game[1] = tmp[1][:3].replace('.', '-')
+
+                url_games = httshots.visual.games.create_image(False)
                 sreplay.url_games = url_games
                 httshots.print_log('FoundPreviousGames', len(httshots.stream_replays))
+
             else:
                 httshots.print_log('FoundZeroPreviousGames')
 
@@ -95,7 +102,7 @@ class TwitchBot(commands.Bot):
 
     async def event_message(self, message: twitchio.Message):
         if hasattr(message.author, 'name'): 
-            await httshots.bot.handle_commands(message)
+            await httshots.tw_bot.handle_commands(message)
             return
 
     # async def event_command_error(self, ctx, error: Exception) -> None:

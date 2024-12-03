@@ -3,6 +3,9 @@
 # ======================================================================
 
 # Python
+import asyncio
+import copy
+import hashlib
 from twitchio.ext import commands
 import os
 
@@ -14,6 +17,40 @@ from httshots import httshots
 # ======================================================================
 # >> Functions
 # ======================================================================
+old_talents = None
+
+async def start_check_talents():
+    global old_talents
+    while True:
+        file = open(httshots.tracker_events_file, 'rb')
+        contents = file.read()
+        file.close()
+        hash = hashlib.md5(contents).hexdigest()
+
+        if httshots.tracker_events_hash != hash:
+            httshots.tracker_events_hash = hash
+
+            if not len(httshots.stream_pregame):
+                file = open(httshots.battle_lobby_file, 'rb')
+                _contents = file.read()
+                file.close()
+                pre_game = httshots.parser.get_battle_lobby(_contents)
+            else:
+                pre_game = httshots.stream_pregame[-1]
+
+            try:
+                talents = httshots.parser.ingame.parse_content(contents, pre_game)
+                if talents:
+                    if talents != old_talents:
+                        httshots.visual.tracker.create_image(pre_game.players)
+                        old_talents = copy.deepcopy(talents)
+
+            except Exception as e:
+                raise e
+                httshots.print_log('TrackerNoHeroes')
+
+        await asyncio.sleep(10)
+
 def add_command(bot):
     command = commands.Command('talent', talent, aliases=("талант", ))
     bot.add_command(command)
@@ -51,6 +88,7 @@ async def talent(ctx: commands.Context, hero=None):
         heroes = httshots.parser.ingame.parse_content(contents, pre_game)
 
         hero_eng = httshots.hero_names.get_eng_hero(hero)
+        hero_eng = httshots.hero_names.get_data_name(hero_eng)
 
         if hero_eng in heroes:
             talents = heroes[hero_eng]

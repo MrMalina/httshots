@@ -71,16 +71,17 @@ def add_users(image, info):
 
 
 def create_image(info):
-    httshots.print_log('ImgurStartCreateLobbyImage')
+    httshots.print_log('ImgurStartCreateLobbyImage', uwaga=0)
     image = load_background()
 
-    httshots.print_log('ImgurAddUsers')
+    httshots.print_log('ImgurAddUsers', uwaga=0)
     add_users(image, info)
 
-    httshots.print_log('ImgurSaveImageMatch')
+    httshots.print_log('ImgurSaveImageMatch', uwaga=0)
     image.save(screens_files + 'battlelobby.png')
 
     httshots.print_log('ImgurUploadImageMatch')
-    url = httshots.score.upload_image(screens_files + 'battlelobby.png')
+    _name = 'battlelobby.png'
+    url = httshots.visual.upload.upload_image(screens_files + _name, _name)
 
     return url

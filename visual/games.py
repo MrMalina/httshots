@@ -133,9 +133,9 @@ def add_games(image, replays):
         hero_short_name = httshots.hero_names.get_short_hero(player.hero)
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
-        for mvp in httshots.score.mvps:
+        for mvp in httshots.visual.mvps:
             if getattr(player, 'award_'+mvp):
-                tmp = Image.open(mvp_files+f'{httshots.score.mvps[mvp]}_{postfix}.png')
+                tmp = Image.open(mvp_files+f'{httshots.visual.mvps[mvp]}_{postfix}.png')
                 tmp = tmp.resize((48, 48))
                 image.paste(tmp, (270, add+(x*rng)+4), mask=tmp)
 
@@ -195,7 +195,6 @@ def add_other_info(image, replays):
                     wins += 1
                 else:
                     loses += 1
-                
 
     draw = ImageDraw.Draw(image)
     draw.text((125, 700), 'Побед', (185,213,255), font=large_font)
@@ -210,12 +209,12 @@ def add_other_info(image, replays):
 
 def create_image(print_info=True):
     if print_info:
-        httshots.print_log('ImgurStartCreateGamesImage')
-        httshots.print_log('ImgurCreateBorder')
+        httshots.print_log('ImgurStartCreateGamesImage', uwaga=0)
+        httshots.print_log('ImgurCreateBorder', uwaga=0)
     image = create_board()
 
     if print_info:
-        httshots.print_log('ImgurGetReplays')
+        httshots.print_log('ImgurGetReplays', uwaga=0)
     replays = httshots.stream_replays
     if len(replays) <= 10:
         replays = replays[:10]
@@ -223,24 +222,24 @@ def create_image(print_info=True):
         replays = replays[len(replays)-10:len(replays)]
 
     if print_info:
-        httshots.print_log('ImgurCreateIcons')
+        httshots.print_log('ImgurCreateIcons', uwaga=0)
     create_icons(image)
 
     if print_info:
-        httshots.print_log('ImgurAddGames', len(replays))
+        httshots.print_log('ImgurAddGames', len(replays), uwaga=0)
     add_games(image, replays)
 
     if print_info:
-        httshots.print_log('ImgurAddOtherInfo')
+        httshots.print_log('ImgurAddOtherInfo', uwaga=0)
     add_other_info(image, replays)
 
     if print_info:
-        httshots.print_log('ImgurSaveImageGames')
+        httshots.print_log('ImgurSaveImageGames', uwaga=0)
     image.save(screens_files + 'games.png')
 
     if print_info:
         httshots.print_log('ImgurUploadImageGames')
-
-    url = httshots.score.upload_image(screens_files + 'games.png')
+    _name = 'games.png'
+    url = httshots.visual.upload.upload_image(screens_files + _name, _name)
 
     return url

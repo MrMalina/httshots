@@ -16,6 +16,13 @@ from httshots import httshots
 # >> Functions
 # ======================================================================
 async def send_replay_info(replay_name):
+    # Close tracker task if found
+    if httshots.check_talents_task is not None:
+        httshots.check_talents_task.cancel()
+        httshots.check_talents_task = None
+        httshots.bot.tracker.old_talents = None
+        httshots.visual.upload.remove_file('gametalents.png', 'curgame')
+
     language = httshots.language
 
     try:
@@ -63,25 +70,25 @@ async def send_replay_info(replay_name):
     hero_name = httshots.hero_names.get_hero(me.hero, 1)
     # send match info
 
-    if httshots.imgur is not None:
-        url = httshots.score.match.create_image(info)
+    if httshots.config.image_upload:
+        url = httshots.visual.match.create_image(info)
         if url:
             text = 'GameResultInfoWithStats'
         else:
             text = 'GameResultInfo'
-        url_talents = httshots.score.talents.create_image(info)
+        url_talents = httshots.visual.talents.create_image(info)
     else:
         text = 'GameResultInfo'
 
     match_info = httshots.strings[text].format(status, hero_name, info.details.title, url, url_talents)
-    await httshots.bot.channel.send(match_info)
+    await httshots.tw_bot.channel.send(match_info)
 
     # add info to stream_replays
     sreplay = httshots.StreamReplay(replay_name, me, info)
     httshots.stream_replays.append(sreplay)
 
     # Get url games image
-    url_games = httshots.score.games.create_image()
+    url_games = httshots.visual.games.create_image()
 
     sreplay.url_games = url_games
     sreplay.url_match = url
@@ -119,7 +126,7 @@ async def send_replay_info(replay_name):
 
     httshots.print_log('SendReplayInfo')
 
-    await httshots.bot.channel.send(text)
+    await httshots.tw_bot.channel.send(text)
 
 
 async def check_replays():

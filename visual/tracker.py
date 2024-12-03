@@ -80,7 +80,7 @@ def create_icons(image):
 
 
 
-def add_heroes(image, replay):
+def add_heroes(image, players):
     heroes_files = path + "heroes/"
 
     blue = Image.open(score_files+'blue.png')
@@ -99,20 +99,20 @@ def add_heroes(image, replay):
     add = 100
     rng = 60
 
-    for x, player in enumerate(replay.players.values()):
-        hero_name = httshots.hero_names.get_eng_hero(player.hero)
+    _gameloop = 0
+    for x, player in enumerate(players):
+        hero_name = httshots.hero_names.get_data_revers_name(player.hero)
+        # hero_name = httshots.hero_names.get_eng_hero(hero_name)
         hero = Image.open(heroes_files+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
-
-        team_id = player.team_id
-        id = player.userid
+        team_id = player.userid > 4
 
         if team_id == 0:
             image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
             image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), player.name, (105,156,249), font=font)
+            draw.text((155, add+(x*rng)+30), player.battle_tag, (105,156,249), font=font)
             color = (105,156,249)
             postfix = 'blue'
 
@@ -120,36 +120,36 @@ def add_heroes(image, replay):
             image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
             image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), player.name, (234,140,140), font=font)
+            draw.text((155, add+(x*rng)+30), player.battle_tag, (234,140,140), font=font)
             color = (234,140,140)
             postfix = 'red'
 
         hero_short_name = httshots.hero_names.get_short_hero(player.hero)
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
-        team_level = player.team_level
+        # team_level = player.team_level
 
-        data_hero_name = httshots.hero_names.get_hero_data(hero_name)
+        data_hero_name = httshots.hero_names.get_data_name(hero_name)
         info = httshots.hero_data[data_hero_name]['talents']
         talents = player.talents
         start = 500 - 30
         for z in zip([1, 4, 7, 10, 13, 16, 20], talents):
             level = z[0]
             talent = z[1]
-            if level <= team_level:
-                if talent == 0:
-                    image.paste(talent_unselected, (start+13, add+(x*rng+7)), mask=talent_unselected)
-                else:
-                    icon = info['level%s'%level][talent-1]['icon']
-                    icon = Image.open(talents_files+icon)
-                    icon = icon.resize((46, 46))
-                    image.paste(icon, (start+11, add+(x*rng+6)))
-
+            # if level <= team_level:
+            if talent == 0:
+                image.paste(talent_unselected, (start+13, add+(x*rng+7)), mask=talent_unselected)
             else:
-                image.paste(talent_bg, (start+11, add+(x*rng+6)), mask=talent_bg)
-                image.paste(talent_unavailable, (start, add+(x*rng-6)), mask=talent_unavailable)
-                start += 100
-                continue
+                icon = info['level%s'%level][talent-1]['icon']
+                icon = Image.open(talents_files+icon)
+                icon = icon.resize((46, 46))
+                image.paste(icon, (start+11, add+(x*rng+6)))
+
+            # else:
+                # image.paste(talent_bg, (start+11, add+(x*rng+6)), mask=talent_bg)
+                # image.paste(talent_unavailable, (start, add+(x*rng-6)), mask=talent_unavailable)
+                # start += 100
+                # continue
 
             if level != 10:
                 image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
@@ -158,57 +158,22 @@ def add_heroes(image, replay):
 
             start += 100
 
+        if player._gameloop > _gameloop:
+            _gameloop = player._gameloop
 
-def add_other_info(image, replay):
-    redkills = Image.open(stats_files+'redkills.png')
-    bluekills = Image.open(stats_files+'bluekills.png')
-    language = httshots.language
-
-    red_kills = 0
-    blue_kills = 0
-    for player in replay.players.values():
-        if player.team_id == 0:
-            blue_level = player.team_level
-        else:
-            red_level = player.team_level
-
-    player = list(replay.players.values())[0]
-    time = player.time
-    
-    draw = ImageDraw.Draw(image)
     if language == 'RU':
-        coords = (80, 710)
+        coords = (555, 720)
     else:
-        coords = (105, 710)
+        coords = (580, 720)
 
-    draw.text(coords, httshots.strings['ImageBlueTeam'], (185,213,255), font=large_font)
-    draw.text((105, 740), httshots.strings('ImageLevelTeam', blue_level), (39,153,165), font=large_font)
-
-    draw.text((1350-250, 710), httshots.strings['ImageRedTeam'], (234,140,140), font=large_font)
-    draw.text((1350-250, 740), httshots.strings('ImageLevelTeam', red_level), (175,76,105), font=large_font)
-
-    draw.text((555, 720), httshots.strings['ImageMatchDuration'], (138,166,251), font=large_font)
-    draw.text((610, 745), f"{time//60}:{time%60}", (255, 255, 255), font=big_font)
-
-    if player.result == 1:
-        if player.team_id == 0:
-            text = httshots.strings['ImageBlueWin']
-            color = (39,153,165)
-        else:
-            text = httshots.strings['ImageRedWin']
-            color = (175,76,105)
-    else:
-        if player.team_id == 0:
-            text = httshots.strings['ImageRedWin']
-            color = (175,76,105)
-        else:
-            text = httshots.strings['ImageBlueWin']
-            color = (39,153,165)
-
-    draw.text((40, 50), text, color, font=large_font)
+    _time = int((_gameloop - 610) / 16)
+    draw.text(coords, httshots.strings['ImageMatchDuration'], (138,166,251), font=large_font)
+    draw.text((610, 745), f"{_time//60}:{_time%60}", (255, 255, 255), font=big_font)
 
 
-def create_image(replay):
+
+
+def create_image(players):
     httshots.print_log('ImgurStartCreateTalentsImage')
     httshots.print_log('ImgurCreateBorder')
     image = create_board()
@@ -217,15 +182,14 @@ def create_image(replay):
     create_icons(image)
 
     httshots.print_log('ImgurAddHeroes')
-    add_heroes(image, replay)
-
-    httshots.print_log('ImgurAddOtherInfo')
-    add_other_info(image, replay)
+    add_heroes(image, players)
 
     httshots.print_log('ImgurSaveImageMatch')
-    image.save(screens_files + 'talents.png')
+    image.save(screens_files + 'gametalents.png')
 
     httshots.print_log('ImgurUploadImageMatch')
-    url = httshots.score.upload_image(screens_files + 'talents.png')
+    _name = 'gametalents.png'
+    url = httshots.visual.upload.upload_image(screens_files + _name,
+                                 _name, True, 'curgame')
 
     return url

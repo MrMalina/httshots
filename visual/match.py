@@ -140,6 +140,7 @@ def add_heroes(image, replay, max_stats):
     blue = Image.open(score_files+'blue.png')
     bplayer = Image.open(score_files+'playerblue.png').convert('RGBA')
     red = Image.open(score_files+'red.png')
+    white = Image.open(score_files+'white.png')
     rplayer = Image.open(score_files+'playerred.png').convert('RGBA')
     glow = Image.open(score_files+'portrait.png').convert('RGBA')
     language = httshots.language
@@ -158,6 +159,7 @@ def add_heroes(image, replay, max_stats):
 
         if team_id == 0:
             image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
+            # image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
             draw.text((155, add+(x*rng)+30), player.name, (105,156,249), font=font)
@@ -166,6 +168,7 @@ def add_heroes(image, replay, max_stats):
 
         else:
             image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
+            # image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
             draw.text((155, add+(x*rng)+30), player.name, (234,140,140), font=font)
@@ -176,9 +179,9 @@ def add_heroes(image, replay, max_stats):
 
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=font)
 
-        for mvp in httshots.score.mvps:
+        for mvp in httshots.visual.mvps:
             if getattr(player, 'award_'+mvp):
-                tmp = Image.open(mvp_files+f'{httshots.score.mvps[mvp]}_{postfix}.png')
+                tmp = Image.open(mvp_files+f'{httshots.visual.mvps[mvp]}_{postfix}.png')
                 tmp = tmp.resize((48, 48))
                 image.paste(tmp, (270, add+(x*rng)+4), mask=tmp)
 
@@ -333,26 +336,27 @@ def add_other_info(image, replay):
 
 
 def create_image(replay):
-    httshots.print_log('ImgurStartCreateMatchImage')
-    httshots.print_log('ImgurLoadBackGround')
+    httshots.print_log('ImgurStartCreateMatchImage', uwaga=0)
+    httshots.print_log('ImgurLoadBackGround', uwaga=0)
     image = load_background()
 
-    httshots.print_log('ImgurCreateIcons')
+    httshots.print_log('ImgurCreateIcons', uwaga=0)
     create_icons(image)
 
-    httshots.print_log('ImgurGetMaxStats')
+    httshots.print_log('ImgurGetMaxStats', uwaga=0)
     max_stats = get_max_stats(replay)
 
-    httshots.print_log('ImgurAddHeroes')
+    httshots.print_log('ImgurAddHeroes', uwaga=0)
     add_heroes(image, replay, max_stats)
 
-    httshots.print_log('ImgurAddOtherInfo')
+    httshots.print_log('ImgurAddOtherInfo', uwaga=0)
     add_other_info(image, replay)
 
-    httshots.print_log('ImgurSaveImageMatch')
+    httshots.print_log('ImgurSaveImageMatch', uwaga=0)
     image.save(screens_files + 'match.png')
 
     httshots.print_log('ImgurUploadImageMatch')
-    url = httshots.score.upload_image(screens_files + 'match.png')
+    _name = 'match.png'
+    url = httshots.visual.upload.upload_image(screens_files + _name, _name)
 
     return url

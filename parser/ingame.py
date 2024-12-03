@@ -11,6 +11,7 @@ def parse_content(content, pre_game):
                 hero = event['m_stringData'][0]['m_value'].decode('utf8')
                 hero = hero[4:]
                 player = pre_game.get_player_by_index(index-1)
+                player._gameloop = 0
                 player.hero = hero
                 continue
 
@@ -18,6 +19,7 @@ def parse_content(content, pre_game):
                 index = event['m_intData'][0]['m_value']
                 talent = event['m_stringData'][0]['m_value'].decode('utf8')
                 player = pre_game.get_player_by_index(index-1)
+                player._gameloop = event['_gameloop']
                 info = httshots.hero_data.get_talent_info_by_name(player.hero, talent)
                 player.talents[info[1]] = info[0]
                 continue
@@ -29,6 +31,7 @@ def parse_content(content, pre_game):
 
     heroes = {}
     for player in pre_game.players:
-        heroes[player.hero] = player.talents
+        if hasattr(player, 'hero'):
+            heroes[player.hero] = player.talents
 
     return heroes
