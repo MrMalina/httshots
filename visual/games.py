@@ -69,7 +69,7 @@ def create_board():
 
 def create_icons(image):
     draw = ImageDraw.Draw(image)
-    draw.text((360, 50), "Карта", (255,255,255), font=font)
+    draw.text((380, 50), "Карта", (255,255,255), font=font)
     draw.text((675, 50), "Сторона", (255,255,255), font=font)
     draw.text((825, 50), "Результат", (255,255,255), font=font)
     draw.text((975, 50), "Длительность", (255,255,255), font=font)
@@ -137,9 +137,9 @@ def add_games(image, replays):
             if getattr(player, 'award_'+mvp):
                 tmp = Image.open(mvp_files+f'{httshots.visual.mvps[mvp]}_{postfix}.png')
                 tmp = tmp.resize((48, 48))
-                image.paste(tmp, (270, add+(x*rng)+4), mask=tmp)
+                image.paste(tmp, (320, add+(x*rng)+4), mask=tmp)
 
-        draw.text((360, add+(x*rng)+20), replay.info.details.title, color, font=font)
+        draw.text((380, add+(x*rng)+20), replay.info.details.title, color, font=font)
 
         if team_id == 0:
             draw.text((675, add+(x*rng)+20), "Синяя", color, font=font)
@@ -151,7 +151,8 @@ def add_games(image, replays):
         else:
             draw.text((825, add+(x*rng)+20), "Поражение", color, font=font)
 
-        draw.text((1000, add+(x*rng)+20), f"{time//60}:{time%60}", color, font=font)
+        draw.text((1000, add+(x*rng)+20), f"{str(time//60).zfill(2)}:{str(time%60).zfill(2)}", 
+                  color, font=font)
 
         solo_kill = str(player.solo_kill)
         shift = get_shift(solo_kill)
@@ -209,12 +210,12 @@ def add_other_info(image, replays):
 
 def create_image(print_info=True):
     if print_info:
-        httshots.print_log('ImgurStartCreateGamesImage', uwaga=0)
-        httshots.print_log('ImgurCreateBorder', uwaga=0)
+        httshots.print_log('ImageStartCreateGamesImage', uwaga=0)
+        httshots.print_log('ImageCreateBorder', uwaga=0)
     image = create_board()
 
     if print_info:
-        httshots.print_log('ImgurGetReplays', uwaga=0)
+        httshots.print_log('ImageGetReplays', uwaga=0)
     replays = httshots.stream_replays
     if len(replays) <= 10:
         replays = replays[:10]
@@ -222,23 +223,23 @@ def create_image(print_info=True):
         replays = replays[len(replays)-10:len(replays)]
 
     if print_info:
-        httshots.print_log('ImgurCreateIcons', uwaga=0)
+        httshots.print_log('ImageCreateIcons', uwaga=0)
     create_icons(image)
 
     if print_info:
-        httshots.print_log('ImgurAddGames', len(replays), uwaga=0)
+        httshots.print_log('ImageAddGames', len(replays), uwaga=0)
     add_games(image, replays)
 
     if print_info:
-        httshots.print_log('ImgurAddOtherInfo', uwaga=0)
+        httshots.print_log('ImageAddOtherInfo', uwaga=0)
     add_other_info(image, replays)
 
     if print_info:
-        httshots.print_log('ImgurSaveImageGames', uwaga=0)
+        httshots.print_log('ImageSaveImageGames', uwaga=0)
     image.save(screens_files + 'games.png')
 
     if print_info:
-        httshots.print_log('ImgurUploadImageGames')
+        httshots.print_log('ImageUploadGames')
     _name = 'games.png'
     url = httshots.visual.upload.upload_image(screens_files + _name, _name)
 

@@ -102,7 +102,6 @@ def add_heroes(image, players):
     _gameloop = 0
     for x, player in enumerate(players):
         hero_name = httshots.hero_names.get_data_revers_name(player.hero)
-        # hero_name = httshots.hero_names.get_eng_hero(hero_name)
         hero = Image.open(heroes_files+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -138,56 +137,59 @@ def add_heroes(image, players):
             talent = z[1]
             # if level <= team_level:
             if talent == 0:
-                image.paste(talent_unselected, (start+13, add+(x*rng+7)), mask=talent_unselected)
+                image.paste(talent_bg, (start+11, add+(x*rng+6)), mask=talent_bg)
+                # image.paste(talent_unavailable, (start, add+(x*rng-6)), mask=talent_unavailable)
+                start += 100
+                continue
             else:
                 icon = info['level%s'%level][talent-1]['icon']
                 icon = Image.open(talents_files+icon)
                 icon = icon.resize((46, 46))
                 image.paste(icon, (start+11, add+(x*rng+6)))
 
-            # else:
-                # image.paste(talent_bg, (start+11, add+(x*rng+6)), mask=talent_bg)
-                # image.paste(talent_unavailable, (start, add+(x*rng-6)), mask=talent_unavailable)
-                # start += 100
-                # continue
-
-            if level != 10:
-                image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+            if data_hero_name != 'Varian':
+                if level != 10:
+                    image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+                else:
+                    image.paste(talent_available_ult, (start, add+(x*rng-6)), mask=talent_available_ult)
             else:
-                image.paste(talent_available_ult, (start, add+(x*rng - 6)), mask=talent_available_ult)
+                if level != 4:
+                    image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+                else:
+                    image.paste(talent_available_ult, (start, add+(x*rng-6)), mask=talent_available_ult)
 
             start += 100
 
         if player._gameloop > _gameloop:
             _gameloop = player._gameloop
 
-    if language == 'RU':
-        coords = (555, 720)
-    else:
-        coords = (580, 720)
-
     _time = int((_gameloop - 610) / 16)
-    draw.text(coords, httshots.strings['ImageMatchDuration'], (138,166,251), font=large_font)
-    draw.text((610, 745), f"{_time//60}:{_time%60}", (255, 255, 255), font=big_font)
+    if _time < 0:
+        _time = 0
 
+    _time = f"{str(_time//60).zfill(2)}:{str(_time%60).zfill(2)}"
 
+    draw.text((580, 720), httshots.strings['ImageTrackerTime'], (138,166,251), font=large_font)
+    draw.text((610, 745), _time, (255, 255, 255), font=big_font)
+
+    return _time
 
 
 def create_image(players):
-    httshots.print_log('ImgurStartCreateTalentsImage')
-    httshots.print_log('ImgurCreateBorder')
+    httshots.print_log('ImageStartCreateTalentsImage', uwaga=0)
+    httshots.print_log('ImageCreateBorder', uwaga=0)
     image = create_board()
 
-    httshots.print_log('ImgurCreateIcons')
+    httshots.print_log('ImageCreateIcons', uwaga=0)
     create_icons(image)
 
-    httshots.print_log('ImgurAddHeroes')
-    add_heroes(image, players)
+    httshots.print_log('ImageAddHeroes', uwaga=0)
+    tmp = add_heroes(image, players)
 
-    httshots.print_log('ImgurSaveImageMatch')
+    httshots.print_log('ImageSaveImageMatch', uwaga=0)
     image.save(screens_files + 'gametalents.png')
 
-    httshots.print_log('ImgurUploadImageMatch')
+    httshots.print_log('ImageUploadTracker', tmp)
     _name = 'gametalents.png'
     url = httshots.visual.upload.upload_image(screens_files + _name,
                                  _name, True, 'curgame')

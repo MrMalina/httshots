@@ -22,7 +22,7 @@ old_talents = None
 async def start_check_talents():
     global old_talents
     while True:
-        file = open(httshots.tracker_events_file, 'rb')
+        file = open(httshots.config.tracker_events_file, 'rb')
         contents = file.read()
         file.close()
         hash = hashlib.md5(contents).hexdigest()
@@ -31,18 +31,28 @@ async def start_check_talents():
             httshots.tracker_events_hash = hash
 
             if not len(httshots.stream_pregame):
-                file = open(httshots.battle_lobby_file, 'rb')
+                file = open(httshots.config.battle_lobby_file, 'rb')
                 _contents = file.read()
                 file.close()
                 pre_game = httshots.parser.get_battle_lobby(_contents)
             else:
                 pre_game = httshots.stream_pregame[-1]
 
+            # Возможно, излишне
             try:
                 talents = httshots.parser.ingame.parse_content(contents, pre_game)
                 if talents:
+                    # Нет смысла генерировать изображение, если таланты не поменялись
                     if talents != old_talents:
-                        httshots.visual.tracker.create_image(pre_game.players)
+                        check = True
+                        # Ситуация, когда появились надписи о героях, но не у всех игроков
+                        for player in pre_game.players:
+                            if not hasattr(player, 'hero'):
+                                check = False
+                                break
+
+                        if check:
+                            httshots.visual.tracker.create_image(pre_game.players)
                         old_talents = copy.deepcopy(talents)
 
             except Exception as e:
@@ -50,6 +60,7 @@ async def start_check_talents():
                 httshots.print_log('TrackerNoHeroes')
 
         await asyncio.sleep(10)
+
 
 def add_command(bot):
     command = commands.Command('talent', talent, aliases=("талант", ))
@@ -72,13 +83,13 @@ async def talent(ctx: commands.Context, hero=None):
         await ctx.send(text)
         return
 
-    if os.path.isfile(httshots.tracker_events_file):
-        file = open(httshots.tracker_events_file, 'rb')
+    if os.path.isfile(httshots.config.tracker_events_file):
+        file = open(httshots.config.tracker_events_file, 'rb')
         contents = file.read()
         file.close()
 
         if not len(httshots.stream_pregame):
-            file = open(httshots.battle_lobby_file, 'rb')
+            file = open(httshots.config.battle_lobby_file, 'rb')
             _contents = file.read()
             file.close()
             pre_game = httshots.parser.get_battle_lobby(_contents)

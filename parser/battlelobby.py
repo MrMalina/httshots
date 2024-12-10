@@ -23,8 +23,9 @@ def get_battle_lobby_players(contents):
         buffer.read_bits(16)
         buffer.read_aligned_bytes(stringLength)
 
+    # s2m error
     if buffer.read_bits(8) != s2mArrayLength:
-        print(322)
+        return None
 
     for _ in range(s2mArrayLength):
         buffer.read_aligned_bytes(4)
@@ -45,8 +46,9 @@ def get_battle_lobby_players(contents):
     for _ in range(s2mArrayLength):
         buffer.byte_align()
         a = buffer.read_aligned_bytes(4)
+        # s2mh error
         if a != b"s2mh":
-            print(322)
+            return None
         buffer.read_bits(2*8)
         buffer.read_aligned_bytes(2)
         buffer.read_bits(32*8)
@@ -59,8 +61,9 @@ def get_battle_lobby_players(contents):
         buffer.read_aligned_bytes(8)
 
     a = buffer.read_bits(32)
+    # collection_size error
     if a != collectionSize:
-        print('WAAWA')
+        return None
 
     for _ in range(collectionSize):
         for _ in range(16):
@@ -89,8 +92,10 @@ def get_battle_lobby_players(contents):
         buffer.read_bits(8) # region
         program_id = buffer.read_bits(32)
         program_id = program_id.to_bytes((program_id.bit_length() + 7) // 8, byteorder='big')
+
+        # unknown game
         if program_id != b'Hero':
-            print('GG')
+            return None
             
         buffer.read_bits(32) # realm
         buffer.read_bits(64) # id
@@ -98,8 +103,11 @@ def get_battle_lobby_players(contents):
         buffer.read_bits(8) # region
         program_id = buffer.read_bits(32)
         program_id = program_id.to_bytes((program_id.bit_length() + 7) // 8, byteorder='big')
+
+        # unknown game
         if program_id != b'Hero':
-            print('GG')
+            return None
+
         buffer.read_bits(32) # realm
 
         id = buffer.read_bits(7) + 2
@@ -119,21 +127,28 @@ def get_battle_lobby_players(contents):
         if not bit:
             buffer.read_bits(12)
             buffer.read_bits(1)
+
         blplayer.has_silence_penalty = buffer.read_bits(1)
         buffer.read_bits(1)
         blplayer.has_voice_silence_penalty = buffer.read_bits(1)
         blplayer.is_blizzard_staff = buffer.read_bits(1)
+
+        # player party id
         if buffer.read_bits(1):
             blplayer.party = buffer.read_bits(32) + buffer.read_bits(32)
         else:
             blplayer.party = 0
+
         buffer.read_bits(1)
         lenght = buffer.read_bits(7)
         buffer.byte_align()
         battle_tag = buffer.read_aligned_bytes(lenght)
         blplayer.battle_tag = battle_tag.decode('UTF8')
+
+        # battle_tag lenght error
         if len(battle_tag) == 2:
-            print(322)
+            return None
+
         level = buffer.read_bits(32)
         blplayer.level = level
         blplayer.has_active_boost = buffer.read_bits(1)

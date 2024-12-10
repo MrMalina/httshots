@@ -23,8 +23,6 @@ async def send_replay_info(replay_name):
         httshots.bot.tracker.old_talents = None
         httshots.visual.upload.remove_file('gametalents.png', 'curgame')
 
-    language = httshots.language
-
     try:
         replay, protocol = httshots.parser.get_replay(replay_name)
         info = httshots.parser.get_match_info(replay, protocol)
@@ -134,6 +132,8 @@ async def check_replays():
         # new_replay = acc.replays_path + list(acc.get_replays())[0]
         new_replay = acc.check_new_replays()
         if new_replay:
-            httshots.print_log('NewReplay', new_replay, acc.id)
+            tmp = new_replay.split('/')
+            name = f".../{acc.id}/.../{tmp[-1][11:-12]}"
+            httshots.print_log('NewReplay', name)
             await send_replay_info(new_replay)
             break

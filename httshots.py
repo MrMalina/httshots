@@ -9,8 +9,9 @@ from getpass import getuser
 from imgurpython import ImgurClient
 from time import strftime
 from ftplib import FTP
+from PIL import ImageFont
 
-from configobj import ConfigObj
+from configobj import ConfigObj, Section
 from os import path, sep, listdir
 from json import load as json_load
 
@@ -24,18 +25,9 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.10.0rc1"
+__version__ = "0.10.0rc3"
 __author__ = "MrMalina"
 
-current_user = getuser()
-
-# default hots folder
-hots_accounts_folder = f"c:\\Users\\{current_user}\\OneDrive\\Documents\\Heroes of the Storm\\Accounts\\"
-if not path.isdir(hots_accounts_folder):
-    hots_accounts_folder = f"c:\\Users\\{current_user}\\Documents\\Heroes of the Storm\\Accounts\\"
-
-battle_lobby_file = fr"c:\\Users\\{current_user}\AppData\Local\Temp\Heroes of the Storm\TempWriteReplayP1\replay.server.battlelobby"
-tracker_events_file = fr"c:\\Users\\{current_user}\AppData\Local\Temp\Heroes of the Storm\TempWriteReplayP1\replay.tracker.events"
 icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
 data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
@@ -54,6 +46,7 @@ tracker_events_hash = None
 # Date, time
 cur_game = [0, 0]
 check_talents_task = None
+config = None
 
 # ======================================================================
 # >> Load
@@ -65,43 +58,78 @@ def load():
            hero_names, imgur, tracker_events_hash
 
     config = Config(current_dir + '\\config\\config.ini')
-    accounts = get_accounts_list(hots_accounts_folder)
     language = config.language
-
     strings = Strings(current_dir + '\\data\\strings.ini', language)
+
+    current_user = getuser()
+
+    check = False
+    for folder in config.folder_accounts:
+        folder = folder.format(current_user)
+        if path.isdir(folder):
+            check = True
+            config.hots_folder = folder
+            print_log('FindHoTSFolder', folder)
+            break
+    if not check:
+        print_log('ErrorFindHoTSFolder')
+        return
+
+    tmp = config.folder_hots_temp.format(current_user)
+    config.battle_lobby_file = tmp + 'replay.server.battlelobby'
+    config.tracker_events_file = tmp + 'replay.tracker.events'
+
+    accounts = get_accounts_list(config.hots_folder)
 
     hero_data = HeroData(current_dir + '\\files\\herodata.json')
     hero_names = HeroesStrings(current_dir + '\\data\\heroes.ini', config.replay_language)
 
     if not config.send_previous_battle_lobby:
         # if check battle_lobby -> all files found
-        if path.isfile(battle_lobby_file):
+        if path.isfile(config.battle_lobby_file):
             # Battle lobby
-            file = open(battle_lobby_file, 'rb')
+            file = open(config.battle_lobby_file, 'rb')
             contents = file.read()
             file.close()
             battle_lobby_hash = hashlib.md5(contents).hexdigest()
 
             # Tracker events
-            file = open(tracker_events_file, 'rb')
+            file = open(config.tracker_events_file, 'rb')
             contents = file.read()
             file.close()
             tracker_events_hash = hashlib.md5(contents).hexdigest()
+
+    # Visual
+    tmp = current_dir + '/files/'
+    config.vs_path = tmp
+    config.vs_bg_path = tmp + "background/"
+    config.vs_stats_path = tmp + "stats/"
+    config.vs_score_path = tmp + "scorescreen/"
+    config.vs_ttf_path = tmp + "ttf/"
+    config.vs_screens_path = tmp + "screens/"
+    config.vs_border_path = tmp + "border/"
+    config.vs_heroes_path = tmp + "heroes/"
+    config.vs_talents_path = tmp + "talents/"
+    config.vs_mvp_path = tmp + "mvp/"
+
+    config.vs_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 16)
+    config.vs_large_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 24)
+    config.vs_big_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 46)
+
 
     if config.image_upload == 1:
         imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
         print_log('ImgurLogin')
 
     elif config.image_upload == 2:
-        ftp = FTP(config.ftp_ip)
-        ftp.login(config.ftp_login, config.ftp_passwd)
-        ftp.cwd(f'www/{config.site_name}')
-        folders = ftp.nlst()
-        channel = config.ftp_folder
-        if not channel in folders:
-            ftp.mkd(channel)
-        ftp.close()
-        print_log('FTPLogin')
+        try:
+            ftp = FTP(config.ftp_ip)
+            ftp.login(config.ftp_login, config.ftp_passwd)
+            ftp.close()
+            print_log('FTPLogin', config.site_name)
+        except:
+            print_log('FTPLoginError', config.site_name)
+            return
 
     replay_check_period = config.replay_check_period
 
@@ -116,7 +144,7 @@ def load():
 def get_accounts_list(path: str):
     accounts = []
 
-    folders = listdir(hots_accounts_folder)
+    folders = listdir(config.hots_folder)
 
     for folder in folders:
         id = folder.split(sep)[-1]
@@ -240,8 +268,12 @@ class Config:
         self.config.initial_comment = ["../httshots/httshots.py"]
 
         for cvar, value in self.config.items():
-            object.__setattr__(self, cvar, self.change_type(value))
-            
+            if type(value) == Section:
+                for var, val in value.items():
+                    object.__setattr__(self, cvar+'_'+var, self.change_type(val))
+            else:
+                object.__setattr__(self, cvar, self.change_type(value))
+
     def change_type(self, value):
         if type(value) == str:
             if value.isdigit():
@@ -270,10 +302,10 @@ class Strings:
 class Account:
     def __init__(self, id):
         self.id = id
-        self.path = hots_accounts_folder + str(id) + "\\"
+        self.path = config.hots_folder + str(id) + "/"
 
         self.get_unique_folder()
-        self.replays_path = self.path + self.unique_folder + "\\Replays\Multiplayer\\"
+        self.replays_path = self.path + self.unique_folder + "/Replays/Multiplayer/"
 
         self.replays = self.get_replays()
 

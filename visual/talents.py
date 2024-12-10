@@ -151,10 +151,16 @@ def add_heroes(image, replay):
                 start += 100
                 continue
 
-            if level != 10:
-                image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+            if data_hero_name != 'Varian':
+                if level != 10:
+                    image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+                else:
+                    image.paste(talent_available_ult, (start, add+(x*rng - 6)), mask=talent_available_ult)
             else:
-                image.paste(talent_available_ult, (start, add+(x*rng - 6)), mask=talent_available_ult)
+                if level != 4:
+                    image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+                else:
+                    image.paste(talent_available_ult, (start, add+(x*rng - 6)), mask=talent_available_ult)
 
             start += 100
 
@@ -174,9 +180,9 @@ def add_other_info(image, replay):
 
     player = list(replay.players.values())[0]
     time = player.time
-    
+
     draw = ImageDraw.Draw(image)
-    if language == 'RU':
+    if language == 'ru':
         coords = (80, 710)
     else:
         coords = (105, 710)
@@ -187,8 +193,8 @@ def add_other_info(image, replay):
     draw.text((1350-250, 710), httshots.strings['ImageRedTeam'], (234,140,140), font=large_font)
     draw.text((1350-250, 740), httshots.strings('ImageLevelTeam', red_level), (175,76,105), font=large_font)
 
-    draw.text((555, 720), httshots.strings['ImageMatchDuration'], (138,166,251), font=large_font)
-    draw.text((610, 745), f"{time//60}:{time%60}", (255, 255, 255), font=big_font)
+    draw.text((550, 720), httshots.strings['ImageMatchDuration'], (138,166,251), font=large_font)
+    draw.text((610, 745), f"{str(time//60).zfill(2)}:{str(time%60).zfill(2)}", (255, 255, 255), font=big_font)
 
     if player.result == 1:
         if player.team_id == 0:
@@ -209,23 +215,23 @@ def add_other_info(image, replay):
 
 
 def create_image(replay):
-    httshots.print_log('ImgurStartCreateTalentsImage', uwaga=0)
-    httshots.print_log('ImgurCreateBorder', uwaga=0)
+    httshots.print_log('ImageStartCreateTalentsImage', uwaga=0)
+    httshots.print_log('ImageCreateBorder', uwaga=0)
     image = create_board()
 
-    httshots.print_log('ImgurCreateIcons', uwaga=0)
+    httshots.print_log('ImageCreateIcons', uwaga=0)
     create_icons(image)
 
-    httshots.print_log('ImgurAddHeroes', uwaga=0)
+    httshots.print_log('ImageAddHeroes', uwaga=0)
     add_heroes(image, replay)
 
-    httshots.print_log('ImgurAddOtherInfo', uwaga=0)
+    httshots.print_log('ImageAddOtherInfo', uwaga=0)
     add_other_info(image, replay)
 
-    httshots.print_log('ImgurSaveImageMatch', uwaga=0)
+    httshots.print_log('ImageSaveImageMatch', uwaga=0)
     image.save(screens_files + 'talents.png')
 
-    httshots.print_log('ImgurUploadImageMatch', uwaga=0)
+    httshots.print_log('ImageUploadTalents')
     _name = 'talents.png'
     url = httshots.visual.upload.upload_image(screens_files + _name, _name)
 

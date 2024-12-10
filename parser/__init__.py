@@ -60,7 +60,6 @@ def get_match_info(replay, protocol):
             info.append(event)
     game.add_lobby(info)
 
-
     return game
 
 

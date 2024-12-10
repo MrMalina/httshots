@@ -26,10 +26,11 @@ def upload_image(full_name, file_name, replace_file=False, ftp_unique_path=False
     elif upl == 2:
         ftp = FTP(httshots.config.ftp_ip)
         ftp.login(httshots.config.ftp_login, httshots.config.ftp_passwd)
+        real_pwd = f"www/{httshots.config.site_name}/{httshots.config.ftp_folder}"
         if not ftp_unique_path:
             pwd = prepare_ftp_folders(ftp)
         else:
-            ftp.cwd(f"www/{httshots.config.site_name}/{httshots.config.ftp_folder}/{ftp_unique_path}")
+            ftp.cwd(ftp_unique_path)
             pwd = ftp.pwd()
         if replace_file:
             folders = ftp.nlst()
@@ -37,14 +38,14 @@ def upload_image(full_name, file_name, replace_file=False, ftp_unique_path=False
                 ftp.voidcmd('DELE '+file_name)
         with open(full_name, 'rb') as upload_file:
             ftp.storbinary('STOR '+file_name, upload_file)
-        tmp = '/'.join(pwd.split('/')[2:])
+        real_pwd += pwd
+        tmp = '/'.join(real_pwd.split('/')[1:])
         url = f'{tmp}/{file_name}'
     return url
 
 
 def prepare_ftp_folders(ftp):
     cur_game = httshots.cur_game
-    ftp.cwd(f"www/{httshots.config.site_name}/{httshots.config.ftp_folder}")
     folders = ftp.nlst()
     if not cur_game[0] in folders:
         ftp.mkd(cur_game[0])
@@ -62,7 +63,7 @@ def remove_file(file_name, ftp_unique_path=False):
     if not ftp_unique_path:
         pwd = prepare_ftp_folders(ftp)
     else:
-        ftp.cwd(f"www/{httshots.config.site_name}/{httshots.config.ftp_folder}/{ftp_unique_path}")
+        ftp.cwd(f"{ftp_unique_path}")
         pwd = ftp.pwd()
 
     folders = ftp.nlst()
@@ -77,5 +78,5 @@ def upload_image_imgur(file_name):
             return url['link'].replace('i.', '')
         return None
     except Exception as e:
-        print(e)
+        print('upload', e)
         return None

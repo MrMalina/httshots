@@ -1,6 +1,11 @@
 ﻿import heroprotocol
 from httshots import httshots
 
+omega_heroes = {
+    'DVaPilot': 'DVa',
+    'LostVikingsController': 'LostVikings'
+}
+
 def parse_content(content, pre_game):
     events = heroprotocol.versions.latest().decode_replay_tracker_events(content)
 
@@ -12,6 +17,8 @@ def parse_content(content, pre_game):
                 hero = hero[4:]
                 player = pre_game.get_player_by_index(index-1)
                 player._gameloop = 0
+                if hero in omega_heroes:
+                    hero = omega_heroes[hero]
                 player.hero = hero
                 continue
 
@@ -27,7 +34,8 @@ def parse_content(content, pre_game):
     except heroprotocol.decoders.TruncatedError:
         ...
     except Exception as e:
-        print(e)
+        print('ingame', e)
+        return dict()
 
     heroes = {}
     for player in pre_game.players:

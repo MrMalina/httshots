@@ -16,7 +16,6 @@ from httshots import httshots
 from . import replays
 from . import pregame
 from . import tracker
-from . import spotify
 
 
 # ======================================================================
@@ -38,10 +37,11 @@ class TwitchBot(commands.Bot):
 
         if httshots.config.add_previous_games == 1:
             found = 0
+            replayes_count = 0
             for acc in httshots.accounts:
                 replays = list(acc.get_replays())
-                replays.sort()
                 for replay_name in replays:
+                    replayes_count += 1
                     replay, protocol = httshots.parser.get_replay(acc.replays_path + replay_name)
                     info = httshots.parser.get_match_info(replay, protocol)
                     if info.init_data.game_options.amm_id == 50091:
@@ -68,27 +68,22 @@ class TwitchBot(commands.Bot):
                         sreplay = httshots.StreamReplay(replay_name, me, info)
                         httshots.stream_replays.append(sreplay)
                         sreplay.url_games = None
-                        httshots.print_log('FoundRankedPreviousGame', replay_name)
+                        httshots.print_log('FoundRankedPreviousGame', replay_name[11:-12])
                     else:
-                        httshots.print_log('FoundNoRankedPreviousGames', replay_name)
+                        httshots.print_log('FoundNoRankedPreviousGames', replay_name[11:-12])
 
             if found:
                 # 2024-11-28 21.35.03 Завод Вольской -> 24-11-28 21-35
                 tmp = replay_name.split()
                 httshots.cur_game[0] = tmp[0][2:]
-                httshots.cur_game[1] = tmp[1][:3].replace('.', '-')
+                httshots.cur_game[1] = tmp[1][:-3].replace('.', '-')
 
                 url_games = httshots.visual.games.create_image(False)
                 sreplay.url_games = url_games
-                httshots.print_log('FoundPreviousGames', len(httshots.stream_replays))
+                httshots.print_log('FoundPreviousGames', replayes_count, len(httshots.stream_replays))
 
             else:
                 httshots.print_log('FoundZeroPreviousGames')
-
-        if httshots.config.add_tracker_commands == 1:
-            tracker.add_command(self)
-        if httshots.config.add_spotify_commands == 1:
-            spotify.add_command(self)
 
         httshots.print_log('BotStart', httshots.__name__, 
                            httshots.__author__, httshots.__version__)

@@ -7,26 +7,14 @@ from PIL import ImageFont
 from PIL import ImageDraw
 
 import httshots
-from httshots import httshots
-
-
-# ======================================================================
-# >> CONFIGS
-# ======================================================================
-path = r"d:\games\python\httshots\files/"
-bg_files = path + "background/"
-font_files = path + "ttf/"
-screens_files = path + "screens/"
-stats_files = path + "stats/"
-small_font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 12)
-font = ImageFont.truetype(font_files+'Exo2-Bold.ttf', 16)
+from httshots import httshots as hots
 
 
 # ======================================================================
 # >> FUNCTIONS
 # ======================================================================
 def load_background():
-    return Image.open(bg_files+'lobby_background.png')
+    return Image.open(hots.config.vs_bg_path+'lobby_background.png')
 
 
 def add_users(image, info):
@@ -35,10 +23,10 @@ def add_users(image, info):
     add = 20
     rng = 60
 
-    vc_party1 = Image.open(stats_files+'vc_party1.png')
-    vc_party2 = Image.open(stats_files+'vc_party2.png')
-    vc_party3 = Image.open(stats_files+'vc_party3.png')
-    vc_party4 = Image.open(stats_files+'vc_party4.png')
+    vc_party1 = Image.open(hots.config.vs_stats_path+'vc_party1.png')
+    vc_party2 = Image.open(hots.config.vs_stats_path+'vc_party2.png')
+    vc_party3 = Image.open(hots.config.vs_stats_path+'vc_party3.png')
+    vc_party4 = Image.open(hots.config.vs_stats_path+'vc_party4.png')
 
     icons = [vc_party1, vc_party2, vc_party3, vc_party4]
 
@@ -55,33 +43,33 @@ def add_users(image, info):
             coords2 = 200
             if party:
                 icon = icons[partys.index(party)]
-                image.paste(icon, (240, add+(x*rng)-15), mask=icon)
+                image.paste(icon, (250, add+(x*rng)-15), mask=icon)
 
         else:
-            coords = 410
-            coords2 = 360
+            coords = 420
+            coords2 = 370
             x -= 5
 
             if party:
                 icon = icons[partys.index(party)]
-                image.paste(icon, (300, add+(x*rng)-15), mask=icon)
+                image.paste(icon, (310, add+(x*rng)-15), mask=icon)
 
-        draw.text((coords2, add+(x*rng)+3), "(%s)"%blplayer.level, (255,255,255), font=small_font)
-        draw.text((coords, add+(x*rng)), blplayer.battle_tag, (255,255,255), font=font)
+        draw.text((coords2, add+(x*rng)+3), "(%s)"%blplayer.level, (255,255,255), font=hots.config.vs_small_font)
+        draw.text((coords, add+(x*rng)+3), blplayer.battle_tag, (255,255,255), font=hots.config.vs_small_font)
 
 
 def create_image(info):
-    httshots.print_log('ImgurStartCreateLobbyImage', uwaga=0)
+    _name = 'battlelobby.png'
+    hots.print_log('ImageStartCreateLobbyImage', uwaga=0)
     image = load_background()
 
-    httshots.print_log('ImgurAddUsers', uwaga=0)
+    hots.print_log('ImageAddUsers', uwaga=0)
     add_users(image, info)
 
-    httshots.print_log('ImgurSaveImageMatch', uwaga=0)
-    image.save(screens_files + 'battlelobby.png')
+    hots.print_log('ImageSaveImageMatch', uwaga=0)
+    image.save(hots.config.vs_screens_path + _name)
 
-    httshots.print_log('ImgurUploadImageMatch')
-    _name = 'battlelobby.png'
-    url = httshots.visual.upload.upload_image(screens_files + _name, _name)
+    hots.print_log('ImageUploadBattleLobby')
+    url = hots.visual.upload.upload_image(hots.config.vs_screens_path + _name, _name)
 
     return url
