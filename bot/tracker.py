@@ -41,6 +41,8 @@ async def start_check_talents():
             # Возможно, излишне
             try:
                 talents = httshots.parser.ingame.parse_content(contents, pre_game)
+                if httshots.config.debug:
+                    print(talents, old_talents)
                 if talents:
                     # Нет смысла генерировать изображение, если таланты не поменялись
                     if talents != old_talents:
@@ -53,13 +55,14 @@ async def start_check_talents():
 
                         if check:
                             httshots.visual.tracker.create_image(pre_game.players)
+                            httshots.visual.tracker.send_talents(pre_game.players)
                         old_talents = copy.deepcopy(talents)
 
             except Exception as e:
                 raise e
                 httshots.print_log('TrackerNoHeroes')
 
-        await asyncio.sleep(10)
+        await asyncio.sleep(5)
 
 
 def add_command(bot):

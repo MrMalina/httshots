@@ -17,17 +17,17 @@ def load_background():
 
 
 def create_board():
-    border_files = hots.config.vs_border_path
-    vborder = Image.open(border_files+'verticalborder.png')
+    border_path = hots.config.vs_border_path
+    vborder = Image.open(border_path+'verticalborder.png')
     vborder_size = vborder.size
-    bghex = Image.open(border_files+'backgroundhex.png')
+    bghex = Image.open(border_path+'backgroundhex.png')
     bghex_size = bghex.size
-    hborder = Image.open(border_files+'horizontalborder_bottom.png')
+    hborder = Image.open(border_path+'horizontalborder_bottom.png')
     hborder_size = hborder.size
 
     image = Image.new('RGBA', (bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]))
 
-    bg = Image.open(border_files+'background.png')
+    bg = Image.open(border_path+'background.png')
     bg = bg.resize((bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]-5))
     image.paste(bg, (0, 0))
 
@@ -37,19 +37,19 @@ def create_board():
 
     image.paste(hborder, (0, vborder_size[1]), mask=hborder)
 
-    bborder = Image.open(border_files+'bottomborder.png')
+    bborder = Image.open(border_path+'bottomborder.png')
     bborder_size = bborder.size
     image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
 
-    bborderright = Image.open(border_files+'horizontalborder_bottom_right.png')
+    bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
     bborderright_size = bborderright.size
     image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
 
-    vborderright = Image.open(border_files+'verticalborder_right.png')
+    vborderright = Image.open(border_path+'verticalborder_right.png')
     vborderright_size = vborderright.size
     image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
 
-    hborder = Image.open(border_files+'horizontalborder.png')
+    hborder = Image.open(border_path+'horizontalborder.png')
     hborder_size = hborder.size
     image.paste(hborder, (20, 0), mask=hborder)
 
@@ -119,12 +119,13 @@ def get_max_stats(replay):
 
 
 def add_heroes(image, replay, max_stats):
-    blue = Image.open(hots.config.vs_score_path+'blue.png')
-    bplayer = Image.open(hots.config.vs_score_path+'playerblue.png').convert('RGBA')
-    red = Image.open(hots.config.vs_score_path+'red.png')
-    white = Image.open(hots.config.vs_score_path+'white.png')
-    rplayer = Image.open(hots.config.vs_score_path+'playerred.png').convert('RGBA')
-    glow = Image.open(hots.config.vs_score_path+'portrait.png').convert('RGBA')
+    score_path = hots.config.vs_score_path
+    blue = Image.open(score_path+'blue.png')
+    bplayer = Image.open(score_path+'playerblue.png').convert('RGBA')
+    red = Image.open(score_path+'red.png')
+    white = Image.open(score_path+'white.png')
+    rplayer = Image.open(score_path+'playerred.png').convert('RGBA')
+    glow = Image.open(score_path+'portrait.png').convert('RGBA')
     language = hots.language
 
     add = 100
@@ -339,6 +340,6 @@ def create_image(replay):
     image.save(hots.config.vs_screens_path + _name)
 
     hots.print_log('ImageUploadMatch')
-    url = hots.visual.upload.upload_image(hots.config.vs_screens_path + _name, _name)
+    url = hots.visual.upload.upload_file(hots.config.vs_screens_path + _name, _name)
 
     return url

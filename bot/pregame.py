@@ -45,11 +45,13 @@ async def check_battle_lobby():
 
             # При обработке battlelobby была ошибка
             if pre_game is not None:
-                # Запуск отслеживания выбранных талантов
-                loop = asyncio.get_event_loop()
-                task = loop.create_task(httshots.bot.tracker.start_check_talents())
-                # Для выключения задачи после окончания матча
-                httshots.check_talents_task = task
+                # Работает только для FTP
+                if httshots.config.image_upload == 2:
+                    # Запуск отслеживания выбранных талантов
+                    loop = asyncio.get_event_loop()
+                    task = loop.create_task(httshots.bot.tracker.start_check_talents())
+                    # Для выключения задачи после окончания матча
+                    httshots.check_talents_task = task
 
                 await send_battle_lobby_info(pre_game)
 

@@ -3,7 +3,6 @@
 # ======================================================================
 
 from PIL import Image
-from PIL import ImageFont
 from PIL import ImageDraw
 
 import httshots
@@ -70,6 +69,6 @@ def create_image(info):
     image.save(hots.config.vs_screens_path + _name)
 
     hots.print_log('ImageUploadBattleLobby')
-    url = hots.visual.upload.upload_image(hots.config.vs_screens_path + _name, _name)
+    url = hots.visual.upload.upload_file(hots.config.vs_screens_path + _name, _name)
 
     return url

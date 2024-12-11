@@ -22,6 +22,7 @@ async def send_replay_info(replay_name):
         httshots.check_talents_task = None
         httshots.bot.tracker.old_talents = None
         httshots.visual.upload.remove_file('gametalents.png', 'curgame')
+        httshots.visual.upload.remove_file('info.log', 'curgame')
 
     try:
         replay, protocol = httshots.parser.get_replay(replay_name)

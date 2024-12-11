@@ -25,7 +25,7 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.10.0rc3"
+__version__ = "0.11.0"
 __author__ = "MrMalina"
 
 icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
@@ -112,10 +112,10 @@ def load():
     config.vs_talents_path = tmp + "talents/"
     config.vs_mvp_path = tmp + "mvp/"
 
+    config.vs_small_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 12)
     config.vs_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 16)
     config.vs_large_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 24)
     config.vs_big_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 46)
-
 
     if config.image_upload == 1:
         imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
@@ -132,6 +132,10 @@ def load():
             return
 
     replay_check_period = config.replay_check_period
+
+    if config.debug:
+        global cur_game
+        cur_game = ['-1', '-1']
 
     global tw_bot
     tw_bot = bot.TwitchBot(config.twitch_access_token, '!', config.twitch_channel)
@@ -184,6 +188,9 @@ class HeroesStrings:
         if not replay_lang in self.heroes:
             self.language = 'ru'
             print_log('HeroesStringsNoLanguage', replay_lang)
+
+        # need to talents in tracker
+        self.icy_en_names = self.heroes['en'].get('icy_names', {})
 
         self.heroes = self.heroes[self.language]
 
