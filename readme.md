@@ -11,13 +11,31 @@
 Сохранённые изображения публикуются на Imgur или на FTP.
 
 Для запуска необходимо:
-* Установить python3: https://www.python.org/downloads/
-* Установить зависимости: py -m pip install configobj imgurpython Pillow mpyq twitchio
-* !!! ВНИМАНИЕ в случае установки heroprotocol из указанного ниже официального репозитория, потребуется установить дополнительную устаревшую библиотеку imp !!!
-* Установить heroprotocol: py -m pip install -U git+https://github.com/Blizzard/heroprotocol
-* Установить библиотеку imp (уст. библиотека для работы heroprotocol, нов.: importlib): не ясно, где взять, можно по запросу
+* Установить [Python3](https://www.python.org/downloads/)
+
+* Установить зависимости
+```bash
+py -m pip install configobj imgurpython Pillow mpyq twitchio
+```
+
+* Установить heroprotocol
+Установить heroprotocol можно из [официального репозитория Blizzard](https://github.com/Blizzard/heroprotocol), но в этом случае, потребуется устанавливать устаревшую (начиная с python 3.12) библиотеку imp.py.
+Если Вы не хотите устанавливать отдельно устаревшую библиотеку, то можно скачать из изменённого форка:
+```bash
+py -m pip install -U git+https://github.com/MrMalina/httshots
+```
+
+* Скачать [архив с ботом](https://github.com/MrMalina/httshots/archive/refs/heads/master.zip)
+
+* Разархивировать архив с ботом в директорию, где установлен python. Например: d:\python\
+
 * Заполнить конфигурационный файл
+Конфигурационный файл находится в ./httshots/config/config.ini
+
+* Запустить бота
+Запуск бота осуществляется через консоль python командой
+```bash
+import httshots
+```
 
 Внимание, при использовании Imgur актуальные таланты не будут публиковаться!
-
-Запуск бота осуществляется через консоль python командой import httshots
