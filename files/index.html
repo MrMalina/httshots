@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Актуальные таланты</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 10px;
+        }
+        #image {
+            max-width: 100%;
+            width: 50%;
+            height: 50%;
+            cursor: pointer;
+            text-align: center;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin-left: auto; 
+            margin-right: auto
+        }
+        #fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        #fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        pre {
+            background-color:#909090;
+            border: 1px solid #ccc;
+            padding: 12px;
+            overflow: auto;
+            text-align: left;
+        }
+        .clickable {
+            color: #a70536;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body bgcolor="#808080">
+    <h1>Актуальные таланты</h1>
+    <div id="message">Загрузка...</div>
+    <img id="image" src="" alt="Матч" onclick="toggleFullscreen()">
+    <div id="fullscreen" onclick="toggleFullscreen()">
+        <img id="fullscreen-image" src="" alt="Полноэкранный матч">
+    </div>
+    <pre id="logContent"></pre>
+
+    <script>
+        const imagePath = 'gametalents.png';
+        const imageElement = document.getElementById("image");
+        const messageElement = document.getElementById("message");
+        const infoElement = document.getElementById("info");
+        const fullscreenElement = document.getElementById("fullscreen");
+        const fullscreenImageElement = document.getElementById("fullscreen-image");
+        
+        function checkImage() {
+            fetch(imagePath)
+                .then(response => {
+                    if (response.ok) {
+                        imageElement.src = imagePath + '?' + new Date().getTime();
+                        imageElement.style.display = 'flex';
+                        messageElement.style.display = 'none';
+                    } else {
+                        imageElement.style.display = 'none';
+                        messageElement.textContent = "Матча ещё нет";
+                    }
+                })
+                .catch(() => {
+                    imageElement.style.display = 'none';
+                    messageElement.textContent = "Матча ещё нет";
+                });
+        }
+
+        function toggleFullscreen() {
+            if (fullscreenElement.style.display === "flex") {
+                fullscreenElement.style.display = "none";
+            } else {
+                fullscreenImageElement.src = imagePath + '?' + new Date().getTime();
+                fullscreenElement.style.display = "flex";
+            }
+        }
+
+    function loadLogFile() {
+        fetch('info.log')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Нет матча');
+                }
+                return response.text();
+            })
+            .then(data => {
+                const logContent = document.getElementById('logContent');
+                logContent.innerHTML = data.replace(/<span>(.*?)<\/span>/g, (match, p1) => {
+                    return `<span class="clickable" onclick="copyToClipboard('${p1}')">${p1}</span>`;
+                });
+            })
+            .catch(error => {
+                document.getElementById('logContent').textContent = 'Ошибка: ' + error.message;
+            });
+    }
+
+    function copyToClipboard(text) {
+        // Создаем временный элемент для копирования текста
+        const tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy'); // Копируем текст
+        document.body.removeChild(tempInput); // Удаляем временный элемент
+
+    }
+
+        setInterval(() => {
+            checkImage();
+            loadLogFile();
+        }, 30000); // Обновление каждые 30 секунд
+
+        // Первоначальный запуск
+        checkImage();
+        loadLogFile();
+    </script>
+</body>
+</html>
