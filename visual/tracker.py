@@ -192,9 +192,7 @@ def send_talents(players):
             # talents = ''.join(map(str, players[player]))
             tmp = f" [T{talents},{hero_name}]"
             if hots.config.language != 'en':
-                print(hero_name, hots.hero_names.icy_en_names)
                 icy_hero = hots.hero_names.icy_en_names.get(hero_name, hero_name.lower())
-                print(icy_hero)
             else:
                 icy_hero = hots.hero_names.get_icy_hero(hero_name, hero_name.lower())
             icy_url = hots.icy_url.format(icy_hero, talents.replace('0', '-'))

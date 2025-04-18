@@ -85,7 +85,7 @@ class TwitchBot(commands.Bot):
             else:
                 httshots.print_log('FoundZeroPreviousGames')
 
-        httshots.print_log('BotStart', httshots.__name__, 
+        httshots.print_log('BotStarted', httshots.__name__, 
                            httshots.__author__, httshots.__version__)
         await self.endless_loop()
 

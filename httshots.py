@@ -3,17 +3,16 @@
 # ======================================================================
 
 # Python
-import asyncio
-import hashlib
-from getpass import getuser
-from imgurpython import ImgurClient
-from time import strftime
-from ftplib import FTP
-from PIL import ImageFont
-
 from configobj import ConfigObj, Section
-from os import path, sep, listdir
+from ftplib import FTP
+from getpass import getuser
+from hashlib import md5
+from imgurpython import ImgurClient
 from json import load as json_load
+from os import path, sep, listdir
+from PIL import ImageFont
+from sys import argv
+from time import strftime
 
 
 # Httshots
@@ -25,7 +24,7 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.12.0"
+__version__ = "0.12.1"
 __author__ = "MrMalina"
 
 icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
@@ -51,7 +50,7 @@ config = None
 # ======================================================================
 # >> Load
 # ======================================================================
-def load():
+def load(argv):
     global accounts, strings, language, \
            replay_check_period, hero_data, \
            battle_lobby_hash, config, \
@@ -60,6 +59,8 @@ def load():
     config = Config(current_dir + '\\config\\config.ini')
     language = config.language
     strings = Strings(current_dir + '\\data\\strings.ini', language)
+
+    print_log('BotStart')
 
     current_user = getuser()
 
@@ -81,6 +82,21 @@ def load():
 
     accounts = get_accounts_list(config.hots_folder)
 
+    # Check argv
+    if len(argv) > 1:
+        if 'IGNORE_PREV_MATCHES' in argv:
+            config.add_previous_games = 0
+            print_log('ParamIgnorePrevMatches')
+        if 'SEND_BATTLE_LOBBY' in argv:
+            config.send_previous_battle_lobby = 1
+            print_log('ParamSendBattleLobby')
+        if 'RU_REPLAY' in argv:
+            config.replay_language = 'ru'
+            print_log('ParamReplayRu')
+        if 'EN_REPLAY' in argv:
+            config.replay_language = 'en'
+            print_log('ParamReplayEn')
+
     hero_data = HeroData(current_dir + '\\files\\herodata.json')
     hero_names = HeroesStrings(current_dir + '\\data\\heroes.ini', config.replay_language)
 
@@ -91,13 +107,13 @@ def load():
             file = open(config.battle_lobby_file, 'rb')
             contents = file.read()
             file.close()
-            battle_lobby_hash = hashlib.md5(contents).hexdigest()
+            battle_lobby_hash = md5(contents).hexdigest()
 
             # Tracker events
             file = open(config.tracker_events_file, 'rb')
             contents = file.read()
             file.close()
-            tracker_events_hash = hashlib.md5(contents).hexdigest()
+            tracker_events_hash = md5(contents).hexdigest()
 
     # Visual
     tmp = current_dir + '/files/'
@@ -145,7 +161,7 @@ def load():
 # ======================================================================
 # >> Functions
 # ======================================================================
-def get_accounts_list(path: str):
+def get_accounts_list(path: str) -> list:
     accounts = []
 
     folders = listdir(config.hots_folder)
@@ -373,4 +389,4 @@ class StreamReplay:
 # ======================================================================
 # >> Start
 # ======================================================================
-load()
+load(argv)
