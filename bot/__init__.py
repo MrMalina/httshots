@@ -68,9 +68,9 @@ class TwitchBot(commands.Bot):
                         sreplay = httshots.StreamReplay(replay_name, me, info)
                         httshots.stream_replays.append(sreplay)
                         sreplay.url_games = None
-                        httshots.print_log('FoundRankedPreviousGame', replay_name[11:-12])
+                        httshots.print_log('FoundRankedPreviousGame', me.name, replay_name[11:-12])
                     else:
-                        httshots.print_log('FoundNoRankedPreviousGames', replay_name[11:-12])
+                        httshots.print_log('FoundNoRankedPreviousGames', me.name, replay_name[11:-12])
 
             if found:
                 # 2024-11-28 21.35.03 Завод Вольской -> 24-11-28 21-35
@@ -126,7 +126,7 @@ class TwitchBot(commands.Bot):
                 await ctx.send(text)
                 return
 
-            elif hero in ('счёт', 'счет', 'score'):
+            if hero in ('счёт', 'счет', 'score'):
                 kills = [0, 0]
                 for _player in _game.info.players.values():
                     if _player.team_id == 0:
@@ -141,9 +141,9 @@ class TwitchBot(commands.Bot):
                 await ctx.send(text)
                 return
 
-            elif hero in ('bans', 'баны'):
+            if hero in ('bans', 'баны'):
                 bans = _game.info.lobby.bans
-                for ban in bans:
+                for _ in bans:
                     blue_bans = ', '.join([x.hero for x in bans if x.team == 1])
                     red_bans = ', '.join([x.hero for x in bans if x.team == 2])
 
@@ -164,7 +164,7 @@ class TwitchBot(commands.Bot):
                 talents = ''.join(map(str, player.talents))
                 tmp = f" [T{talents},{hero_name_eng}]"
                 icy_hero = httshots.hero_names.get_icy_hero(hero, hero_name_eng.lower())
-                icy_url = httshots.icy_url.format(icy_hero, talents.replace('0', '-'))
+                icy_url = httshots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
                 text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
                 await ctx.send(text)
                 return

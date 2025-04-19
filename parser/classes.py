@@ -111,7 +111,7 @@ class Details(parse.Parse):
         self.players = {}
 
         for userid, info in enumerate(players):
-            self.players[userid] = player = Player(userid, info)
+            self.players[userid] = Player(userid, info)
 
         self.parse_data('details', data)
 

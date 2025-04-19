@@ -2,11 +2,7 @@
 # >> Imports
 # ======================================================================
 
-# Python
-from getpass import getuser
-
-from configobj import ConfigObj
-
+# httshots
 import httshots
 from httshots import httshots
 

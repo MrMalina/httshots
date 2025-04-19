@@ -42,11 +42,9 @@ def create_board():
     image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
 
     bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
-    bborderright_size = bborderright.size
     image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
 
     vborderright = Image.open(border_path+'verticalborder_right.png')
-    vborderright_size = vborderright.size
     image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
 
     hborder = Image.open(border_path+'horizontalborder.png')
@@ -123,10 +121,8 @@ def add_heroes(image, replay, max_stats):
     blue = Image.open(score_path+'blue.png')
     bplayer = Image.open(score_path+'playerblue.png').convert('RGBA')
     red = Image.open(score_path+'red.png')
-    white = Image.open(score_path+'white.png')
     rplayer = Image.open(score_path+'playerred.png').convert('RGBA')
     glow = Image.open(score_path+'portrait.png').convert('RGBA')
-    language = hots.language
 
     add = 100
     rng = 60
@@ -244,15 +240,15 @@ def get_shift(value):
     ln = len(value)
     if ln == 6:
         return 11.5
-    elif ln == 5:
+    if ln == 5:
         return 8
-    elif ln == 4:
+    if ln == 4:
         return 5
-    elif ln == 3:
+    if ln == 3:
         return 4
-    elif ln == 2:
+    if ln == 2:
         return -5
-    elif ln == 1:
+    if ln == 1:
         return -11
 
     return 0

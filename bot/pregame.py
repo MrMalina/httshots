@@ -38,9 +38,9 @@ async def check_battle_lobby():
         file = open(httshots.config.battle_lobby_file, 'rb')
         contents = file.read()
         file.close()
-        hash = hashlib.md5(contents).hexdigest()
-        if httshots.battle_lobby_hash is None or httshots.battle_lobby_hash != hash:
-            httshots.battle_lobby_hash = hash
+        _hash = hashlib.md5(contents).hexdigest()
+        if httshots.battle_lobby_hash is None or httshots.battle_lobby_hash != _hash:
+            httshots.battle_lobby_hash = _hash
             pre_game = httshots.parser.get_battle_lobby(contents)
 
             # При обработке battlelobby была ошибка

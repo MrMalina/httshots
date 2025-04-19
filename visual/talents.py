@@ -39,11 +39,9 @@ def create_board():
     image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
 
     bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
-    bborderright_size = bborderright.size
     image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
 
     vborderright = Image.open(border_path+'verticalborder_right.png')
-    vborderright_size = vborderright.size
     image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
 
     hborder = Image.open(border_path+'horizontalborder.png')
@@ -74,7 +72,6 @@ def add_heroes(image, replay):
     red = Image.open(score_path+'red.png')
     rplayer = Image.open(score_path+'playerred.png').convert('RGBA')
     glow = Image.open(score_path+'portrait.png').convert('RGBA')
-    language = hots.language
 
     talent_available = Image.open(talents_path+'talent_available.png')
     talent_available_ult = Image.open(talents_path+'talent_available_ult.png')
@@ -92,23 +89,18 @@ def add_heroes(image, replay):
         draw = ImageDraw.Draw(image)
 
         team_id = player.team_id
-        id = player.userid
 
         if team_id == 0:
             image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
             image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
             draw.text((155, add+(x*rng)+30), player.name, (105,156,249), font=hots.config.vs_font)
-            color = (105,156,249)
-            postfix = 'blue'
 
         else:
             image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
             image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
             draw.text((155, add+(x*rng)+30), player.name, (234,140,140), font=hots.config.vs_font)
-            color = (234,140,140)
-            postfix = 'red'
 
         hero_short_name = hots.hero_names.get_short_hero(player.hero)
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=hots.config.vs_font)
@@ -152,8 +144,6 @@ def add_heroes(image, replay):
 
 
 def add_other_info(image, replay):
-    redkills = Image.open(hots.config.vs_stats_path+'redkills.png')
-    bluekills = Image.open(hots.config.vs_stats_path+'bluekills.png')
     language = hots.language
 
     red_kills = 0

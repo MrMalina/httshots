@@ -10,6 +10,7 @@ import httshots
 
 from httshots import httshots
 
+
 # ======================================================================
 # >> FUNCTIONS
 # ======================================================================
@@ -18,7 +19,7 @@ def upload_file(full_name, file_name, replace_file=False, ftp_unique_path=False)
     if not upl:
         return None
 
-    elif upl == 1:
+    if upl == 1:
         url = upload_file_imgur(full_name)
         if url is None and httshots.config.try_reupload_image:
             url = upload_file_imgur(full_name)
@@ -61,10 +62,9 @@ def remove_file(file_name, ftp_unique_path=False):
     ftp = FTP(httshots.config.ftp_ip)
     ftp.login(httshots.config.ftp_login, httshots.config.ftp_passwd)
     if not ftp_unique_path:
-        pwd = prepare_ftp_folders(ftp)
+        prepare_ftp_folders(ftp)
     else:
         ftp.cwd(f"{ftp_unique_path}")
-        pwd = ftp.pwd()
 
     folders = ftp.nlst()
     if file_name in folders:
@@ -78,5 +78,5 @@ def upload_file_imgur(file_name):
             return url['link'].replace('i.', '')
         return None
     except Exception as e:
-        print('upload', e)
+        httshots.print_log('ImgurError', e)
         return None

@@ -4,8 +4,6 @@
 
 # Python
 import asyncio
-import hashlib
-import os
 
 # httshots
 import httshots
@@ -65,7 +63,7 @@ async def send_replay_info(replay_name):
             httshots.streak[1] = 1
 
     # get hero_name
-    status = httshots.strings['GameResult%s'%{1:'Win',2:'Lose'}[int(me.result)]]
+    status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
     hero_name = httshots.hero_names.get_hero(me.hero, 1)
     # send match info
 

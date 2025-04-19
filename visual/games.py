@@ -39,11 +39,9 @@ def create_board():
     image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
 
     bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
-    bborderright_size = bborderright.size
     image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
 
     vborderright = Image.open(border_path+'verticalborder_right.png')
-    vborderright_size = vborderright.size
     image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
 
     hborder = Image.open(border_path+'horizontalborder.png')
@@ -86,9 +84,6 @@ def add_games(image, replays):
     rng = 60
 
     for x, replay in enumerate(reversed(replays)):
-        red_kills = 0
-        blue_kills = 0
-
         for player in replay.info.players.values():
             if player.name in hots.config.accounts:
                 me = player
@@ -102,7 +97,6 @@ def add_games(image, replays):
         draw = ImageDraw.Draw(image)
 
         team_id = player.team_id
-        id = player.userid
         time = player.time
 
         if player.result == 1:
@@ -166,15 +160,15 @@ def get_shift(value):
     ln = len(value)
     if ln == 6:
         return 11.5
-    elif ln == 5:
+    if ln == 5:
         return 8
-    elif ln == 4:
+    if ln == 4:
         return 5
-    elif ln == 3:
+    if ln == 3:
         return 4
-    elif ln == 2:
+    if ln == 2:
         return -5
-    elif ln == 1:
+    if ln == 1:
         return -11
 
     return 0
@@ -206,7 +200,7 @@ def add_other_info(image, replays):
     draw.text((1350/2, 725), f"{len(replays)}", (255, 255, 255), font=hots.config.vs_big_font)
 
 
-def create_image(print_info=True):
+def create_image(*args):
     _name = 'games.png'
 
     hots.print_log('ImageStartCreateGamesImage', uwaga=0)

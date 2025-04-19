@@ -1,5 +1,4 @@
-﻿import struct
-from heroprotocol.decoders import BitPackedBuffer
+﻿from heroprotocol.decoders import BitPackedBuffer
 
 class BLPlayer:
     def __init__(self, index):
@@ -53,8 +52,6 @@ def get_battle_lobby_players(contents):
         buffer.read_aligned_bytes(2)
         buffer.read_bits(32*8)
 
-    players = []
-
     collectionSize = buffer.read_bits(16)
 
     for x in range(collectionSize):
@@ -75,7 +72,8 @@ def get_battle_lobby_players(contents):
     for x in range(disabledHeroListLength):
         buffer.read_aligned_bytes(32)
 
-    randomValue = buffer.read_bits(32)
+    # randomValue
+    buffer.read_bits(32)
 
     buffer.read_bits(32)
 

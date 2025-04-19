@@ -2,14 +2,7 @@
 # >> IMPORTS
 # ======================================================================
 
-# Python
-from ftplib import FTP
-
 # httshots
-import httshots
-
-from httshots import httshots
-
 from . import match
 from . import games
 from . import talents

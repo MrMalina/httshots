@@ -39,11 +39,9 @@ def create_board():
     image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
 
     bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
-    bborderright_size = bborderright.size
     image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
 
     vborderright = Image.open(border_path+'verticalborder_right.png')
-    vborderright_size = vborderright.size
     image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
 
     hborder = Image.open(border_path+'horizontalborder.png')
@@ -73,13 +71,12 @@ def add_heroes(image, players):
     red = Image.open(score_path+'red.png')
     rplayer = Image.open(score_path+'playerred.png').convert('RGBA')
     glow = Image.open(score_path+'portrait.png').convert('RGBA')
-    language = hots.language
 
     talent_available = Image.open(talents_path+'talent_available.png')
     talent_available_ult = Image.open(talents_path+'talent_available_ult.png')
     talent_bg = Image.open(talents_path+'talent_bg.png')
-    talent_unavailable = Image.open(talents_path+'talent_unavailable.png')
-    talent_unselected = Image.open(talents_path+'talent_unselected.png')
+    # talent_unavailable = Image.open(talents_path+'talent_unavailable.png')
+    # talent_unselected = Image.open(talents_path+'talent_unselected.png')
 
     add = 100
     rng = 60
@@ -97,16 +94,12 @@ def add_heroes(image, players):
             image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
             draw.text((155, add+(x*rng)+30), player.battle_tag, (105,156,249), font=hots.config.vs_font)
-            color = (105,156,249)
-            postfix = 'blue'
 
         else:
             image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
             image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
             draw.text((155, add+(x*rng)+30), player.battle_tag, (234,140,140), font=hots.config.vs_font)
-            color = (234,140,140)
-            postfix = 'red'
 
         hero_short_name = hots.hero_names.get_short_hero(player.hero)
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=hots.config.vs_font)
@@ -185,7 +178,7 @@ def create_image(players):
 def send_talents(players):
     _name = 'info.log'
     with open(hots.config.vs_screens_path + _name, 'w') as f:
-        for x, player in enumerate(players):
+        for _, player in enumerate(players):
             hero_name = hots.hero_names.get_data_revers_name(player.hero)
             talents = ''.join(map(str, player.talents))
             # hero_name = hots.hero_names.get_data_revers_name(player)
@@ -195,7 +188,7 @@ def send_talents(players):
                 icy_hero = hots.hero_names.icy_en_names.get(hero_name, hero_name.lower())
             else:
                 icy_hero = hots.hero_names.get_icy_hero(hero_name, hero_name.lower())
-            icy_url = hots.icy_url.format(icy_hero, talents.replace('0', '-'))
+            icy_url = hots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
             prep = f'<span>{tmp.strip()}</span>'
             f.write(f'{hero_name.ljust(20)} {prep} {''.ljust(25-len(tmp))} - <a href="{icy_url}">Goto IcyVeins</a>\n')
 

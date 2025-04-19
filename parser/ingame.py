@@ -22,7 +22,7 @@ def parse_content(content, pre_game):
                 player.hero = hero
                 continue
 
-            elif 'm_eventName' in event and event['m_eventName'] == b'TalentChosen':
+            if 'm_eventName' in event and event['m_eventName'] == b'TalentChosen':
                 index = event['m_intData'][0]['m_value']
                 talent = event['m_stringData'][0]['m_value'].decode('utf8')
                 player = pre_game.get_player_by_index(index-1)

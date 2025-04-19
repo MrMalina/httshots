@@ -3,15 +3,16 @@
 # ======================================================================
 
 # Python
-from configobj import ConfigObj, Section
+import sys 
+
 from ftplib import FTP
 from getpass import getuser
 from hashlib import md5
-from imgurpython import ImgurClient
+from configobj import ConfigObj, Section
 from json import load as json_load
 from os import path, sep, listdir
+from imgurpython import ImgurClient
 from PIL import ImageFont
-from sys import argv
 from time import strftime
 
 
@@ -24,10 +25,10 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.12.1"
+__version__ = "0.12.2"
 __author__ = "MrMalina"
 
-icy_url = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
+ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
 data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
 data_info = ConfigObj(current_dir + '\\data\\info.ini')
@@ -50,11 +51,13 @@ config = None
 # ======================================================================
 # >> Load
 # ======================================================================
-def load(argv):
+def load(argv:list) -> None:
+    """Основная функция, запуск бота"""
     global accounts, strings, language, \
            replay_check_period, hero_data, \
            battle_lobby_hash, config, \
-           hero_names, imgur, tracker_events_hash
+           hero_names, imgur, tracker_events_hash, \
+           tw_bot
 
     config = Config(current_dir + '\\config\\config.ini')
     language = config.language
@@ -62,8 +65,8 @@ def load(argv):
 
     print_log('BotStart')
 
+    # Поиск директории с реплеями
     current_user = getuser()
-
     check = False
     for folder in config.folder_accounts:
         folder = folder.format(current_user)
@@ -76,11 +79,13 @@ def load(argv):
         print_log('ErrorFindHoTSFolder')
         return
 
+    # Файлы для текущих талантов и информации о лобби
     tmp = config.folder_hots_temp.format(current_user)
     config.battle_lobby_file = tmp + 'replay.server.battlelobby'
     config.tracker_events_file = tmp + 'replay.tracker.events'
 
-    accounts = get_accounts_list(config.hots_folder)
+    # Список аккаунтов для поиска сыгранных игр
+    accounts = get_accounts_list(folder)
 
     # Check argv
     if len(argv) > 1:
@@ -153,7 +158,7 @@ def load(argv):
         global cur_game
         cur_game = ['-1', '-1']
 
-    global tw_bot
+    # Запуск бота
     tw_bot = bot.TwitchBot(config.twitch_access_token, '!', config.twitch_channel)
     tw_bot.run()
 
@@ -161,10 +166,10 @@ def load(argv):
 # ======================================================================
 # >> Functions
 # ======================================================================
-def get_accounts_list(path: str) -> list:
+def get_accounts_list(folders: str) -> list:
     accounts = []
 
-    folders = listdir(config.hots_folder)
+    folders = listdir(folders)
 
     for folder in folders:
         id = folder.split(sep)[-1]
@@ -383,10 +388,11 @@ class StreamReplay:
         return None
 
     def get_players_with_heroes(self):
-        return ', '.join([f'{player.name} ({player.hero})' for player in self.info.players.values()])
+        return ', '.join([f'{player.name} ({player.hero})' for \
+                          player in self.info.players.values()])
 
 
 # ======================================================================
 # >> Start
 # ======================================================================
-load(argv)
+load(sys.argv)
