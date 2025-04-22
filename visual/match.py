@@ -128,7 +128,7 @@ def add_heroes(image, replay, max_stats):
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
-        hero_name = hots.hero_names.get_eng_hero(player.hero)
+        hero_name = hots.htts_data.get_eng_hero(player.hero)
         hero = Image.open(hots.config.vs_heroes_path+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -136,25 +136,30 @@ def add_heroes(image, replay, max_stats):
         team_id = player.team_id
         id = player.userid
 
+        name = player.name
+        check = hots.visual.check_name.match(name)[0]
+        if check:
+            name_font = hots.config.vs_font
+        else:
+            name_font = hots.config.vs_chinese_font
+
         if team_id == 0:
             image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
-            # image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), player.name, (105,156,249), font=hots.config.vs_font)
+            draw.text((155, add+(x*rng)+30), name, (105,156,249), font=name_font)
             color = (105,156,249)
             postfix = 'blue'
 
         else:
             image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
-            # image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), player.name, (234,140,140), font=hots.config.vs_font)
+            draw.text((155, add+(x*rng)+30), name, (234,140,140), font=name_font)
             color = (234,140,140)
             postfix = 'red'
 
-        hero_short_name = hots.hero_names.get_short_hero(player.hero)
+        hero_short_name = hots.htts_data.get_short_hero(player.hero)
 
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=hots.config.vs_font)
 

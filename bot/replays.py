@@ -22,6 +22,12 @@ async def send_replay_info(replay_name):
         httshots.visual.upload.remove_file('gametalents.png', 'curgame')
         httshots.visual.upload.remove_file('info.log', 'curgame')
 
+    else:
+        # Если бот включен и уже идёт матч, либо самостоятельно добавлен реплей
+        tmp = replay_name.split('/')[-1].split()
+        httshots.cur_game[0] = tmp[0][2:]
+        httshots.cur_game[1] = tmp[1][:-3].replace('.', '-')
+
     try:
         replay, protocol = httshots.parser.get_replay(replay_name)
         info = httshots.parser.get_match_info(replay, protocol)
@@ -64,20 +70,27 @@ async def send_replay_info(replay_name):
 
     # get hero_name
     status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
-    hero_name = httshots.hero_names.get_hero(me.hero, 1)
+    hero_name = httshots.htts_data.get_hero(me.hero, 1)
     # send match info
 
     if httshots.config.image_upload:
         url = httshots.visual.match.create_image(info)
         if url:
-            text = 'GameResultInfoWithStats'
+            url_talents = httshots.visual.talents.create_image(info)
+            if httshots.config.upload_adv_stats:
+                url_adv_stats = httshots.visual.match_adv.create_image(info)
+                text = 'GameResultInfoWithStatsAdv'
+            else:
+                text = 'GameResultInfoWithStats'
+                url_adv_stats = 0
+
         else:
             text = 'GameResultInfo'
-        url_talents = httshots.visual.talents.create_image(info)
     else:
         text = 'GameResultInfo'
 
-    match_info = httshots.strings[text].format(status, hero_name, info.details.title, url, url_talents)
+    match_info = httshots.strings[text].format(status, hero_name, info.details.title,
+                                               url, url_talents, url_adv_stats)
     await httshots.tw_bot.channel.send(match_info)
 
     # add info to stream_replays
@@ -90,6 +103,7 @@ async def send_replay_info(replay_name):
     sreplay.url_games = url_games
     sreplay.url_match = url
     sreplay.url_talents = url_talents
+    sreplay.url_adv_stats = url_adv_stats
 
     # send matches info
     wins = len(list(filter(lambda x: x.account.result == 1, httshots.stream_replays)))

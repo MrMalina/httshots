@@ -1,14 +1,23 @@
 # ======================================================================
 # >> IMPORTS
 # ======================================================================
+# python
+import re
 
 # httshots
 from . import match
+from . import match_adv
 from . import games
 from . import talents
 from . import battlelobby
 from . import tracker
 from . import upload
+
+# ======================================================================
+# >> CONSTS
+# ======================================================================
+check_name = re.compile("[a-zA-Zа-яА-Я0-9]*")
+
 
 mvps = {
     'mvp':'mvp',

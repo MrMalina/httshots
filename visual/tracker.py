@@ -83,30 +83,37 @@ def add_heroes(image, players):
 
     _gameloop = 0
     for x, player in enumerate(players):
-        hero_name = hots.hero_names.get_data_revers_name(player.hero)
+        hero_name = hots.htts_data.get_data_revers_name(player.hero)
         hero = Image.open(hots.config.vs_heroes_path+hero_name.lower()+'.png').convert('RGBA')
 
         draw = ImageDraw.Draw(image)
         team_id = player.userid > 4
 
+        btag = player.battle_tag
+        name = hots.visual.check_name.match(btag)[0]
+        if name:
+            name_font = hots.config.vs_font
+        else:
+            name_font = hots.config.vs_chinese_font
+
         if team_id == 0:
             image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
             image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), player.battle_tag, (105,156,249), font=hots.config.vs_font)
+            draw.text((155, add+(x*rng)+30), btag, (105,156,249), font=name_font)
 
         else:
             image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
             image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), player.battle_tag, (234,140,140), font=hots.config.vs_font)
+            draw.text((155, add+(x*rng)+30), btag, (234,140,140), font=name_font)
 
-        hero_short_name = hots.hero_names.get_short_hero(player.hero)
+        hero_short_name = hots.htts_data.get_short_hero(player.hero)
         draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=hots.config.vs_font)
 
         # team_level = player.team_level
 
-        data_hero_name = hots.hero_names.get_data_name(hero_name)
+        data_hero_name = hots.htts_data.get_data_name(hero_name)
         info = hots.hero_data[data_hero_name]['talents']
         talents = player.talents
         start = 500 - 30
@@ -179,15 +186,15 @@ def send_talents(players):
     _name = 'info.log'
     with open(hots.config.vs_screens_path + _name, 'w') as f:
         for _, player in enumerate(players):
-            hero_name = hots.hero_names.get_data_revers_name(player.hero)
+            hero_name = hots.htts_data.get_data_revers_name(player.hero)
             talents = ''.join(map(str, player.talents))
-            # hero_name = hots.hero_names.get_data_revers_name(player)
+            # hero_name = hots.htts_data.get_data_revers_name(player)
             # talents = ''.join(map(str, players[player]))
             tmp = f" [T{talents},{hero_name}]"
             if hots.config.language != 'en':
-                icy_hero = hots.hero_names.icy_en_names.get(hero_name, hero_name.lower())
+                icy_hero = hots.htts_data.icy_en_names.get(hero_name, hero_name.lower())
             else:
-                icy_hero = hots.hero_names.get_icy_hero(hero_name, hero_name.lower())
+                icy_hero = hots.htts_data.get_icy_hero(hero_name, hero_name.lower())
             icy_url = hots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
             prep = f'<span>{tmp.strip()}</span>'
             f.write(f'{hero_name.ljust(20)} {prep} {''.ljust(25-len(tmp))} - <a href="{icy_url}">Goto IcyVeins</a>\n')

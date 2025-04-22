@@ -19,7 +19,6 @@ from . import classes, parse, match, battlelobby, ingame
 # >> Parse
 # ======================================================================
 def get_replay(replay):
-    # ???
     replay = mpyq.MPQArchive(replay)
 
     contents = replay.header['user_data_header']['content']

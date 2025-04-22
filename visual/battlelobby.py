@@ -53,8 +53,15 @@ def add_users(image, info):
                 icon = icons[partys.index(party)]
                 image.paste(icon, (310, add+(x*rng)-15), mask=icon)
 
+        btag = blplayer.battle_tag
+        name = hots.visual.check_name.match(btag)[0]
+        if name:
+            name_font = hots.config.vs_small_font
+        else:
+            name_font = hots.config.vs_small_chinese_font
+
         draw.text((coords2, add+(x*rng)+3), "(%s)"%blplayer.level, (255,255,255), font=hots.config.vs_small_font)
-        draw.text((coords, add+(x*rng)+3), blplayer.battle_tag, (255,255,255), font=hots.config.vs_small_font)
+        draw.text((coords, add+(x*rng)+3), btag, (255,255,255), font=name_font)
 
 
 def create_image(info):

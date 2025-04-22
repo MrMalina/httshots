@@ -159,11 +159,11 @@ class TwitchBot(commands.Bot):
 
             if not info:
                 hero = player.hero
-                hero_name = httshots.hero_names.get_hero(hero, 0)
-                hero_name_eng = httshots.hero_names.get_eng_hero(hero)
+                hero_name = httshots.htts_data.get_hero(hero, 0)
+                hero_name_eng = httshots.htts_data.get_eng_hero(hero)
                 talents = ''.join(map(str, player.talents))
                 tmp = f" [T{talents},{hero_name_eng}]"
-                icy_hero = httshots.hero_names.get_icy_hero(hero, hero_name_eng.lower())
+                icy_hero = httshots.htts_data.get_icy_hero(hero, hero_name_eng.lower())
                 icy_url = httshots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
                 text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
                 await ctx.send(text)

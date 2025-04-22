@@ -25,13 +25,12 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.12.2"
+__version__ = "0.13"
 __author__ = "MrMalina"
 
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 current_dir = path.dirname(__file__)
 data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
-data_info = ConfigObj(current_dir + '\\data\\info.ini')
 
 stream_replays = []
 stream_pregame = []
@@ -56,7 +55,7 @@ def load(argv:list) -> None:
     global accounts, strings, language, \
            replay_check_period, hero_data, \
            battle_lobby_hash, config, \
-           hero_names, imgur, tracker_events_hash, \
+           htts_data, imgur, tracker_events_hash, \
            tw_bot
 
     config = Config(current_dir + '\\config\\config.ini')
@@ -103,7 +102,7 @@ def load(argv:list) -> None:
             print_log('ParamReplayEn')
 
     hero_data = HeroData(current_dir + '\\files\\herodata.json')
-    hero_names = HeroesStrings(current_dir + '\\data\\heroes.ini', config.replay_language)
+    htts_data = DataStrings(current_dir + '\\data\\data.ini', config.replay_language)
 
     if not config.send_previous_battle_lobby:
         # if check battle_lobby -> all files found
@@ -137,6 +136,8 @@ def load(argv:list) -> None:
     config.vs_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 16)
     config.vs_large_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 24)
     config.vs_big_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 46)
+    config.vs_small_chinese_font = ImageFont.truetype(config.vs_ttf_path+'HanyiSentyPagoda Regular.ttf', 12)
+    config.vs_chinese_font = ImageFont.truetype(config.vs_ttf_path+'HanyiSentyPagoda Regular.ttf', 16)
 
     if config.image_upload == 1:
         imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
@@ -201,32 +202,34 @@ def get_end(number: int, t: int):
 # ======================================================================
 # >> Classes
 # ======================================================================
-class HeroesStrings:
+class DataStrings:
     def __init__(self, file_name, replay_lang):
-        self.heroes = ConfigObj(file_name)
+        self.data = ConfigObj(file_name)
         self.language = replay_lang
 
-        if not replay_lang in self.heroes:
+        if not replay_lang in self.data:
             self.language = 'ru'
             print_log('HeroesStringsNoLanguage', replay_lang)
 
         # need to talents in tracker
-        self.icy_en_names = self.heroes['en'].get('icy_names', {})
+        self.icy_en_names = self.data['en'].get('icy_names', {})
 
-        self.heroes = self.heroes[self.language]
+        self.data = self.data[self.language]
 
-        self.names = self.heroes['names']
-        self.rofl_names = self.heroes.get('rofl_names', {})
-        self.short_names = self.heroes.get('short_names', {})
-        self.data_names = self.heroes.get('data_names', {})
-        self.icy_names = self.heroes.get('icy_names', {})
-        self.data_names_revers = self.heroes.get('data_names_revers', {})
+        self.params = self.data['params']
+        self.maps = self.data['maps']
+        self.names = self.data['names']
+        self.rofl_names = self.data.get('rofl_names', {})
+        self.short_names = self.data.get('short_names', {})
+        self.data_names = self.data.get('data_names', {})
+        self.icy_names = self.data.get('icy_names', {})
+        self.data_names_revers = self.data.get('data_names_revers', {})
 
     def get_eng_hero(self, hero):
         if self.language == 'en':
             return self.names[hero][0]
         else:
-            return self.heroes['en'][hero]
+            return self.data['en'][hero]
 
     def get_icy_hero(self, hero, eng_name):
         return self.icy_names.get(hero, eng_name)
@@ -263,7 +266,7 @@ class HeroesStrings:
                 return hero
 
     def __getitem__(self, key):
-        return self.heroes[key]
+        return self.data[key]
 
 
 class HeroData:
@@ -377,9 +380,9 @@ class StreamReplay:
             if player.hero.lower().startswith(hero_name_part):
                 return player
 
-        for _hero in hero_names.rofl_names:
+        for _hero in htts_data.rofl_names:
             if _hero.lower().startswith(hero_name_part):
-                hero_name_part = hero_names.rofl_names[_hero].lower()
+                hero_name_part = htts_data.rofl_names[_hero].lower()
                 break
 
         for player in players:
