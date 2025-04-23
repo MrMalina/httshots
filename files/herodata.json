@@ -1597,14 +1597,14 @@
         "nameId": "AmazonHeroWeaponMelee",
         "range": 2.0,
         "period": 0.9,
-        "damage": 122.0,
+        "damage": 125.0,
         "damageScale": 0.04
       },
       {
         "nameId": "AmazonHeroWeaponRanged",
         "range": 4.5,
         "period": 0.9,
-        "damage": 122.0,
+        "damage": 125.0,
         "damageScale": 0.04
       }
     ],
@@ -5776,21 +5776,21 @@
           ]
         },
         {
-          "nameId": "GenericTalentBlock",
-          "buttonId": "GenericBlockTalent",
-          "icon": "storm_ui_icon_talent_block.png",
-          "abilityType": "Passive",
-          "sort": 2
-        },
-        {
           "nameId": "ButcherMasteryHamstringChopMeat",
           "buttonId": "ButcherHamstringChopMeatTalent",
           "icon": "storm_ui_icon_butcher_hamstring_var1.png",
           "abilityType": "Q",
-          "sort": 3,
+          "sort": 2,
           "abilityTalentLinkIds": [
             "ButcherHamstring"
           ]
+        },
+        {
+          "nameId": "GenericTalentBlock",
+          "buttonId": "GenericBlockTalent",
+          "icon": "storm_ui_icon_talent_block.png",
+          "abilityType": "Passive",
+          "sort": 3
         }
       ],
       "level4": [
@@ -5805,23 +5805,23 @@
           ]
         },
         {
-          "nameId": "ButcherMasteryRuthlessOnslaughtUnrelentingPursuit",
-          "buttonId": "ButcherRuthlessOnslaughtUnrelentingPursuitTalent",
-          "icon": "storm_ui_icon_butcher_fullboar.png",
-          "abilityType": "E",
-          "sort": 2,
-          "abilityTalentLinkIds": [
-            "ButcherRuthlessOnslaught"
-          ]
-        },
-        {
           "nameId": "ButcherMasteryHamstringCheapShot",
           "buttonId": "ButcherHamstringCheapShotTalent",
           "icon": "storm_ui_icon_butcher_hamstring_var1.png",
           "abilityType": "Q",
-          "sort": 3,
+          "sort": 2,
           "abilityTalentLinkIds": [
             "ButcherHamstring"
+          ]
+        },
+        {
+          "nameId": "ButcherMasteryRuthlessOnslaughtUnrelentingPursuit",
+          "buttonId": "ButcherRuthlessOnslaughtUnrelentingPursuitTalent",
+          "icon": "storm_ui_icon_butcher_fullboar.png",
+          "abilityType": "E",
+          "sort": 3,
+          "abilityTalentLinkIds": [
+            "ButcherRuthlessOnslaught"
           ]
         }
       ],
@@ -5837,23 +5837,23 @@
           ]
         },
         {
-          "nameId": "ButcherMasteryFreshMeatVictuals",
-          "buttonId": "ButcherFreshMeatVictualsTalent",
-          "icon": "storm_ui_icon_butcher_freshmeat.png",
-          "abilityType": "Trait",
-          "sort": 2,
-          "abilityTalentLinkIds": [
-            "ButcherFreshMeatDummy"
-          ]
-        },
-        {
           "nameId": "ButcherMeatShield",
           "buttonId": "ButcherMeatShield",
           "icon": "storm_ui_icon_butcher_fullboar.png",
           "abilityType": "E",
-          "sort": 3,
+          "sort": 2,
           "abilityTalentLinkIds": [
             "ButcherRuthlessOnslaught"
+          ]
+        },
+        {
+          "nameId": "ButcherMasteryFreshMeatVictuals",
+          "buttonId": "ButcherFreshMeatVictualsTalent",
+          "icon": "storm_ui_icon_butcher_freshmeat.png",
+          "abilityType": "Trait",
+          "sort": 3,
+          "abilityTalentLinkIds": [
+            "ButcherFreshMeatDummy"
           ]
         }
       ],
@@ -5883,13 +5883,13 @@
       ],
       "level13": [
         {
-          "nameId": "ButcherCleaver",
-          "buttonId": "ButcherCleaver",
-          "icon": "storm_ui_icon_talent_autoattack_aoe.png",
-          "abilityType": "Passive",
+          "nameId": "ButcherMasteryHamstringBrutalStrike",
+          "buttonId": "ButcherHamstringBrutalStrikeTalent",
+          "icon": "storm_ui_icon_butcher_hamstring.png",
+          "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
-            "ButcherFreshMeatDummy"
+            "ButcherHamstring"
           ]
         },
         {
@@ -5903,13 +5903,13 @@
           ]
         },
         {
-          "nameId": "ButcherMasteryHamstringBrutalStrike",
-          "buttonId": "ButcherHamstringBrutalStrikeTalent",
-          "icon": "storm_ui_icon_butcher_hamstring.png",
-          "abilityType": "Q",
+          "nameId": "ButcherCleaver",
+          "buttonId": "ButcherCleaver",
+          "icon": "storm_ui_icon_talent_autoattack_aoe.png",
+          "abilityType": "Passive",
           "sort": 3,
           "abilityTalentLinkIds": [
-            "ButcherHamstring"
+            "ButcherFreshMeatDummy"
           ]
         }
       ],
@@ -9912,7 +9912,7 @@
     "life": {
       "amount": 2825.0,
       "scale": 0.04,
-      "regenRate": 5.8867,
+      "regenRate": 5.885416666666667,
       "regenScale": 0.04
     },
     "energy": {
@@ -10826,9 +10826,9 @@
       "targetInfo": "storm_ui_ingame_partyframe_dva_mech.png"
     },
     "life": {
-      "amount": 2100.0,
+      "amount": 2150.0,
       "scale": 0.04,
-      "regenRate": 4.375,
+      "regenRate": 4.4804,
       "regenScale": 0.04
     },
     "energy": {
@@ -10918,7 +10918,7 @@
             "countMax": 2,
             "countUse": 1,
             "countStart": 2,
-            "recastCooldown": 5.0
+            "recastCooldown": 3.0
           },
           "abilityType": "Heroic"
         }
@@ -11147,7 +11147,7 @@
             "countMax": 2,
             "countUse": 1,
             "countStart": 2,
-            "recastCooldown": 5.0
+            "recastCooldown": 3.0
           },
           "abilityType": "Heroic",
           "isActive": true,
@@ -11245,7 +11245,7 @@
             "countMax": 2,
             "countUse": 1,
             "countStart": 2,
-            "recastCooldown": 5.0
+            "recastCooldown": 3.0
           },
           "abilityType": "Heroic",
           "sort": 2,
@@ -12749,7 +12749,7 @@
         "nameId": "FirebatHeroWeapon",
         "range": 4.5,
         "period": 1.0,
-        "damage": 55.0,
+        "damage": 60.0,
         "damageScale": 0.04
       }
     ],
@@ -14920,8 +14920,8 @@
           ]
         },
         {
-          "nameId": "HeroGenericExecutionerPassive",
-          "buttonId": "GenericExecutionerTalent",
+          "nameId": "GreymaneLordofHisPack",
+          "buttonId": "GreymaneLordofHisPackTalent",
           "icon": "storm_ui_icon_talent_autoattack_damage.png",
           "abilityType": "Passive",
           "sort": 2
@@ -24484,6 +24484,16 @@
     },
     "subAbilities": [
       {
+        "MedivhPolyBombGlyphOfPolyBomb|MedivhPolyBombGlyphOfPolyBomb": {
+          "heroic": [
+            {
+              "nameId": "MedivhPolyBombGlyphOfPolyBomb",
+              "buttonId": "MedivhPolyBomb",
+              "icon": "storm_ui_icon_medivh_polybomb.png",
+              "abilityType": "Heroic"
+            }
+          ]
+        },
         "MedivhLeyLineSealMedivhCheats|MedivhLeyLineSealMedivhCheats": {
           "heroic": [
             {
@@ -31764,7 +31774,7 @@
         {
           "nameId": "SgtHammerAmbush",
           "buttonId": "SgtHammerSiegeModeAmbushTalent",
-          "icon": "storm_ui_icon_sgthammer_siegemode.png",
+          "icon": "storm_ui_icon_sgthammer_siegemode_var2.png",
           "abilityType": "Trait",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -31774,7 +31784,7 @@
         {
           "nameId": "SgtHammerSiegeModeAdvancedArtillery",
           "buttonId": "SgtHammerSiegeModeAdvancedArtillery",
-          "icon": "storm_ui_icon_sgthammer_siegemode_var1.png",
+          "icon": "storm_ui_icon_sgthammer_siegemode.png",
           "abilityType": "Trait",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -31784,7 +31794,7 @@
         {
           "nameId": "SgtHammerSiegeModeMaelstromRounds",
           "buttonId": "SgtHammerSiegeModeMaelstromRounds",
-          "icon": "storm_ui_icon_sgthammer_siegemode_var2.png",
+          "icon": "storm_ui_icon_sgthammer_siegemode_var1.png",
           "charges": {
             "countMax": 3,
             "countUse": 1,
@@ -33827,9 +33837,9 @@
       "targetInfo": "storm_ui_ingame_partyframe_thrall.png"
     },
     "life": {
-      "amount": 1896.0,
+      "amount": 1946.0,
       "scale": 0.04,
-      "regenRate": 3.9492,
+      "regenRate": 4.0546,
       "regenScale": 0.04
     },
     "energy": {
@@ -41329,7 +41339,7 @@
         "nameId": "ZuljinHeroWeapon",
         "range": 5.5,
         "period": 0.8,
-        "damage": 94.0,
+        "damage": 96.0,
         "damageScale": 0.04
       }
     ],

@@ -25,7 +25,7 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.13"
+__version__ = "0.13.1"
 __author__ = "MrMalina"
 
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"

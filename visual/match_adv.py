@@ -58,8 +58,6 @@ def create_board():
 def create_icons(image, map_name):
     map_number = int(hots.htts_data.maps.get(map_name.lower(), -1))
 
-    print(map_name, map_number)
-
     y = 50
 
     # Физический урон
