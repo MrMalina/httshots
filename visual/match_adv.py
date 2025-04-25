@@ -11,48 +11,18 @@ from httshots import httshots as hots
 
 
 # ======================================================================
+# >> CONSTS
+# ======================================================================
+WHITE = (255,255,255)
+BTEAM = (105,156,249)
+RTEAM = (234,140,140)
+
+
+# ======================================================================
 # >> FUNCTIONS
 # ======================================================================
 def load_background():
-    return Image.open(hots.config.vs_bg_path+'clear_background.png')
-
-
-def create_board():
-    border_path = hots.config.vs_border_path
-    vborder = Image.open(border_path+'verticalborder.png')
-    vborder_size = vborder.size
-    bghex = Image.open(border_path+'backgroundhex.png')
-    bghex_size = bghex.size
-    hborder = Image.open(border_path+'horizontalborder_bottom.png')
-    hborder_size = hborder.size
-
-    image = Image.new('RGBA', (bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]))
-
-    bg = Image.open(border_path+'background.png')
-    bg = bg.resize((bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]-5))
-    image.paste(bg, (0, 0))
-
-    image.paste(bghex, (0, 0), mask=bghex)
-
-    image.paste(vborder, (0, 0), mask=vborder)
-
-    image.paste(hborder, (0, vborder_size[1]), mask=hborder)
-
-    bborder = Image.open(border_path+'bottomborder.png')
-    bborder_size = bborder.size
-    image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
-
-    bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
-    image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
-
-    vborderright = Image.open(border_path+'verticalborder_right.png')
-    image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
-
-    hborder = Image.open(border_path+'horizontalborder.png')
-    hborder_size = hborder.size
-    image.paste(hborder, (20, 0), mask=hborder)
-
-    return image
+    return Image.open(hots.paths.bg / 'clear_background.png')
 
 
 def create_icons(image, map_name):
@@ -61,35 +31,35 @@ def create_icons(image, map_name):
     y = 50
 
     # Физический урон
-    tmp = Image.open(hots.config.vs_stats_path+'adv_ad_damage.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_ad_damage.png').convert('RGBA')
     image.paste(tmp, (340, y), mask=tmp)
 
     # Магический урон
-    tmp = Image.open(hots.config.vs_stats_path+'adv_ap_damage.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_ap_damage.png').convert('RGBA')
     image.paste(tmp, (440, y), mask=tmp)
 
     # Длительность оглушения
-    tmp = Image.open(hots.config.vs_stats_path+'adv_stunner.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_stunner.png').convert('RGBA')
     image.paste(tmp, (540, y), mask=tmp)
 
     # Длительность обездвижевания
-    tmp = Image.open(hots.config.vs_stats_path+'adv_trapper.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_trapper.png').convert('RGBA')
     image.paste(tmp, (640, y), mask=tmp)
 
     # Длительность молчания
-    tmp = Image.open(hots.config.vs_stats_path+'adv_silencer.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_silencer.png').convert('RGBA')
     image.paste(tmp, (740, y), mask=tmp)
 
     # Длительность смерти
-    tmp = Image.open(hots.config.vs_stats_path+'adv_death.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_death.png').convert('RGBA')
     image.paste(tmp, (840, y), mask=tmp)
 
     # Стрик из убийств
-    tmp = Image.open(hots.config.vs_stats_path+'adv_scrapper.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_scrapper.png').convert('RGBA')
     image.paste(tmp, (940, y), mask=tmp)
 
     # Поднято сфер
-    tmp = Image.open(hots.config.vs_stats_path+'adv_globes.png').convert('RGBA')
+    tmp = Image.open(hots.paths.stats / 'adv_globes.png').convert('RGBA')
     image.paste(tmp, (1040, y), mask=tmp)
 
 
@@ -155,7 +125,7 @@ def create_icons(image, map_name):
         img_name = 'adv_gardenterror.png'
         stat = 'plant_damage'
 
-    tmp = Image.open(hots.config.vs_stats_path+img_name).convert('RGBA')
+    tmp = Image.open(hots.paths.stats / img_name).convert('RGBA')
     image.paste(tmp, (1140, y), mask=tmp)
 
     return stat
@@ -183,7 +153,7 @@ def get_max_stats(replay, map_stat):
 
             if value > max_stats[team_id][stat][1]:
                 max_stats[team_id][stat] = [[id], value]
-            
+
             elif value == max_stats[team_id][stat][1]:
                 max_stats[team_id][stat][0].append(id)
 
@@ -191,12 +161,11 @@ def get_max_stats(replay, map_stat):
 
 
 def add_heroes(image, replay, max_stats, map_stat):
-    score_path = hots.config.vs_score_path
-    blue = Image.open(score_path+'blue.png')
-    bplayer = Image.open(score_path+'playerblue.png').convert('RGBA')
-    red = Image.open(score_path+'red.png')
-    rplayer = Image.open(score_path+'playerred.png').convert('RGBA')
-    glow = Image.open(score_path+'portrait.png').convert('RGBA')
+    blue = Image.open(hots.paths.score / 'blue.png')
+    bplayer = Image.open(hots.paths.score / 'playerblue.png').convert('RGBA')
+    red = Image.open(hots.paths.score / 'red.png')
+    rplayer = Image.open(hots.paths.score / 'playerred.png').convert('RGBA')
+    glow = Image.open(hots.paths.score / 'portrait.png').convert('RGBA')
 
     add = 120
     rng = 60
@@ -209,7 +178,7 @@ def add_heroes(image, replay, max_stats, map_stat):
 
     for y, player in enumerate(replay.players.values()):
         hero_name = hots.htts_data.get_eng_hero(player.hero)
-        hero = Image.open(hots.config.vs_heroes_path+hero_name.lower()+'.png').convert('RGBA')
+        hero = Image.open(hots.paths.heroes / (hero_name.lower() + '.png')).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
 
@@ -219,38 +188,38 @@ def add_heroes(image, replay, max_stats, map_stat):
         name = player.name
         check = hots.visual.check_name.match(name)[0]
         if check:
-            name_font = hots.config.vs_font
+            name_font = hots.fonts.default
         else:
-            name_font = hots.config.vs_chinese_font
+            name_font = hots.fonts.ch_default
 
         if team_id == 0:
             image.paste(bplayer, (25, add+(y*rng)), mask=bplayer)
             image.paste(blue, (25+rplayer.size[0], add+(y*rng)), mask=blue)
             image.paste(hero, (40, add+(y*rng)), mask=glow)
-            draw.text((155, add+(y*rng)+30), name, (105,156,249), font=name_font)
-            color = (105,156,249)
+            draw.text((155, add+(y*rng)+30), name, BTEAM, font=name_font)
+            color = BTEAM
             postfix = 'blue'
 
         else:
             image.paste(rplayer, (25, add+(y*rng)), mask=rplayer)
             image.paste(red, (25+rplayer.size[0], add+(y*rng)), mask=red)
             image.paste(hero, (40, add+(y*rng)), mask=glow)
-            draw.text((155, add+(y*rng)+30), name, (234,140,140), font=name_font)
-            color = (234,140,140)
+            draw.text((155, add+(y*rng)+30), name, RTEAM, font=name_font)
+            color = RTEAM
             postfix = 'red'
 
         hero_short_name = hots.htts_data.get_short_hero(player.hero)
 
-        draw.text((155, add+(y*rng)+10), hero_short_name, (255,255,255), font=hots.config.vs_font)
+        draw.text((155, add+(y*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 
         x = 360
         for stat in stats:
             value = str(getattr(player, stat))
             shift = get_shift(value)
             if id in max_stats[team_id][stat][0]:
-                draw.text((x-shift, add+(y*rng)+20), value, (255, 255, 255), font=hots.config.vs_font)
+                draw.text((x-shift, add+(y*rng)+20), value, WHITE, font=hots.fonts.default)
             else:
-                draw.text((x-shift, add+(y*rng)+20), value, color, font=hots.config.vs_font)
+                draw.text((x-shift, add+(y*rng)+20), value, color, font=hots.fonts.default)
 
             x+=100
 
@@ -290,9 +259,9 @@ def create_image(replay):
     add_heroes(image, replay, max_stats, map_stat)
 
     hots.print_log('ImageSaveImageMatch', uwaga=0)
-    image.save(hots.config.vs_screens_path + _name)
+    image.save(hots.paths.screens / _name)
 
     hots.print_log('ImageUploadMatchAdv')
-    url = hots.visual.upload.upload_file(hots.config.vs_screens_path + _name, _name)
+    url = hots.visual.upload.upload_file(hots.paths.screens / _name, _name)
 
     return url

@@ -31,7 +31,6 @@ class TrackerEvents:
                               player.talent4, player.talent5, player.talent6,
                               player.talent7]
 
-
 class Lobby:
     class Ban:
         def __init__(self, info):
@@ -58,7 +57,8 @@ class Header(parse.Parse):
     def __init__(self, data):
         self.parse_data('headers', data)
 
-        self.full_version = f"{self.version.major}.{self.version.minor}.{self.version.revision} ({self.version.build})"
+        self.full_version = f"{self.version.major}.{self.version.minor}." \
+                            f"{self.version.revision} ({self.version.build})"
 
     def __repr__(self):
         return self.full_version
@@ -97,7 +97,8 @@ class InitData(parse.Parse):
             player.spray = parse.decode_string(info['m_spray'])
             player.announcer_pack = parse.decode_string(info['m_announcerPack'])
             player.voice_line = parse.decode_string(info['m_voiceLine'])
-            player.hero_mastery_tiers = {x['m_hero']:x['m_tier'] for x in info['m_heroMasteryTiers']}
+            hero_mastery = info['m_heroMasteryTiers']
+            player.hero_mastery_tiers = {x['m_hero']:x['m_tier'] for x in hero_mastery}
 
 
     def __repr__(self):
@@ -125,7 +126,8 @@ class Player:
 
             :property userid:
                 Идентификатор пользователя от 0 до 9.
-                В явном виде не указывается, но порядок пользователей в replay.details соответствует их userid в других данных реплея
+                В явном виде не указывается, но порядок пользователей в
+                replay.details соответствует их userid в других данных реплея
             
             :property name:
                 Имя пользователя
@@ -138,7 +140,9 @@ class Player:
                 Встречается в replay.initdata, но тоже равно всегда равно 0
             
             :property color:
-                Цвет игрока? Класс Color, забавно, но m_b линейно растёт от 1 до 10, а m_r меняет значение от 0 до 2 не в очень понятном порядке
+                Цвет игрока? Класс Color, забавно, но m_b линейно растёт
+                от 1 до 10, а m_r меняет значение от 0 до 2 не
+                в очень понятном порядке
 
             :property control:
                 Кто контролирует героя
@@ -158,7 +162,6 @@ class Player:
         """
 
         self.userid = userid
-        # self.name = parse.decode_string(info['m_name'])
         self.name = info['m_name'].decode('utf8')
         self.toon = Region(info['m_toon'])
         self.race = parse.decode_string(info['m_race'])

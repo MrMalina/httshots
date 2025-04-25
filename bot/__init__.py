@@ -39,8 +39,8 @@ class TwitchBot(commands.Bot):
             found = 0
             replayes_count = 0
             for acc in httshots.accounts:
-                replays = list(acc.get_replays())
-                for replay_name in replays:
+                acc_replays = list(acc.get_replays())
+                for replay_name in acc_replays:
                     replayes_count += 1
                     replay, protocol = httshots.parser.get_replay(acc.replays_path + replay_name)
                     info = httshots.parser.get_match_info(replay, protocol)
@@ -68,9 +68,11 @@ class TwitchBot(commands.Bot):
                         sreplay = httshots.StreamReplay(replay_name, me, info)
                         httshots.stream_replays.append(sreplay)
                         sreplay.url_games = None
-                        httshots.print_log('FoundRankedPreviousGame', me.name, replay_name[11:-12])
+                        httshots.print_log('FoundRankedPreviousGame',
+                                            me.name, replay_name[11:-12])
                     else:
-                        httshots.print_log('FoundNoRankedPreviousGames', me.name, replay_name[11:-12])
+                        httshots.print_log('FoundNoRankedPreviousGames',
+                                            me.name, replay_name[11:-12])
 
             if found:
                 # 2024-11-28 21.35.03 Завод Вольской -> 24-11-28 21-35
@@ -80,12 +82,13 @@ class TwitchBot(commands.Bot):
 
                 url_games = httshots.visual.games.create_image(False)
                 sreplay.url_games = url_games
-                httshots.print_log('FoundPreviousGames', replayes_count, len(httshots.stream_replays))
+                httshots.print_log('FoundPreviousGames', replayes_count,
+                                    len(httshots.stream_replays))
 
             else:
                 httshots.print_log('FoundZeroPreviousGames')
 
-        httshots.print_log('BotStarted', httshots.__name__, 
+        httshots.print_log('BotStarted', httshots.__name__,
                            httshots.__author__, httshots.__version__)
         await self.endless_loop()
 
@@ -96,13 +99,9 @@ class TwitchBot(commands.Bot):
             await asyncio.sleep(httshots.replay_check_period)
 
     async def event_message(self, message: twitchio.Message):
-        if hasattr(message.author, 'name'): 
+        if hasattr(message.author, 'name'):
             await httshots.tw_bot.handle_commands(message)
             return
-
-    # async def event_command_error(self, ctx, error: Exception) -> None:
-        # if isinstance(error, commands.CommandOnCooldown):
-            # ...
 
     @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
     @commands.command(aliases=("матч", ))
@@ -111,7 +110,7 @@ class TwitchBot(commands.Bot):
             text = httshots.strings['GameNotFound']
             await ctx.send(text)
             return
-            
+
         _game = httshots.stream_replays[-1]
         if hero is None:
             text = httshots.strings['GameInfo'].format(_game.short_info)
@@ -171,7 +170,7 @@ class TwitchBot(commands.Bot):
 
             else:
                 info = info.strip().lower()
-                info = httshots.data_info['params'].get(info, info)
+                info = httshots.htts_data.params.get(info, info)
                 if info == 'score':
                     text = httshots.strings['GameHeroScore'].format(player.name, player.hero,
                                                                     player.solo_kill, player.deaths,
@@ -201,9 +200,11 @@ class TwitchBot(commands.Bot):
             win_text = httshots.get_end(wins, 'Wins')
             lose_text = httshots.get_end(loses, 'Loses')
             if url_games:
-                text = httshots.strings['GamesInfoOneWithStats'].format(wins, win_text, loses, lose_text, url_games)
+                text = httshots.strings['GamesInfoOneWithStats'].format(
+                        wins, win_text, loses, lose_text, url_games)
             else:
-                text = httshots.strings['GamesInfoOne'].format(wins, win_text, loses, lose_text)
+                text = httshots.strings['GamesInfoOne'].format(
+                        wins, win_text, loses, lose_text)
 
         else:
             win_text = httshots.get_end(wins, 'Wins')
@@ -215,13 +216,12 @@ class TwitchBot(commands.Bot):
             else:
                 streak_text = httshots.strings[streak[0]][2]
             if url_games:
-                text = httshots.strings['GamesInfoMoreWithStats'].format(matches, match_text, wins,
-                                                                         win_text, loses, lose_text,
-                                                                         streak[1], streak_text, url_games)
+                text = httshots.strings['GamesInfoMoreWithStats'].format(
+                        matches, match_text, wins, win_text, loses,
+                        lose_text, streak[1], streak_text, url_games)
             else:
-                text = httshots.strings['GamesInfoMore'].format(matches, match_text, wins,
-                                                                win_text, loses, lose_text,
-                                                                streak[1], streak_text)
-
+                text = httshots.strings['GamesInfoMore'].format(
+                        matches, match_text, wins, win_text, loses,
+                        lose_text, streak[1], streak_text)
 
         await ctx.send(text)

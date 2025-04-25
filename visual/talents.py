@@ -10,81 +10,50 @@ from httshots import httshots as hots
 
 
 # ======================================================================
+# >> CONSTS
+# ======================================================================
+WHITE = (255,255,255)
+BTEAM = (105,156,249)
+RTEAM = (234,140,140)
+
+
+# ======================================================================
 # >> FUNCTIONS
 # ======================================================================
-def create_board():
-    border_path = hots.config.vs_border_path
-
-    vborder = Image.open(border_path+'verticalborder.png')
-    vborder_size = vborder.size
-    bghex = Image.open(border_path+'backgroundhex.png')
-    bghex_size = bghex.size
-    hborder = Image.open(border_path+'horizontalborder_bottom.png')
-    hborder_size = hborder.size
-
-    image = Image.new('RGBA', (bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]))
-
-    bg = Image.open(border_path+'background.png')
-    bg = bg.resize((bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]-5))
-    image.paste(bg, (0, 0))
-
-    image.paste(bghex, (0, 0), mask=bghex)
-
-    image.paste(vborder, (0, 0), mask=vborder)
-
-    image.paste(hborder, (0, vborder_size[1]), mask=hborder)
-
-    bborder = Image.open(border_path+'bottomborder.png')
-    bborder_size = bborder.size
-    image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
-
-    bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
-    image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
-
-    vborderright = Image.open(border_path+'verticalborder_right.png')
-    image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
-
-    hborder = Image.open(border_path+'horizontalborder.png')
-    hborder_size = hborder.size
-    image.paste(hborder, (20, 0), mask=hborder)
-
-    return image
+def load_background():
+    return Image.open(hots.paths.bg / 'games_background.png')
 
 
 def create_icons(image):
     draw = ImageDraw.Draw(image)
-    draw.text((495, 50), "1", (255,255,255), font=hots.config.vs_large_font)
-    draw.text((595, 50), "4", (255,255,255), font=hots.config.vs_large_font)
-    draw.text((695, 50), "7", (255,255,255), font=hots.config.vs_large_font)
-    draw.text((790, 50), "10", (255,255,255), font=hots.config.vs_large_font)
-    draw.text((890, 50), "13", (255,255,255), font=hots.config.vs_large_font)
-    draw.text((990, 50), "16", (255,255,255), font=hots.config.vs_large_font)
-    draw.text((1090, 50), "20", (255,255,255), font=hots.config.vs_large_font)
-
+    draw.text((495, 50), "1", WHITE, font=hots.fonts.large)
+    draw.text((595, 50), "4", WHITE, font=hots.fonts.large)
+    draw.text((695, 50), "7", WHITE, font=hots.fonts.large)
+    draw.text((790, 50), "10", WHITE, font=hots.fonts.large)
+    draw.text((890, 50), "13", WHITE, font=hots.fonts.large)
+    draw.text((990, 50), "16", WHITE, font=hots.fonts.large)
+    draw.text((1090, 50), "20", WHITE, font=hots.fonts.large)
 
 
 def add_heroes(image, replay):
-    score_path = hots.config.vs_score_path
-    talents_path = hots.config.vs_talents_path
+    blue = Image.open(hots.paths.score / 'blue.png')
+    bplayer = Image.open(hots.paths.score / 'playerblue.png').convert('RGBA')
+    red = Image.open(hots.paths.score / 'red.png')
+    rplayer = Image.open(hots.paths.score / 'playerred.png').convert('RGBA')
+    glow = Image.open(hots.paths.score / 'portrait.png').convert('RGBA')
 
-    blue = Image.open(score_path+'blue.png')
-    bplayer = Image.open(score_path+'playerblue.png').convert('RGBA')
-    red = Image.open(score_path+'red.png')
-    rplayer = Image.open(score_path+'playerred.png').convert('RGBA')
-    glow = Image.open(score_path+'portrait.png').convert('RGBA')
-
-    talent_available = Image.open(talents_path+'talent_available.png')
-    talent_available_ult = Image.open(talents_path+'talent_available_ult.png')
-    talent_bg = Image.open(talents_path+'talent_bg.png')
-    talent_unavailable = Image.open(talents_path+'talent_unavailable.png')
-    talent_unselected = Image.open(talents_path+'talent_unselected.png')
+    t_available = Image.open(hots.paths.talents / 'talent_available.png')
+    t_available_ult = Image.open(hots.paths.talents / 'talent_available_ult.png')
+    t_bg = Image.open(hots.paths.talents / 'talent_bg.png')
+    t_unavailable = Image.open(hots.paths.talents / 'talent_unavailable.png')
+    t_unselected = Image.open(hots.paths.talents / 'talent_unselected.png')
 
     add = 100
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
         hero_name = hots.htts_data.get_eng_hero(player.hero)
-        hero = Image.open(hots.config.vs_heroes_path+hero_name.lower()+'.png').convert('RGBA')
+        hero = Image.open(hots.paths.heroes / (hero_name.lower() + '.png')).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
 
@@ -93,24 +62,24 @@ def add_heroes(image, replay):
         name = player.name
         check = hots.visual.check_name.match(name)[0]
         if check:
-            name_font = hots.config.vs_font
+            name_font = hots.fonts.default
         else:
-            name_font = hots.config.vs_chinese_font
+            name_font = hots.fonts.ch_default
 
         if team_id == 0:
             image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
             image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), name, (105,156,249), font=name_font)
+            draw.text((155, add+(x*rng)+30), name, BTEAM, font=name_font)
 
         else:
             image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
             image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
             image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), name, (234,140,140), font=name_font)
+            draw.text((155, add+(x*rng)+30), name, RTEAM, font=name_font)
 
         hero_short_name = hots.htts_data.get_short_hero(player.hero)
-        draw.text((155, add+(x*rng)+10), hero_short_name, (255,255,255), font=hots.config.vs_font)
+        draw.text((155, add+(x*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 
         team_level = player.team_level
 
@@ -123,29 +92,29 @@ def add_heroes(image, replay):
             talent = z[1]
             if level <= team_level:
                 if talent == 0:
-                    image.paste(talent_unselected, (start+13, add+(x*rng+7)), mask=talent_unselected)
+                    image.paste(t_unselected, (start+13, add+(x*rng+7)), mask=t_unselected)
                 else:
                     icon = info['level%s'%level][talent-1]['icon']
-                    icon = Image.open(talents_path+icon)
+                    icon = Image.open(hots.paths.talents /icon)
                     icon = icon.resize((46, 46))
                     image.paste(icon, (start+11, add+(x*rng+6)))
 
             else:
-                image.paste(talent_bg, (start+11, add+(x*rng+6)), mask=talent_bg)
-                image.paste(talent_unavailable, (start, add+(x*rng-6)), mask=talent_unavailable)
+                image.paste(t_bg, (start+11, add+(x*rng+6)), mask=t_bg)
+                image.paste(t_unavailable, (start, add+(x*rng-6)), mask=t_unavailable)
                 start += 100
                 continue
 
             if data_hero_name != 'Varian':
                 if level != 10:
-                    image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+                    image.paste(t_available, (start, add+(x*rng-6)), mask=t_available)
                 else:
-                    image.paste(talent_available_ult, (start, add+(x*rng - 6)), mask=talent_available_ult)
+                    image.paste(t_available_ult, (start, add+(x*rng - 6)), mask=t_available_ult)
             else:
                 if level != 4:
-                    image.paste(talent_available, (start, add+(x*rng-6)), mask=talent_available)
+                    image.paste(t_available, (start, add+(x*rng-6)), mask=t_available)
                 else:
-                    image.paste(talent_available_ult, (start, add+(x*rng - 6)), mask=talent_available_ult)
+                    image.paste(t_available_ult, (start, add+(x*rng - 6)), mask=t_available_ult)
 
             start += 100
 
@@ -170,14 +139,17 @@ def add_other_info(image, replay):
     else:
         coords = (105, 710)
 
-    draw.text(coords, hots.strings['ImageBlueTeam'], (185,213,255), font=hots.config.vs_large_font)
-    draw.text((105, 740), hots.strings('ImageLevelTeam', blue_level), (39,153,165), font=hots.config.vs_large_font)
+    tmp = hots.strings('ImageLevelTeam', blue_level)
+    draw.text(coords, hots.strings['ImageBlueTeam'], (185,213,255), font=hots.fonts.large)
+    draw.text((105, 740), tmp, (39,153,165), font=hots.fonts.large)
 
-    draw.text((1350-250, 710), hots.strings['ImageRedTeam'], (234,140,140), font=hots.config.vs_large_font)
-    draw.text((1350-250, 740), hots.strings('ImageLevelTeam', red_level), (175,76,105), font=hots.config.vs_large_font)
+    tmp = hots.strings('ImageLevelTeam', red_level)
+    draw.text((1350-250, 710), hots.strings['ImageRedTeam'], (234,140,140), font=hots.fonts.large)
+    draw.text((1350-250, 740), tmp, (175,76,105), font=hots.fonts.large)
 
-    draw.text((550, 720), hots.strings['ImageMatchDuration'], (138,166,251), font=hots.config.vs_large_font)
-    draw.text((610, 745), f"{str(time//60).zfill(2)}:{str(time%60).zfill(2)}", (255, 255, 255), font=hots.config.vs_big_font)
+    draw.text((550, 720), hots.strings['ImageMatchDuration'], (138,166,251), font=hots.fonts.large)
+    tmp = f"{str(time//60).zfill(2)}:{str(time%60).zfill(2)}"
+    draw.text((610, 745), tmp, WHITE, font=hots.fonts.big)
 
     if player.result == 1:
         if player.team_id == 0:
@@ -194,14 +166,14 @@ def add_other_info(image, replay):
             text = hots.strings['ImageBlueWin']
             color = (39,153,165)
 
-    draw.text((40, 50), text, color, font=hots.config.vs_large_font)
+    draw.text((40, 50), text, color, font=hots.fonts.large)
 
 
 def create_image(replay):
     _name = 'talents.png'
     hots.print_log('ImageStartCreateTalentsImage', uwaga=0)
-    hots.print_log('ImageCreateBorder', uwaga=0)
-    image = create_board()
+    hots.print_log('ImageLoadBackGround', uwaga=0)
+    image = load_background()
 
     hots.print_log('ImageCreateIcons', uwaga=0)
     create_icons(image)
@@ -213,9 +185,9 @@ def create_image(replay):
     add_other_info(image, replay)
 
     hots.print_log('ImageSaveImageMatch', uwaga=0)
-    image.save(hots.config.vs_screens_path + _name)
+    image.save(hots.paths.screens / _name)
 
     hots.print_log('ImageUploadTalents')
-    url = hots.visual.upload.upload_file(hots.config.vs_screens_path + _name, _name)
+    url = hots.visual.upload.upload_file(hots.paths.screens / _name, _name)
 
     return url

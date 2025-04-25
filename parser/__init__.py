@@ -54,8 +54,10 @@ def get_match_info(replay, protocol):
     for event in protocol.decode_replay_tracker_events(contents):
         if event['_eventid'] == 11 and event['_event'] == 'NNet.Replay.Tracker.SScoreResultEvent':
             game.add_event(event['m_instanceList'])
-        if (event['_eventid'] == 13 and event['_event'] == 'NNet.Replay.Tracker.SHeroBannedEvent') or (
-           event['_eventid'] == 14 and event['_event'] == 'NNet.Replay.Tracker.SHeroPickedEvent'):
+        if (event['_eventid'] == 13 and
+            event['_event'] == 'NNet.Replay.Tracker.SHeroBannedEvent') or \
+            (event['_eventid'] == 14 and
+            event['_event'] == 'NNet.Replay.Tracker.SHeroPickedEvent'):
             info.append(event)
     game.add_lobby(info)
 
@@ -68,7 +70,7 @@ def get_replay_details(replay, protocol):
 
     return classes.Details(full_details)
 
-    
+
 def get_replay_initdata(replay, protocol):
     contents = replay.read_file('replay.initData')
     init_data = protocol.decode_replay_initdata(contents)

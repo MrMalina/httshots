@@ -46,7 +46,7 @@ class Parse:
 class Args(Parse):
     def __init__(self, name, data):
         self.parse_data(name, data)
-            
+
 
 class TYPE:
     I = int

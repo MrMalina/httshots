@@ -10,10 +10,15 @@ from httshots import httshots as hots
 
 
 # ======================================================================
+# >> CONSTS
+# ======================================================================
+WHITE = (255,255,255)
+
+# ======================================================================
 # >> FUNCTIONS
 # ======================================================================
 def load_background():
-    return Image.open(hots.config.vs_bg_path+'lobby_background.png')
+    return Image.open(hots.paths.bg / 'lobby_background.png')
 
 
 def add_users(image, info):
@@ -22,10 +27,10 @@ def add_users(image, info):
     add = 20
     rng = 60
 
-    vc_party1 = Image.open(hots.config.vs_stats_path+'vc_party1.png')
-    vc_party2 = Image.open(hots.config.vs_stats_path+'vc_party2.png')
-    vc_party3 = Image.open(hots.config.vs_stats_path+'vc_party3.png')
-    vc_party4 = Image.open(hots.config.vs_stats_path+'vc_party4.png')
+    vc_party1 = Image.open(hots.paths.stats / 'vc_party1.png')
+    vc_party2 = Image.open(hots.paths.stats / 'vc_party2.png')
+    vc_party3 = Image.open(hots.paths.stats / 'vc_party3.png')
+    vc_party4 = Image.open(hots.paths.stats / 'vc_party4.png')
 
     icons = [vc_party1, vc_party2, vc_party3, vc_party4]
 
@@ -56,12 +61,12 @@ def add_users(image, info):
         btag = blplayer.battle_tag
         name = hots.visual.check_name.match(btag)[0]
         if name:
-            name_font = hots.config.vs_small_font
+            name_font = hots.fonts.small
         else:
-            name_font = hots.config.vs_small_chinese_font
+            name_font = hots.fonts.ch_small
 
-        draw.text((coords2, add+(x*rng)+3), "(%s)"%blplayer.level, (255,255,255), font=hots.config.vs_small_font)
-        draw.text((coords, add+(x*rng)+3), btag, (255,255,255), font=name_font)
+        draw.text((coords2, add+(x*rng)+3), "(%s)"%blplayer.level, WHITE, font=hots.fonts.small)
+        draw.text((coords, add+(x*rng)+3), btag, WHITE, font=name_font)
 
 
 def create_image(info):
@@ -73,9 +78,9 @@ def create_image(info):
     add_users(image, info)
 
     hots.print_log('ImageSaveImageMatch', uwaga=0)
-    image.save(hots.config.vs_screens_path + _name)
+    image.save(hots.paths.screens / _name)
 
     hots.print_log('ImageUploadBattleLobby')
-    url = hots.visual.upload.upload_file(hots.config.vs_screens_path + _name, _name)
+    url = hots.visual.upload.upload_file(hots.paths.screens / _name, _name)
 
     return url

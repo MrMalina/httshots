@@ -3,7 +3,7 @@
 # ======================================================================
 
 # Python
-import sys 
+import sys
 
 from ftplib import FTP
 from getpass import getuser
@@ -14,6 +14,7 @@ from os import path, sep, listdir
 from imgurpython import ImgurClient
 from PIL import ImageFont
 from time import strftime
+from pathlib import Path
 
 
 # Httshots
@@ -25,7 +26,7 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 __name__ = "HTTSHoTS"
-__version__ = "0.13.1"
+__version__ = "0.14.0"
 __author__ = "MrMalina"
 
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
@@ -46,6 +47,8 @@ tracker_events_hash = None
 cur_game = [0, 0]
 check_talents_task = None
 config = None
+fonts = None
+paths = None
 
 # ======================================================================
 # >> Load
@@ -56,7 +59,7 @@ def load(argv:list) -> None:
            replay_check_period, hero_data, \
            battle_lobby_hash, config, \
            htts_data, imgur, tracker_events_hash, \
-           tw_bot
+           tw_bot, fonts, paths
 
     config = Config(current_dir + '\\config\\config.ini')
     language = config.language
@@ -119,26 +122,32 @@ def load(argv:list) -> None:
             file.close()
             tracker_events_hash = md5(contents).hexdigest()
 
-    # Visual
-    tmp = current_dir + '/files/'
-    config.vs_path = tmp
-    config.vs_bg_path = tmp + "background/"
-    config.vs_stats_path = tmp + "stats/"
-    config.vs_score_path = tmp + "scorescreen/"
-    config.vs_ttf_path = tmp + "ttf/"
-    config.vs_screens_path = tmp + "screens/"
-    config.vs_border_path = tmp + "border/"
-    config.vs_heroes_path = tmp + "heroes/"
-    config.vs_talents_path = tmp + "talents/"
-    config.vs_mvp_path = tmp + "mvp/"
+    # Paths
+    paths = HelpCls()
+    main_path = Path(current_dir) / "files"
+    paths.add('bg', main_path / "background")
+    paths.add('stats', main_path / "stats")
+    paths.add('score', main_path / "scorescreen")
+    paths.add('ttf', main_path / "ttf")
+    paths.add('screens', main_path / "screens")
+    paths.add('border', main_path / "border")
+    paths.add('heroes', main_path / "heroes")
+    paths.add('talents', main_path / "talents")
+    paths.add('mvp', main_path / "mvp")
 
-    config.vs_small_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 12)
-    config.vs_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 16)
-    config.vs_large_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 24)
-    config.vs_big_font = ImageFont.truetype(config.vs_ttf_path+'Exo2-Bold.ttf', 46)
-    config.vs_small_chinese_font = ImageFont.truetype(config.vs_ttf_path+'HanyiSentyPagoda Regular.ttf', 12)
-    config.vs_chinese_font = ImageFont.truetype(config.vs_ttf_path+'HanyiSentyPagoda Regular.ttf', 16)
+    # Fonts
+    ascii_ttf = paths.ttf / 'Exo2-Bold.ttf'
+    chinese_ttf = paths.ttf / 'HanyiSentyPagoda Regular.ttf'
 
+    fonts = HelpCls()
+    fonts.add('small', ImageFont.truetype(ascii_ttf, 12))
+    fonts.add('default', ImageFont.truetype(ascii_ttf, 16))
+    fonts.add('large', ImageFont.truetype(ascii_ttf, 24))
+    fonts.add('big', ImageFont.truetype(ascii_ttf, 46))
+    fonts.add('ch_small', ImageFont.truetype(chinese_ttf, 12))
+    fonts.add('ch_default', ImageFont.truetype(chinese_ttf, 16))
+
+    # Image upload format
     if config.image_upload == 1:
         imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
         print_log('ImgurLogin')
@@ -202,6 +211,17 @@ def get_end(number: int, t: int):
 # ======================================================================
 # >> Classes
 # ======================================================================
+class HelpCls:
+    def __init__(self):
+        self.data = {}
+
+    def add(self, name, font):
+        self.data[name] = font
+
+    def __getattr__(self, attr):
+        return self.data[attr]
+
+
 class DataStrings:
     def __init__(self, file_name, replay_lang):
         self.data = ConfigObj(file_name)

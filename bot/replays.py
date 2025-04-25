@@ -113,7 +113,8 @@ async def send_replay_info(replay_name):
         win_text = httshots.get_end(wins, 'Wins')
         lose_text = httshots.get_end(loses, 'Loses')
         if url_games:
-            text = httshots.strings['GamesInfoOneWithStats'].format(wins, win_text, loses, lose_text, url_games)
+            text = httshots.strings['GamesInfoOneWithStats'].format(
+                    wins, win_text, loses, lose_text, url_games)
         else:
             text = httshots.strings['GamesInfoOne'].format(wins, win_text, loses, lose_text)
 
@@ -127,13 +128,13 @@ async def send_replay_info(replay_name):
         else:
             streak_text = httshots.strings[streak[0]][2]
         if url_games:
-            text = httshots.strings['GamesInfoMoreWithStats'].format(matches, match_text, wins,
-                                                                     win_text, loses, lose_text,
-                                                                     streak[1], streak_text, url_games)
+            text = httshots.strings['GamesInfoMoreWithStats'].format(
+                    matches, match_text, wins, win_text, loses,
+                    lose_text, streak[1], streak_text, url_games)
         else:
-            text = httshots.strings['GamesInfoMore'].format(matches, match_text, wins,
-                                                            win_text, loses, lose_text,
-                                                            streak[1], streak_text)
+            text = httshots.strings['GamesInfoMore'].format(
+                    matches, match_text, wins, win_text,
+                    loses, lose_text, streak[1], streak_text)
 
     httshots.print_log('SendReplayInfo')
 

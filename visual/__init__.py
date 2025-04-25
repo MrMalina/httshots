@@ -3,6 +3,7 @@
 # ======================================================================
 # python
 import re
+from PIL import Image
 
 # httshots
 from . import match
@@ -12,6 +13,7 @@ from . import talents
 from . import battlelobby
 from . import tracker
 from . import upload
+
 
 # ======================================================================
 # >> CONSTS
@@ -56,3 +58,42 @@ mvps = {
     'seeds': 'gardenterror',
 }
 
+
+# ======================================================================
+# >> Functions
+# ======================================================================
+def create_board(border_path):
+    vborder = Image.open(border_path+'verticalborder.png')
+    vborder_size = vborder.size
+    bghex = Image.open(border_path+'backgroundhex.png')
+    bghex_size = bghex.size
+    hborder = Image.open(border_path+'horizontalborder_bottom.png')
+    hborder_size = hborder.size
+
+    image = Image.new('RGBA', (bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]))
+
+    bg = Image.open(border_path+'background.png')
+    bg = bg.resize((bghex_size[0]+vborder_size[0]-2, vborder_size[1]+hborder_size[1]-5))
+    image.paste(bg, (0, 0))
+
+    image.paste(bghex, (0, 0), mask=bghex)
+
+    image.paste(vborder, (0, 0), mask=vborder)
+
+    image.paste(hborder, (0, vborder_size[1]), mask=hborder)
+
+    bborder = Image.open(border_path+'bottomborder.png')
+    bborder_size = bborder.size
+    image.paste(bborder, (hborder_size[0], vborder_size[1]+hborder_size[1]-23), mask=bborder)
+
+    bborderright = Image.open(border_path+'horizontalborder_bottom_right.png')
+    image.paste(bborderright, (hborder_size[0]+bborder_size[0], vborder_size[1]), mask=bborderright)
+
+    vborderright = Image.open(border_path+'verticalborder_right.png')
+    image.paste(vborderright, (bghex_size[0]-2, 0), mask=vborderright)
+
+    hborder = Image.open(border_path+'horizontalborder.png')
+    hborder_size = hborder.size
+    image.paste(hborder, (20, 0), mask=hborder)
+
+    return image

@@ -17,7 +17,15 @@ stats_main = ['solo_kill', 'assists', 'deaths']
 stats_general = ['structure_damage', 'minion_damage',
          'hero_damage', 'taken_damage', 'healing', 'self_healing', 'merc_camps',
          'experience', 'siege_damage']
-stats_mvp = ['mvp', 'xp', 'escapes', 'zerg', 'roots', 'temple', 'skulls', 'gems', 'daredevil_escapes', 'vengeances', 'immortal', 'curse', 'dragon', 'healing', 'silences', 'stuns', 'pushing', 'outnumbered_deaths', 'hat_trick', 'shields', 'siege_damage', 'altar', 'clutch_healing', 'teamfight_healing', 'hero_damage', 'time_on_point', 'outnumbered_deaths', 'cage_unlocks', 'taken_damage', 'teamfight_taken_damage', 'teamfight_hero_damage', 'mercs', 'kill_streak', 'seeds']
+stats_mvp = ['mvp', 'xp', 'escapes', 'zerg', 'roots', 'temple',
+             'skulls', 'gems', 'daredevil_escapes', 'vengeances',
+             'immortal', 'curse', 'dragon', 'healing', 'silences',
+             'stuns', 'pushing', 'outnumbered_deaths', 'hat_trick',
+             'shields', 'siege_damage', 'altar', 'clutch_healing',
+             'teamfight_healing', 'hero_damage', 'time_on_point',
+             'outnumbered_deaths', 'cage_unlocks', 'taken_damage',
+             'teamfight_taken_damage', 'teamfight_hero_damage',
+             'mercs', 'kill_streak', 'seeds']
 
 maps = ['Альтеракский перевал', 'Башни Рока', 'Драконий Край', 'Вечная Битва',
         'Осквернённые святилища', 'Проклятая лощина', 'Сады ужаса',
@@ -38,7 +46,7 @@ class TestReplay:
         red_level = randint(10, 20)
 
         self.players = {}
-        tmp = list(httshots.hero_names.names.keys())
+        tmp = list(httshots.htts_data.names.keys())
 
         heroes = tmp[(0+count)*10:(1+count)*10]
         if len(heroes) < 10:

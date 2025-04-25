@@ -85,7 +85,7 @@ def get_battle_lobby_players(contents):
         index = buffer.read_bits(5)
 
         blplayer = BLPlayer(index)
-        
+
         #toon
         buffer.read_bits(8) # region
         program_id = buffer.read_bits(32)
@@ -94,7 +94,7 @@ def get_battle_lobby_players(contents):
         # unknown game
         if program_id != b'Hero':
             return None
-            
+
         buffer.read_bits(32) # realm
         buffer.read_bits(64) # id
 
@@ -112,7 +112,7 @@ def get_battle_lobby_players(contents):
         buffer.byte_align()
         tag = buffer.read_aligned_bytes(id)
         blplayer.tag = tag
-        
+
         buffer.read_bits(6)
 
         buffer.read_bits(2)
@@ -120,7 +120,7 @@ def get_battle_lobby_players(contents):
         buffer.read_bits(24)
 
         buffer.read_bits(7)
-        
+
         bit = buffer.read_bits(1)
         if not bit:
             buffer.read_bits(12)
@@ -150,7 +150,7 @@ def get_battle_lobby_players(contents):
         level = buffer.read_bits(32)
         blplayer.level = level
         blplayer.has_active_boost = buffer.read_bits(1)
-        
+
         blplayers.append(blplayer)
 
     return blplayers
