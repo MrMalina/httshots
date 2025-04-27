@@ -37,8 +37,7 @@ py -m pip install -U git+https://github.com/MrMalina/httshots
 * Запустить бота
 Если директорию с файлами бота располагается в той же директории, где python, то запуск осуществляется командой:
 ```bash
-py
-import httshots
+py -m httshots
 ```
 
 Для запуска бота с параметрами:

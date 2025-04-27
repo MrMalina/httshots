@@ -143,7 +143,6 @@ async def send_replay_info(replay_name):
 
 async def check_replays():
     for acc in httshots.accounts:
-        # new_replay = acc.replays_path + list(acc.get_replays())[0]
         new_replay = acc.check_new_replays()
         if new_replay:
             tmp = new_replay.split('/')

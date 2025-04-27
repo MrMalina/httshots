@@ -5,17 +5,16 @@
 # Python
 import sys
 
-from ftplib import FTP
+from ftplib import FTP, Error as FTP_Error
 from getpass import getuser
 from hashlib import md5
-from configobj import ConfigObj, Section
 from json import load as json_load
 from os import path, sep, listdir
-from imgurpython import ImgurClient
-from PIL import ImageFont
 from time import strftime
 from pathlib import Path
-
+from configobj import ConfigObj, Section
+from imgurpython import ImgurClient
+from PIL import ImageFont
 
 # Httshots
 from . import bot
@@ -25,17 +24,18 @@ from . import parser, visual, test
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
-__name__ = "HTTSHoTS"
-__version__ = "0.14.0"
-__author__ = "MrMalina"
+pkg_name = "HTTSHoTS"
+pkg_version = "0.14.1"
+pkg_author = "MrMalina"
 
+# initialization of constant
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
-current_dir = path.dirname(__file__)
-data_replay = ConfigObj(current_dir + '\\data\\replay.ini')
 
+# Declaration global variables
 stream_replays = []
 stream_pregame = []
 streak = [0, 0]
+cur_game = [0, 0] # [date, time]
 accounts = None
 strings = None
 imgur = None
@@ -43,27 +43,34 @@ language = None
 replay_check_period = None
 battle_lobby_hash = None
 tracker_events_hash = None
-# Date, time
-cur_game = [0, 0]
 check_talents_task = None
 config = None
 fonts = None
 paths = None
+hero_data = None
+htts_data = None
+tw_bot = None
+data_replay = None
+
 
 # ======================================================================
 # >> Load
 # ======================================================================
 def load(argv:list) -> None:
-    """Основная функция, запуск бота"""
+    """Инициализация модулей и запуск бота"""
+
     global accounts, strings, language, \
            replay_check_period, hero_data, \
            battle_lobby_hash, config, \
            htts_data, imgur, tracker_events_hash, \
-           tw_bot, fonts, paths
+           tw_bot, fonts, paths, data_replay
 
-    config = Config(current_dir + '\\config\\config.ini')
+    current_dir = Path(path.dirname(__file__))
+    data_replay = ConfigObj(str(current_dir / 'data' / 'replay.ini'))
+
+    config = Config(str(current_dir / 'config' / 'config.ini'))
     language = config.language
-    strings = Strings(current_dir + '\\data\\strings.ini', language)
+    strings = Strings(str(current_dir / 'data' / 'strings.ini'), language)
 
     print_log('BotStart')
 
@@ -71,13 +78,11 @@ def load(argv:list) -> None:
     current_user = getuser()
     check = False
     for folder in config.folder_accounts:
-        folder = folder.format(current_user)
-        if path.isdir(folder):
-            check = True
-            config.hots_folder = folder
-            print_log('FindHoTSFolder', folder)
+        hots_folder = folder.format(current_user)
+        if path.isdir(hots_folder):
+            print_log('FindHoTSFolder', hots_folder)
             break
-    if not check:
+    else:
         print_log('ErrorFindHoTSFolder')
         return
 
@@ -87,7 +92,7 @@ def load(argv:list) -> None:
     config.tracker_events_file = tmp + 'replay.tracker.events'
 
     # Список аккаунтов для поиска сыгранных игр
-    accounts = get_accounts_list(folder)
+    accounts = get_accounts_list(hots_folder)
 
     # Check argv
     if len(argv) > 1:
@@ -100,31 +105,29 @@ def load(argv:list) -> None:
         if 'RU_REPLAY' in argv:
             config.replay_language = 'ru'
             print_log('ParamReplayRu')
-        if 'EN_REPLAY' in argv:
+        elif 'EN_REPLAY' in argv:
             config.replay_language = 'en'
             print_log('ParamReplayEn')
 
-    hero_data = HeroData(current_dir + '\\files\\herodata.json')
-    htts_data = DataStrings(current_dir + '\\data\\data.ini', config.replay_language)
+    hero_data = HeroData(str(current_dir / 'files' / 'herodata.json'))
+    htts_data = DataStrings(str(current_dir / 'data' / 'data.ini'), config.replay_language)
 
     if not config.send_previous_battle_lobby:
-        # if check battle_lobby -> all files found
+        # if found battle_lobby -> all files found
         if path.isfile(config.battle_lobby_file):
             # Battle lobby
-            file = open(config.battle_lobby_file, 'rb')
-            contents = file.read()
-            file.close()
+            with open(config.battle_lobby_file, 'rb') as file:
+                contents = file.read()
             battle_lobby_hash = md5(contents).hexdigest()
 
             # Tracker events
-            file = open(config.tracker_events_file, 'rb')
-            contents = file.read()
-            file.close()
+            with open(config.tracker_events_file, 'rb') as file:
+                contents = file.read()
             tracker_events_hash = md5(contents).hexdigest()
 
     # Paths
     paths = HelpCls()
-    main_path = Path(current_dir) / "files"
+    main_path = current_dir / "files"
     paths.add('bg', main_path / "background")
     paths.add('stats', main_path / "stats")
     paths.add('score', main_path / "scorescreen")
@@ -158,15 +161,11 @@ def load(argv:list) -> None:
             ftp.login(config.ftp_login, config.ftp_passwd)
             ftp.close()
             print_log('FTPLogin', config.site_name)
-        except:
+        except FTP_Error as e:
             print_log('FTPLoginError', config.site_name)
-            return
+            raise e
 
     replay_check_period = config.replay_check_period
-
-    if config.debug:
-        global cur_game
-        cur_game = ['-1', '-1']
 
     # Запуск бота
     tw_bot = bot.TwitchBot(config.twitch_access_token, '!', config.twitch_channel)
@@ -176,14 +175,16 @@ def load(argv:list) -> None:
 # ======================================================================
 # >> Functions
 # ======================================================================
-def get_accounts_list(folders: str) -> list:
+def get_accounts_list(hots_folder: str) -> list:
     accounts = []
 
-    folders = listdir(folders)
+    account_folders = listdir(hots_folder)
 
-    for folder in folders:
+    for folder in account_folders:
         id = folder.split(sep)[-1]
-        accounts.append(Account(id))
+        acc = Account(hots_folder, id)
+        if acc.regions:
+            accounts.append(acc)
 
     return accounts
 
@@ -194,17 +195,17 @@ def print_log(string, *args, uwaga=True):
 
 
 def get_end(number: int, t: int):
-    inumber = number % 100
-    if inumber >= 11 and inumber <=19:
-        y = strings[t][2]
+    i = number % 100
+    if i >= 11 and i <= 19:
+        return strings[t][2]
+
+    i = i % 10
+    if i == 1:
+        y = strings[t][0]
+    elif i in {2, 3, 4}:
+        y = strings[t][1]
     else:
-        iinumber = inumber % 10
-        if iinumber == 1:
-            y = strings[t][0]
-        elif iinumber == 2 or iinumber == 3 or iinumber == 4:
-            y = strings[t][1]
-        else:
-            y = strings[t][2]
+        y = strings[t][2]
     return y
 
 
@@ -248,8 +249,7 @@ class DataStrings:
     def get_eng_hero(self, hero):
         if self.language == 'en':
             return self.names[hero][0]
-        else:
-            return self.data['en'][hero]
+        return self.data['en'][hero]
 
     def get_icy_hero(self, hero, eng_name):
         return self.icy_names.get(hero, eng_name)
@@ -300,7 +300,7 @@ class HeroData:
             talents = self.hero_data[hero]['talents']
             self.hashtalents[hero] = {}
             for x, level in enumerate([1, 4, 7, 10, 13, 16, 20]):
-                for talent in talents['level%s'%level]:
+                for talent in talents['level'+str(level)]:
                     self.hashtalents[hero][talent['nameId']] = [talent['sort'], x]
 
     def __getitem__(self, key):
@@ -319,14 +319,14 @@ class Config:
         self.config.initial_comment = ["../httshots/httshots.py"]
 
         for cvar, value in self.config.items():
-            if type(value) == Section:
+            if isinstance(value, Section):
                 for var, val in value.items():
                     object.__setattr__(self, cvar+'_'+var, self.change_type(val))
             else:
                 object.__setattr__(self, cvar, self.change_type(value))
 
     def change_type(self, value):
-        if type(value) == str:
+        if isinstance(value, str):
             if value.isdigit():
                 value = int(value)
 
@@ -351,37 +351,66 @@ class Strings:
 
 
 class Account:
-    def __init__(self, id):
+    class Replays:
+        def __init__(self, replay_path):
+            self.replay_path = replay_path
+            self.replays = self.get_replays()
+
+        def get_replays(self):
+            current_date = strftime('%Y-%m-%d')
+            return set(filter(lambda x: x.startswith(current_date), listdir(self.replay_path)))
+
+        def check_new_replays(self):
+            replays = self.get_replays()
+            check = replays.symmetric_difference(self.replays)
+            if check:
+                self.replays = replays
+                if not path.isfile(self.replay_path + list(check)[0]):
+                    return 0
+                return self.replay_path + list(check)[0]
+            return 0
+
+    def __init__(self, hots_folder, id):
         self.id = id
-        self.path = config.hots_folder + str(id) + "/"
+        self.path = hots_folder + str(id) + "/"
+        self.regions = []
+        self.replays = set()
+        self.get_replays()
 
-        self.get_unique_folder()
-        self.replays_path = self.path + self.unique_folder + "/Replays/Multiplayer/"
+        folders = self.get_unique_acc_folders()
+        for region_folder in folders:
+            replay_path = self.path + region_folder + "/Replays/Multiplayer/"
+            self.regions.append(self.Replays(replay_path))
 
-        self.replays = self.get_replays()
+        if len(self.regions) == 1:
+            self.check_new_replays = lambda: self.regions[0].check_new_replays()
 
-    def get_unique_folder(self):
-        tmp = listdir(self.path)
-        for folder in tmp:
-            folder = folder.split(sep)[-1]
-            if folder.startswith('2'):
-                break
-
-        self.unique_folder = folder
+    def get_all_replays(self):
+        _rets = []
+        for region in self.regions:
+            _rets += [region.replay_path + x for x in region.get_replays()]
+        return _rets
 
     def get_replays(self):
-        current_date = strftime('%Y-%m-%d')
-        return set(filter(lambda x: x.startswith(current_date), listdir(self.replays_path)))
+        for region in self.regions:
+            self.replays.update(region.get_replays())
+        return self.replays
 
     def check_new_replays(self):
-        replays = self.get_replays()
-        check = replays.symmetric_difference(self.replays)
-        if check:
-            self.replays = replays
-            if not path.isfile(self.replays_path + list(check)[0]):
-                return 0
-            return self.replays_path + list(check)[0]
+        x = list(filter(lambda x: x != 0, map(lambda x: x.check_new_replays(), self.regions)))
+        if x:
+            return x[0]
         return 0
+
+    def get_unique_acc_folders(self):
+        tmp = listdir(self.path)
+        _folders = []
+        for folder in tmp:
+            folder = folder.split(sep)[-1]
+            # Для любого региона
+            if 'Hero' in folder:
+                _folders.append(folder)
+        return _folders
 
 
 class StreamReplay:
@@ -391,7 +420,7 @@ class StreamReplay:
         self.info = info
 
         self.heroes = map(lambda x: x.hero, self.info.players.values())
-        status = strings['GameResult%s'%{1:'Win',2:'Lose'}[int(me.result)]]
+        status = strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
         self.short_info = f"{self.info.details.title} - {self.account.hero} - {status}"
 
     def try_find_hero(self, hero_name_part):

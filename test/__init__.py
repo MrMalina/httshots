@@ -67,7 +67,7 @@ class TestReplay:
 class TestPlayer:
     def __init__(self, id, result, level, hero):
         self.userid = id
-        self.name = 'Player%s'%id
+        self.name = 'Player'+str(id)
         self.hero = hero
         if id < 5:
             self.team_id = 0
@@ -84,11 +84,11 @@ class TestPlayer:
         for stat in stats_general:
             setattr(self, stat, randint(5000, 250000))
         mpv = choice(stats_mvp)
-        setattr(self, 'award_%s'%mpv, 1)
+        setattr(self, 'award_'+str(mpv), 1)
         for mvp in stats_mvp:
             if mvp == mpv:
                 continue
-            setattr(self, 'award_%s'%mvp, 0)
+            setattr(self, 'award_'+str(mpv), 0)
 
 
 class TestDetails:

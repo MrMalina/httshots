@@ -94,7 +94,7 @@ def add_heroes(image, replay):
                 if talent == 0:
                     image.paste(t_unselected, (start+13, add+(x*rng+7)), mask=t_unselected)
                 else:
-                    icon = info['level%s'%level][talent-1]['icon']
+                    icon = info['level'+str(level)][talent-1]['icon']
                     icon = Image.open(hots.paths.talents /icon)
                     icon = icon.resize((46, 46))
                     image.paste(icon, (start+11, add+(x*rng+6)))

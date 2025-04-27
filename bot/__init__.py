@@ -39,10 +39,10 @@ class TwitchBot(commands.Bot):
             found = 0
             replayes_count = 0
             for acc in httshots.accounts:
-                acc_replays = list(acc.get_replays())
-                for replay_name in acc_replays:
+                acc_replays = list(acc.get_all_replays())
+                for replay_path in acc_replays:
                     replayes_count += 1
-                    replay, protocol = httshots.parser.get_replay(acc.replays_path + replay_name)
+                    replay, protocol = httshots.parser.get_replay(replay_path)
                     info = httshots.parser.get_match_info(replay, protocol)
                     if info.init_data.game_options.amm_id == 50091:
                         for player in info.players.values():
@@ -65,18 +65,19 @@ class TwitchBot(commands.Bot):
 
                         found = 1
 
-                        sreplay = httshots.StreamReplay(replay_name, me, info)
+                        replay_title = replay_path.split('/')[-1]
+                        sreplay = httshots.StreamReplay(replay_title, me, info)
                         httshots.stream_replays.append(sreplay)
                         sreplay.url_games = None
                         httshots.print_log('FoundRankedPreviousGame',
-                                            me.name, replay_name[11:-12])
+                                            me.name, replay_title[11:-12])
                     else:
                         httshots.print_log('FoundNoRankedPreviousGames',
-                                            me.name, replay_name[11:-12])
+                                            me.name, replay_title[11:-12])
 
             if found:
                 # 2024-11-28 21.35.03 Завод Вольской -> 24-11-28 21-35
-                tmp = replay_name.split()
+                tmp = replay_title.split()
                 httshots.cur_game[0] = tmp[0][2:]
                 httshots.cur_game[1] = tmp[1][:-3].replace('.', '-')
 
@@ -88,8 +89,8 @@ class TwitchBot(commands.Bot):
             else:
                 httshots.print_log('FoundZeroPreviousGames')
 
-        httshots.print_log('BotStarted', httshots.__name__,
-                           httshots.__author__, httshots.__version__)
+        httshots.print_log('BotStarted', httshots.pkg_name,
+                           httshots.pkg_author, httshots.pkg_version)
         await self.endless_loop()
 
     async def endless_loop(self):

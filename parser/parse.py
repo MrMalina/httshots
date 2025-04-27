@@ -11,7 +11,7 @@ from httshots import httshots
 # >> Functions
 # ======================================================================
 def decode_string(string):
-    if type(string) == bytes:
+    if isinstance(string, bytes):
         return string.decode('UTF-8')
     return string
 
