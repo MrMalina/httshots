@@ -25,7 +25,7 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.14.1"
+pkg_version = "0.14.2"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -389,6 +389,7 @@ class Account:
         _rets = []
         for region in self.regions:
             _rets += [region.replay_path + x for x in region.get_replays()]
+            print(self.id, _rets, region)
         return _rets
 
     def get_replays(self):

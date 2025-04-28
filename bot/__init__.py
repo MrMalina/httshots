@@ -44,12 +44,14 @@ class TwitchBot(commands.Bot):
                     replayes_count += 1
                     replay, protocol = httshots.parser.get_replay(replay_path)
                     info = httshots.parser.get_match_info(replay, protocol)
-                    if info.init_data.game_options.amm_id == 50091:
-                        for player in info.players.values():
-                            if player.name in httshots.config.accounts:
-                                me = player
-                                break
+                    replay_title = replay_path.split('/')[-1]
+                    for player in info.players.values():
+                        print(player.name)
+                        if player.name in httshots.config.accounts:
+                            me = player
+                            break
 
+                    if info.init_data.game_options.amm_id == 50091:
                         if me.result == 1:
                             if httshots.streak[0] == 'Wins':
                                 httshots.streak[1] += 1
@@ -65,7 +67,6 @@ class TwitchBot(commands.Bot):
 
                         found = 1
 
-                        replay_title = replay_path.split('/')[-1]
                         sreplay = httshots.StreamReplay(replay_title, me, info)
                         httshots.stream_replays.append(sreplay)
                         sreplay.url_games = None

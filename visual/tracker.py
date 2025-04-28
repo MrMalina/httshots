@@ -20,6 +20,10 @@ RTEAM = (234,140,140)
 # ======================================================================
 # >> FUNCTIONS
 # ======================================================================
+def load_background():
+    return Image.open(hots.paths.bg / 'games_background.png')
+
+
 def create_icons(image):
     draw = ImageDraw.Draw(image)
     draw.text((495, 50), "1", WHITE, font=hots.fonts.large)
@@ -124,7 +128,7 @@ def create_image(players):
     _name = 'gametalents.png'
     hots.print_log('ImageStartCreateTalentsImage', uwaga=0)
     hots.print_log('ImageCreateBorder', uwaga=0)
-    image = create_board()
+    image = load_background()
 
     hots.print_log('ImageCreateIcons', uwaga=0)
     create_icons(image)
