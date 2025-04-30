@@ -23,7 +23,7 @@ py -m pip install configobj imgurpython Pillow mpyq twitchio
 
 Если Вы не хотите устанавливать отдельно устаревшую библиотеку, то можно скачать heroprotocol из моего форка с правками под актуальную версию питона:
 ```bash
-py -m pip install -U git+https://github.com/MrMalina/httshots
+py -m pip install -U git+https://github.com/MrMalina/heroprotocol
 ```
 
 * Скачать [архив с ботом](https://github.com/MrMalina/httshots/archive/refs/heads/master.zip)
