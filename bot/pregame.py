@@ -23,6 +23,7 @@ async def send_battle_lobby_info(pre_game):
     httshots.cur_game[0] = time.strftime('%y-%m-%d')
     httshots.cur_game[1] = time.strftime('%H-%M')
 
+    httshots.print_log('NewGame')
     url = httshots.visual.battlelobby.create_image(info)
     text = httshots.strings['LobbyInfo'].format(url)
 

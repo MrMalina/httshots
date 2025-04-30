@@ -54,6 +54,8 @@ async def send_replay_info(replay_name):
         httshots.print_log('GameNoFoundAccount')
         return
 
+    httshots.print_log('GameAccount', me.name)
+
     # streak
     if me.result == 1:
         if httshots.streak[0] == 'Wins':

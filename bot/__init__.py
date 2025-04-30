@@ -46,7 +46,6 @@ class TwitchBot(commands.Bot):
                     info = httshots.parser.get_match_info(replay, protocol)
                     replay_title = replay_path.split('/')[-1]
                     for player in info.players.values():
-                        print(player.name)
                         if player.name in httshots.config.accounts:
                             me = player
                             break
