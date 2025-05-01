@@ -127,7 +127,7 @@ def add_heroes(image, players):
 def create_image(players):
     _name = 'gametalents.png'
     hots.print_log('ImageStartCreateTalentsImage', uwaga=0)
-    hots.print_log('ImageCreateBorder', uwaga=0)
+    hots.print_log('ImageLoadBackGround', uwaga=0)
     image = load_background()
 
     hots.print_log('ImageCreateIcons', uwaga=0)

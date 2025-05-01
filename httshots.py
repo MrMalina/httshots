@@ -25,7 +25,7 @@ from . import parser, visual, test
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.14.2"
+pkg_version = "0.15.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -333,6 +333,18 @@ class Config:
         return value
 
 
+class Colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 class Strings:
     def __init__(self, path, lang):
         strings = ConfigObj(path)
@@ -341,6 +353,35 @@ class Strings:
             self.strings = strings[lang]
         else:
             self.strings = strings['ru']
+
+        if config.use_colors:
+            for key, string in self.strings.items():
+                if isinstance(string, str):
+                    self.strings[key] = self.replace_colors(string)
+        else:
+            for key, string in self.strings.items():
+                if isinstance(string, str):
+                    self.strings[key] = self.remove_colors(string)
+
+    def remove_colors(self, string):
+        string = string.replace('#cyan', '')
+        string = string.replace('#green', '')
+        string = string.replace('#red', '')
+        string = string.replace('#blue', '')
+        string = string.replace('#gold', '')
+        string = string.replace('#viol', '')
+        string = string.replace('#def', '')
+        return string
+
+    def replace_colors(self, string):
+        string = string.replace('#cyan', Colors.OKCYAN)
+        string = string.replace('#green', Colors.OKGREEN)
+        string = string.replace('#red', Colors.FAIL)
+        string = string.replace('#blue', Colors.OKBLUE)
+        string = string.replace('#gold', Colors.WARNING)
+        string = string.replace('#viol', Colors.HEADER)
+        string = string.replace('#def', Colors.ENDC)
+        return string
 
     def __getitem__(self, key):
         return self.strings.get(key, f"No string '{key}' in strings.ini")
