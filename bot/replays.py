@@ -20,7 +20,10 @@ async def send_replay_info(replay_name):
         httshots.check_talents_task = None
         httshots.bot.tracker.old_talents = None
         httshots.visual.upload.remove_file('gametalents.png', 'curgame')
+        dest = httshots.cur_game[0] + '/' + httshots.cur_game[1] + '/info.log'
+        httshots.visual.upload.rename_file('curgame/info.log', dest)
         httshots.visual.upload.remove_file('info.log', 'curgame')
+        
 
     else:
         # Если бот включен и уже идёт матч, либо самостоятельно добавлен реплей
@@ -42,6 +45,7 @@ async def send_replay_info(replay_name):
             return
 
     if info.init_data.game_options.amm_id == 0:
+        httshots.print_log('GameUviAmmId')
         return
 
     check = False
@@ -125,18 +129,21 @@ async def send_replay_info(replay_name):
         lose_text = httshots.get_end(loses, 'Loses')
         match_text = httshots.get_end(matches, 'Matches')
         streak = httshots.streak
+
+        if url_games:
+            _text = 'GamesInfoMoreWithStats'
+        else:
+            _text = 'GamesInfoMore'
+
         if streak[1] == 1:
             streak_text = httshots.strings[streak[0]][1]
+            _text += 'NoStreak'
         else:
             streak_text = httshots.strings[streak[0]][2]
-        if url_games:
-            text = httshots.strings['GamesInfoMoreWithStats'].format(
-                    matches, match_text, wins, win_text, loses,
-                    lose_text, streak[1], streak_text, url_games)
-        else:
-            text = httshots.strings['GamesInfoMore'].format(
-                    matches, match_text, wins, win_text,
-                    loses, lose_text, streak[1], streak_text)
+
+        text = httshots.strings[_text].format(
+                matches, match_text, wins, win_text, loses,
+                lose_text, streak[1], streak_text, url=url_games)
 
     httshots.print_log('SendReplayInfo')
 

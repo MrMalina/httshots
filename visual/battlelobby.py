@@ -82,5 +82,6 @@ def create_image(info):
 
     hots.print_log('ImageUploadBattleLobby')
     url = hots.visual.upload.upload_file(hots.paths.screens / _name, _name)
-
+    if hots.config.send_url_to_console:
+        hots.print_log('SendUrl', url)
     return url

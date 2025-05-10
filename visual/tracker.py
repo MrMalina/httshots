@@ -142,7 +142,6 @@ def create_image(players):
     hots.print_log('ImageUploadTracker', tmp)
     url = hots.visual.upload.upload_file(hots.paths.screens / _name,
                                  _name, True, 'curgame')
-
     return url
 
 

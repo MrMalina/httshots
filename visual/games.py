@@ -13,6 +13,7 @@ from httshots import httshots as hots
 # ======================================================================
 WHITE = (255,255,255)
 BTEAM = (105,156,249)
+GREEN = (105,249,105)
 RTEAM = (234,140,140)
 
 
@@ -102,24 +103,24 @@ def add_games(image, replays):
                 tmp = tmp.resize((48, 48))
                 image.paste(tmp, (320, add+(x*rng)+4), mask=tmp)
 
-        draw.text((380, add+(x*rng)+20), replay.info.details.title, color, font=hots.fonts.default)
+        draw.text((380, add+(x*rng)+20), replay.info.details.title, WHITE, font=hots.fonts.default)
 
         if team_id == 0:
             tmp = hots.strings['GameTeamBlue']
-            draw.text((675, add+(x*rng)+20), tmp, color, font=hots.fonts.default)
+            draw.text((675, add+(x*rng)+20), tmp, BTEAM, font=hots.fonts.default)
         else:
             tmp = hots.strings['GameTeamRed']
-            draw.text((675, add+(x*rng)+20), tmp, color, font=hots.fonts.default)
+            draw.text((675, add+(x*rng)+20), tmp, RTEAM, font=hots.fonts.default)
 
         if player.result == 1:
             tmp = hots.strings['GameResultWin']
-            draw.text((825, add+(x*rng)+20), tmp, color, font=hots.fonts.default)
+            draw.text((825, add+(x*rng)+20), tmp, GREEN, font=hots.fonts.default)
         else:
             tmp = hots.strings['GameResultLose']
-            draw.text((825, add+(x*rng)+20), tmp, color, font=hots.fonts.default)
+            draw.text((825, add+(x*rng)+20), tmp, RTEAM, font=hots.fonts.default)
 
         draw.text((1000, add+(x*rng)+20), f"{str(time//60).zfill(2)}:{str(time%60).zfill(2)}",
-                  color, font=hots.fonts.default)
+                  WHITE, font=hots.fonts.default)
 
         solo_kill = str(player.solo_kill)
         shift = get_shift(solo_kill)
@@ -206,5 +207,6 @@ def create_image(*args):
 
     hots.print_log('ImageUploadGames')
     url = hots.visual.upload.upload_file(hots.paths.screens / _name, _name)
-
+    if hots.config.send_url_to_console:
+        hots.print_log('SendUrl', url)
     return url

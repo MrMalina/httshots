@@ -316,5 +316,6 @@ def create_image(replay):
 
     hots.print_log('ImageUploadMatch')
     url = hots.visual.upload.upload_file(hots.paths.screens / _name, _name)
-
+    if hots.config.send_url_to_console:
+        hots.print_log('SendUrl', url)
     return url

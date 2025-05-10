@@ -62,7 +62,6 @@ def create_icons(image, map_name):
     tmp = Image.open(hots.paths.stats / 'adv_globes.png').convert('RGBA')
     image.paste(tmp, (1040, y), mask=tmp)
 
-
     # Альтеракский перевал = 1
     # Небесный храм = 2
     # Вечная битва = 3
@@ -263,5 +262,6 @@ def create_image(replay):
 
     hots.print_log('ImageUploadMatchAdv')
     url = hots.visual.upload.upload_file(hots.paths.screens / _name, _name)
-
+    if hots.config.send_url_to_console:
+        hots.print_log('SendUrl', url)
     return url

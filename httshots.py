@@ -17,15 +17,14 @@ from imgurpython import ImgurClient
 from PIL import ImageFont
 
 # Httshots
-from . import bot
-from . import parser, visual, test
+from . import bot, parser, visual
 
 
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.15.0"
+pkg_version = "0.16.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -108,6 +107,9 @@ def load(argv:list) -> None:
         elif 'EN_REPLAY' in argv:
             config.replay_language = 'en'
             print_log('ParamReplayEn')
+        elif 'URL_TO_CONSOLE' in argv:
+            config.send_url_to_console = 1
+            print_log('ParamUrlToConsole')
 
     hero_data = HeroData(str(current_dir / 'files' / 'herodata.json'))
     htts_data = DataStrings(str(current_dir / 'data' / 'data.ini'), config.replay_language)
@@ -137,6 +139,7 @@ def load(argv:list) -> None:
     paths.add('heroes', main_path / "heroes")
     paths.add('talents', main_path / "talents")
     paths.add('mvp', main_path / "mvp")
+    paths.add('maps', main_path / "maps")
 
     # Fonts
     ascii_ttf = paths.ttf / 'Exo2-Bold.ttf'
