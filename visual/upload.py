@@ -37,8 +37,8 @@ def upload_file(full_name, file_name, replace_file=False, ftp_unique_path=False)
                 folders = ftp.nlst()
                 if file_name in folders:
                     ftp.voidcmd('DELE '+file_name)
-            with open(full_name, 'rb') as upload_file:
-                ftp.storbinary('STOR '+file_name, upload_file)
+            with open(full_name, 'rb') as file:
+                ftp.storbinary('STOR '+file_name, file)
             real_pwd += pwd
             tmp = '/'.join(real_pwd.split('/')[1:])
             url = f'{tmp}/{file_name}'

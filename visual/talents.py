@@ -120,10 +120,8 @@ def add_heroes(image, replay):
 
 
 def add_other_info(image, replay):
-    language = hots.language
+    language = hots.config.language
 
-    red_kills = 0
-    blue_kills = 0
     for player in replay.players.values():
         if player.team_id == 0:
             blue_level = player.team_level

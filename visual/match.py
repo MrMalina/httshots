@@ -231,7 +231,7 @@ def get_shift(value):
 def add_other_info(image, replay):
     redkills = Image.open(hots.paths.stats / 'redkills.png')
     bluekills = Image.open(hots.paths.stats / 'bluekills.png')
-    language = hots.language
+    language = hots.config.language
 
     red_kills = 0
     blue_kills = 0

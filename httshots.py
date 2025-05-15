@@ -24,7 +24,7 @@ from . import bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.16.0"
+pkg_version = "0.17.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -38,8 +38,6 @@ cur_game = [0, 0] # [date, time]
 accounts = None
 strings = None
 imgur = None
-language = None
-replay_check_period = None
 battle_lobby_hash = None
 tracker_events_hash = None
 check_talents_task = None
@@ -58,11 +56,11 @@ data_replay = None
 def load(argv:list) -> None:
     """Инициализация модулей и запуск бота"""
 
-    global accounts, strings, language, \
-           replay_check_period, hero_data, \
+    global accounts, strings, \
+           hero_data, data_replay, \
            battle_lobby_hash, config, \
            htts_data, imgur, tracker_events_hash, \
-           tw_bot, fonts, paths, data_replay
+           tw_bot, fonts, paths
 
     current_dir = Path(path.dirname(__file__))
     data_replay = ConfigObj(str(current_dir / 'data' / 'replay.ini'))
@@ -75,7 +73,6 @@ def load(argv:list) -> None:
 
     # Поиск директории с реплеями
     current_user = getuser()
-    check = False
     for folder in config.folder_accounts:
         hots_folder = folder.format(current_user)
         if path.isdir(hots_folder):
@@ -168,8 +165,6 @@ def load(argv:list) -> None:
             print_log('FTPLoginError', config.site_name)
             raise e
 
-    replay_check_period = config.replay_check_period
-
     # Запуск бота
     tw_bot = bot.TwitchBot(config.twitch_access_token, '!', config.twitch_channel)
     tw_bot.run()
@@ -179,7 +174,7 @@ def load(argv:list) -> None:
 # >> Functions
 # ======================================================================
 def get_accounts_list(hots_folder: str) -> list:
-    accounts = []
+    _accounts = []
 
     account_folders = listdir(hots_folder)
 
@@ -187,9 +182,9 @@ def get_accounts_list(hots_folder: str) -> list:
         id = folder.split(sep)[-1]
         acc = Account(hots_folder, id)
         if acc.regions:
-            accounts.append(acc)
+            _accounts.append(acc)
 
-    return accounts
+    return _accounts
 
 
 def print_log(string, *args, uwaga=True):
@@ -331,7 +326,7 @@ class Config:
     def change_type(self, value):
         if isinstance(value, str):
             if value.isdigit():
-                value = int(value)
+                return int(value)
 
         return value
 
@@ -349,13 +344,13 @@ class Colors:
 
 
 class Strings:
-    def __init__(self, path, lang):
-        strings = ConfigObj(path)
+    def __init__(self, _path, lang):
+        _strings = ConfigObj(_path)
 
-        if lang in strings:
-            self.strings = strings[lang]
+        if lang in _strings:
+            self.strings = _strings[lang]
         else:
-            self.strings = strings['ru']
+            self.strings = _strings['ru']
 
         if config.use_colors:
             for key, string in self.strings.items():
@@ -464,7 +459,7 @@ class StreamReplay:
         self.info = info
 
         self.heroes = map(lambda x: x.hero, self.info.players.values())
-        status = strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
+        status = strings['GameResult'+['Win','Lose'][int(me.result)-1]]
         self.short_info = f"{self.info.details.title} - {self.account.hero} - {status}"
 
     def try_find_hero(self, hero_name_part):

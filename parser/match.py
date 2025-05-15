@@ -39,5 +39,4 @@ class PreGame:
         ret = list(filter(lambda x: x.userid == index, self.players))
         if len(ret):
             return ret[0]
-        else:
-            return None
+        return None

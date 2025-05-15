@@ -118,10 +118,9 @@ async def talent(ctx: commands.Context, hero=None):
             await ctx.send(text)
             return
 
-        else:
-            text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
-            await ctx.send(text)
-            return
+        text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
+        await ctx.send(text)
+        return
 
     else:
         text = httshots.strings['TrackerNoActiveGame']

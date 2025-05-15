@@ -64,27 +64,6 @@ def get_match_info(replay, protocol):
     return game
 
 
-def get_replay_details(replay, protocol):
-    contents = replay.read_file('replay.details')
-    full_details = protocol.decode_replay_details(contents)
-
-    return classes.Details(full_details)
-
-
-def get_replay_initdata(replay, protocol):
-    contents = replay.read_file('replay.initData')
-    init_data = protocol.decode_replay_initdata(contents)
-
-    return init_data
-
-
-def get_replay_headers(replay):
-    contents = replay.header['user_data_header']['content']
-    header = latest().decode_replay_header(contents)
-
-    return header
-
-
 def get_battle_lobby(file):
     info = battlelobby.get_battle_lobby_players(file)
     pre_game = match.PreGame(info)

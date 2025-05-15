@@ -197,7 +197,6 @@ def add_heroes(image, replay, max_stats, map_stat):
             image.paste(hero, (40, add+(y*rng)), mask=glow)
             draw.text((155, add+(y*rng)+30), name, BTEAM, font=name_font)
             color = BTEAM
-            postfix = 'blue'
 
         else:
             image.paste(rplayer, (25, add+(y*rng)), mask=rplayer)
@@ -205,7 +204,6 @@ def add_heroes(image, replay, max_stats, map_stat):
             image.paste(hero, (40, add+(y*rng)), mask=glow)
             draw.text((155, add+(y*rng)+30), name, RTEAM, font=name_font)
             color = RTEAM
-            postfix = 'red'
 
         hero_short_name = hots.htts_data.get_short_hero(player.hero)
 

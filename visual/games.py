@@ -179,7 +179,7 @@ def add_other_info(image, replays):
     draw.text((1350/2, 725), f"{len(replays)}", WHITE, font=hots.fonts.big)
 
 
-def create_image(*args):
+def create_image():
     _name = 'games.png'
 
     hots.print_log('ImageStartCreateGamesImage', uwaga=0)

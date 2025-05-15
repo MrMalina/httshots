@@ -90,11 +90,11 @@ def add_heroes(image, players):
                 image.paste(t_bg, (start+11, add+(x*rng+6)), mask=t_bg)
                 start += 100
                 continue
-            else:
-                icon = info['level'+str(level)][talent-1]['icon']
-                icon = Image.open(hots.paths.talents /icon)
-                icon = icon.resize((46, 46))
-                image.paste(icon, (start+11, add+(x*rng+6)))
+
+            icon = info['level'+str(level)][talent-1]['icon']
+            icon = Image.open(hots.paths.talents /icon)
+            icon = icon.resize((46, 46))
+            image.paste(icon, (start+11, add+(x*rng+6)))
 
             if data_hero_name != 'Varian':
                 if level != 10:

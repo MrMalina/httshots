@@ -22,9 +22,6 @@ async def send_replay_info(replay_name):
         httshots.visual.upload.remove_file('gametalents.png', 'curgame')
         dest = httshots.cur_game[0] + '/' + httshots.cur_game[1] + '/info.log'
         httshots.visual.upload.rename_file('curgame/info.log', dest)
-        httshots.visual.upload.remove_file('info.log', 'curgame')
-        
-
     else:
         # Если бот включен и уже идёт матч, либо самостоятельно добавлен реплей
         tmp = replay_name.split('/')[-1].split()
