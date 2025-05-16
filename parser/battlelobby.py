@@ -13,20 +13,20 @@ def get_battle_lobby_players(contents):
     blplayers = []
 
     buffer = BitPackedBuffer(contents, 'big')
-    s2mArrayLength = buffer.read_bits(8)
-    stringLength = buffer.read_bits(8)
+    s2m_array_length = buffer.read_bits(8)
+    string_length = buffer.read_bits(8)
 
-    buffer.read_aligned_bytes(stringLength)
+    buffer.read_aligned_bytes(string_length)
 
-    for _ in range(s2mArrayLength-1):
+    for _ in range(s2m_array_length-1):
         buffer.read_bits(16)
-        buffer.read_aligned_bytes(stringLength)
+        buffer.read_aligned_bytes(string_length)
 
     # s2m error
-    if buffer.read_bits(8) != s2mArrayLength:
+    if buffer.read_bits(8) != s2m_array_length:
         return None
 
-    for _ in range(s2mArrayLength):
+    for _ in range(s2m_array_length):
         buffer.read_aligned_bytes(4)
         buffer.read_bits(2*8)
         buffer.read_aligned_bytes(2)
@@ -39,10 +39,9 @@ def get_battle_lobby_players(contents):
         if x == b"s2mh":
             buffer._used -= 4
             break
-        else:
-            buffer._used -= 3
+        buffer._used -= 3
 
-    for _ in range(s2mArrayLength):
+    for _ in range(s2m_array_length):
         buffer.byte_align()
         a = buffer.read_aligned_bytes(4)
         # s2mh error
@@ -52,24 +51,24 @@ def get_battle_lobby_players(contents):
         buffer.read_aligned_bytes(2)
         buffer.read_bits(32*8)
 
-    collectionSize = buffer.read_bits(16)
+    collection_size = buffer.read_bits(16)
 
-    for x in range(collectionSize):
+    for x in range(collection_size):
         buffer.read_aligned_bytes(8)
 
     a = buffer.read_bits(32)
     # collection_size error
-    if a != collectionSize:
+    if a != collection_size:
         return None
 
-    for _ in range(collectionSize):
+    for _ in range(collection_size):
         for _ in range(16):
             buffer.read_bits(8)
             buffer.read_bits(8)
 
-    disabledHeroListLength = buffer.read_bits(8)
+    disabled_hero_list_length = buffer.read_bits(8)
 
-    for x in range(disabledHeroListLength):
+    for x in range(disabled_hero_list_length):
         buffer.read_aligned_bytes(32)
 
     # randomValue
@@ -77,9 +76,9 @@ def get_battle_lobby_players(contents):
 
     buffer.read_bits(32)
 
-    playerListLength = buffer.read_bits(5)
+    player_list_length = buffer.read_bits(5)
 
-    for x in range(playerListLength):
+    for x in range(player_list_length):
         buffer.read_bits(32)
 
         index = buffer.read_bits(5)
@@ -108,9 +107,9 @@ def get_battle_lobby_players(contents):
 
         buffer.read_bits(32) # realm
 
-        id = buffer.read_bits(7) + 2
+        _id = buffer.read_bits(7) + 2
         buffer.byte_align()
-        tag = buffer.read_aligned_bytes(id)
+        tag = buffer.read_aligned_bytes(_id)
         blplayer.tag = tag
 
         buffer.read_bits(6)

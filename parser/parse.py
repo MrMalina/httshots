@@ -40,7 +40,8 @@ class Parse:
             else:
                 attribute = Args(name, value)
 
-            cls.__setattr__(self, name, attribute)
+            setattr(self, name, attribute)
+            # cls.__setattr__(self, name, attribute)
 
 
 class Args(Parse):

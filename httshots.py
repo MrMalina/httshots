@@ -24,7 +24,7 @@ from . import bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.17.0"
+pkg_version = "0.18.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -73,7 +73,7 @@ def load(argv:list) -> None:
 
     # Поиск директории с реплеями
     current_user = getuser()
-    for folder in config.folder_accounts:
+    for folder in config.folder_hots_accounts:
         hots_folder = folder.format(current_user)
         if path.isdir(hots_folder):
             print_log('FindHoTSFolder', hots_folder)
@@ -192,9 +192,9 @@ def print_log(string, *args, uwaga=True):
         print(strings[string].format(*args))
 
 
-def get_end(number: int, t: int):
+def get_end(number: int, t: str):
     i = number % 100
-    if i >= 11 and i <= 19:
+    if 11 <= i <= 19:
         return strings[t][2]
 
     i = i % 10
@@ -283,13 +283,15 @@ class DataStrings:
             if hero.lower().startswith(hero_name_part):
                 return hero
 
+        return None
+
     def __getitem__(self, key):
         return self.data[key]
 
 
 class HeroData:
     def __init__(self, file_name):
-        with open(file_name) as f:
+        with open(file_name, encoding="ANSI") as f:
             self.hero_data = json_load(f)
 
         self.hashtalents = {}
@@ -409,9 +411,9 @@ class Account:
                 return self.replay_path + list(check)[0]
             return 0
 
-    def __init__(self, hots_folder, id):
-        self.id = id
-        self.path = hots_folder + str(id) + "/"
+    def __init__(self, hots_folder, _id):
+        self.id = _id
+        self.path = hots_folder + str(_id) + "/"
         self.regions = []
         self.replays = set()
         self.get_replays()

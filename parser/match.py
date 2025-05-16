@@ -37,6 +37,6 @@ class PreGame:
 
     def get_player_by_index(self, index):
         ret = list(filter(lambda x: x.userid == index, self.players))
-        if len(ret):
+        if ret:
             return ret[0]
         return None

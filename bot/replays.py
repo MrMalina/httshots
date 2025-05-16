@@ -89,8 +89,12 @@ async def send_replay_info(replay_name):
 
         else:
             text = 'GameResultInfo'
+            url_talents = None
+            url_adv_stats = None
     else:
         text = 'GameResultInfo'
+        url_talents = None
+        url_adv_stats = None
 
     match_info = httshots.strings[text].format(status, hero_name, info.details.title,
                                                url, url_talents, url_adv_stats)

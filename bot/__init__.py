@@ -45,12 +45,18 @@ class TwitchBot(commands.Bot):
                     replay, protocol = httshots.parser.get_replay(replay_path)
                     info = httshots.parser.get_match_info(replay, protocol)
                     replay_title = replay_path.split('/')[-1]
+                    me = None
                     for player in info.players.values():
                         if player.name in httshots.config.accounts:
                             me = player
                             break
 
                     if info.init_data.game_options.amm_id == 50091:
+                        if me is None:
+                            httshots.print_log('FoundPreviousGameNoAcc',
+                                                replay_title[11:-12])
+                            continue
+
                         if me.result == 1:
                             if httshots.streak[0] == 'Wins':
                                 httshots.streak[1] += 1
@@ -137,7 +143,7 @@ class TwitchBot(commands.Bot):
                         kills[1] += _player.solo_kill
 
                 text = httshots.strings['GameScore'].format(team_level_blue, team_level_red,
-                                                                kills[0], kills[1])
+                                                            kills[0], kills[1])
                 await ctx.send(text)
                 return
 

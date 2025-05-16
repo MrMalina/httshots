@@ -17,8 +17,7 @@ def parse_content(content, pre_game):
                 hero = hero[4:]
                 player = pre_game.get_player_by_index(index-1)
                 player._gameloop = 0
-                if hero in omega_heroes:
-                    hero = omega_heroes[hero]
+                hero = omega_heroes.get(hero, hero)
                 player.hero = hero
                 continue
 
@@ -35,7 +34,7 @@ def parse_content(content, pre_game):
         ...
     except Exception as e:
         print('ingame', e)
-        return dict()
+        return {}
 
     heroes = {}
     for player in pre_game.players:

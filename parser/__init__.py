@@ -24,11 +24,11 @@ def get_replay(replay):
     contents = replay.header['user_data_header']['content']
     header = versions.latest().decode_replay_header(contents)
 
-    baseBuild = header['m_version']['m_baseBuild']
+    base_build = header['m_version']['m_baseBuild']
     try:
-        protocol = versions.build(baseBuild)
+        protocol = versions.build(base_build)
     except:
-        print('Unsupported base build: %d' % baseBuild, file=sys.stderr)
+        print('Unsupported base build: %d' % base_build, file=sys.stderr)
         return None
 
     return replay, protocol
