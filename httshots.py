@@ -24,7 +24,7 @@ from . import bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.18.0"
+pkg_version = "0.18.1"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -73,6 +73,7 @@ def load(argv:list) -> None:
 
     # Поиск директории с реплеями
     current_user = getuser()
+
     for folder in config.folder_hots_accounts:
         hots_folder = folder.format(current_user)
         if path.isdir(hots_folder):
@@ -131,7 +132,7 @@ def load(argv:list) -> None:
     paths.add('stats', main_path / "stats")
     paths.add('score', main_path / "scorescreen")
     paths.add('ttf', main_path / "ttf")
-    paths.add('screens', main_path / "screens")
+    paths.add('upload', main_path / "upload")
     paths.add('border', main_path / "border")
     paths.add('heroes', main_path / "heroes")
     paths.add('talents', main_path / "talents")

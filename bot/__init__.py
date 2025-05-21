@@ -36,6 +36,8 @@ class TwitchBot(commands.Bot):
             return
 
         if httshots.config.add_previous_games == 1:
+            consider_matches = httshots.config.matches_type_to_consider
+
             found = 0
             replayes_count = 0
             for acc in httshots.accounts:
@@ -51,7 +53,8 @@ class TwitchBot(commands.Bot):
                             me = player
                             break
 
-                    if info.init_data.game_options.amm_id == 50091:
+                    amm_id = info.init_data.game_options.amm_id
+                    if consider_matches == 2 or amm_id == 50091:
                         if me is None:
                             httshots.print_log('FoundPreviousGameNoAcc',
                                                 replay_title[11:-12])

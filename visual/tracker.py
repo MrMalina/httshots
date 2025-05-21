@@ -137,17 +137,17 @@ def create_image(players):
     tmp = add_heroes(image, players)
 
     hots.print_log('ImageSaveImageMatch', uwaga=0)
-    image.save(hots.paths.screens / _name)
+    image.save(hots.paths.upload / _name)
 
     hots.print_log('ImageUploadTracker', tmp)
-    url = hots.visual.upload.upload_file(hots.paths.screens / _name,
+    url = hots.visual.upload.upload_file(hots.paths.upload / _name,
                                  _name, True, 'curgame')
     return url
 
 
 def send_talents(players):
     _name = 'info.log'
-    with open(hots.paths.screens / _name, 'w') as f:
+    with open(hots.paths.upload / _name, 'w') as f:
         for _, player in enumerate(players):
             hero_name = hots.htts_data.get_data_revers_name(player.hero)
             talents = ''.join(map(str, player.talents))
@@ -161,5 +161,5 @@ def send_talents(players):
             tmp = ''.ljust(25-len(tmp))
             f.write(f'{hero_name.ljust(20)} {prep} {tmp} - <a href="{icy_url}">Goto IcyVeins</a>\n')
 
-    hots.visual.upload.upload_file(hots.paths.screens / _name,
+    hots.visual.upload.upload_file(hots.paths.upload / _name,
                                    _name, True, 'curgame')

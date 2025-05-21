@@ -41,10 +41,17 @@ async def send_replay_info(replay_name):
             httshots.print_log('GameUvi')
             return
 
-    if info.init_data.game_options.amm_id == 0:
+    # 50001 - Quick
+    # 50101 - ARAM
+    # 50021 - Bots
+    # 50091 - League
+    amm_id = info.init_data.game_options.amm_id
+    # Свою игру игнорируем
+    if amm_id == 0:
         httshots.print_log('GameUviAmmId')
         return
 
+    # Определение пользователя в матче
     check = False
     for player in info.players.values():
         if player.name in httshots.config.accounts:
@@ -57,19 +64,25 @@ async def send_replay_info(replay_name):
 
     httshots.print_log('GameAccount', me.name)
 
-    # streak
-    if me.result == 1:
-        if httshots.streak[0] == 'Wins':
-            httshots.streak[1] += 1
+    # Находится тут, чтобы вывести информацию с какого аккаунты сыгран матч
+    consider_matches = httshots.config.matches_type_to_consider
+    if consider_matches == 1 and amm_id != 50091:
+        httshots.print_log('GameAmmIdIgnore', amm_id)
+        return
+
+    if amm_id == 50091 or consider_matches == 2:
+        if me.result == 1:
+            if httshots.streak[0] == 'Wins':
+                httshots.streak[1] += 1
+            else:
+                httshots.streak[0] = 'Wins'
+                httshots.streak[1] = 1
         else:
-            httshots.streak[0] = 'Wins'
-            httshots.streak[1] = 1
-    else:
-        if httshots.streak[0] == 'Loses':
-            httshots.streak[1] += 1
-        else:
-            httshots.streak[0] = 'Loses'
-            httshots.streak[1] = 1
+            if httshots.streak[0] == 'Loses':
+                httshots.streak[1] += 1
+            else:
+                httshots.streak[0] = 'Loses'
+                httshots.streak[1] = 1
 
     # get hero_name
     status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
