@@ -11,6 +11,19 @@ from httshots import httshots
 
 
 # ======================================================================
+# >> Consts
+# ======================================================================
+MATCH_INFO = 1 << 0
+MATCH_STATS = 1 << 1
+MATCH_TALENTS = 1 << 2
+MATCH_ADV_STATS = 1 << 3
+
+GAMES_INFO = 1 << 0
+GAMES_STREAK = 1 << 1
+GAMES_URL = 1 << 2
+
+
+# ======================================================================
 # >> Functions
 # ======================================================================
 async def send_replay_info(replay_name):
@@ -64,7 +77,7 @@ async def send_replay_info(replay_name):
 
     httshots.print_log('GameAccount', me.name)
 
-    # Находится тут, чтобы вывести информацию с какого аккаунты сыгран матч
+    # Находится тут, чтобы ранее вывести информацию с какого аккаунты сыгран матч
     consider_matches = httshots.config.matches_type_to_consider
     if consider_matches == 1 and amm_id != 50091:
         httshots.print_log('GameAmmIdIgnore', amm_id)
@@ -84,84 +97,84 @@ async def send_replay_info(replay_name):
                 httshots.streak[0] = 'Loses'
                 httshots.streak[1] = 1
 
-    # get hero_name
-    status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
-    hero_name = httshots.htts_data.get_hero(me.hero, 1)
-    # send match info
+    url_match = None
+    url_games = None
+    url_talents = None
+    url_adv_stats = None
+
+    # Вывод информации о сыгранном матче
+    match_info = ""
+    display_info = httshots.config.end_game_dispay_match_info
+    if MATCH_INFO & display_info:
+        status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
+        hero_name = httshots.htts_data.get_hero(me.hero, 1)
+        match_info = httshots.strings['GameResultInfo'].format(status, hero_name,
+                                                               info.details.title)
 
     if httshots.config.image_upload:
-        url = httshots.visual.match.create_image(info)
-        if url:
+        if MATCH_STATS & display_info:
+            url_match = httshots.visual.match.create_image(info)
+            if url_match:
+                tmp = httshots.strings['GameResultInfoStats'].format(url_match)
+                match_info += tmp
+
+        if MATCH_TALENTS & display_info:
             url_talents = httshots.visual.talents.create_image(info)
-            if httshots.config.upload_adv_stats:
-                url_adv_stats = httshots.visual.match_adv.create_image(info)
-                text = 'GameResultInfoWithStatsAdv'
-            else:
-                text = 'GameResultInfoWithStats'
-                url_adv_stats = 0
+            if url_talents:
+                tmp = httshots.strings['GameResultInfoTalents'].format(url_talents)
+                match_info += tmp
 
-        else:
-            text = 'GameResultInfo'
-            url_talents = None
-            url_adv_stats = None
-    else:
-        text = 'GameResultInfo'
-        url_talents = None
-        url_adv_stats = None
-
-    match_info = httshots.strings[text].format(status, hero_name, info.details.title,
-                                               url, url_talents, url_adv_stats)
+        if MATCH_ADV_STATS & display_info:
+            url_adv_stats = httshots.visual.match_adv.create_image(info)
+            if url_adv_stats:
+                tmp = httshots.strings['GameResultInfoStatsAdv'].format(url_adv_stats)
+                match_info += tmp
     await httshots.tw_bot.channel.send(match_info)
 
-    # add info to stream_replays
+    # Добавляем новый реплей в список сыгранных, чтобы учесть его результат
     sreplay = httshots.StreamReplay(replay_name, me, info)
     httshots.stream_replays.append(sreplay)
 
-    # Get url games image
-    url_games = httshots.visual.games.create_image()
+    # Вывод информации о сыгранном матче
+    games_info = ""
+    display_info = httshots.config.end_game_dispay_games_info
+    if GAMES_INFO & display_info:
+        wins = len(list(filter(lambda x: x.account.result == 1, httshots.stream_replays)))
+        loses = len(list(filter(lambda x: x.account.result == 2, httshots.stream_replays)))
+        matches = len(httshots.stream_replays)
+        win_text = httshots.get_end(wins, 'Wins')
+        lose_text = httshots.get_end(loses, 'Loses')
+        if matches == 1:
+            games_info = httshots.strings['GamesInfoOne'].format(
+                wins, win_text, loses, lose_text)
+        else:
+            match_text = httshots.get_end(matches, 'Matches')
+            games_info = httshots.strings['GamesInfoMore'].format(
+                    matches, match_text, wins,
+                    win_text, loses, lose_text)
+
+            # Череда побед может быть только, когда матчей больше 1
+            if GAMES_STREAK & display_info:
+                streak = httshots.streak
+                if streak[1] > 1:
+                    streak_text = httshots.strings[streak[0]][2]
+                    tmp = httshots.strings['GamesInfoStreak'].format(
+                            streak[1], streak_text)
+                    games_info += tmp
+
+    if GAMES_URL & display_info and httshots.config.image_upload:
+        url_games = httshots.visual.games.create_image()
+        tmp = httshots.strings['GamesInfoUrl'].format(url_games)
+        games_info += tmp
+
+    await httshots.tw_bot.channel.send(games_info)
 
     sreplay.url_games = url_games
-    sreplay.url_match = url
+    sreplay.url_match = url_match
     sreplay.url_talents = url_talents
     sreplay.url_adv_stats = url_adv_stats
 
-    # send matches info
-    wins = len(list(filter(lambda x: x.account.result == 1, httshots.stream_replays)))
-    loses = len(list(filter(lambda x: x.account.result == 2, httshots.stream_replays)))
-    matches = len(httshots.stream_replays)
-    if matches == 1:
-        win_text = httshots.get_end(wins, 'Wins')
-        lose_text = httshots.get_end(loses, 'Loses')
-        if url_games:
-            text = httshots.strings['GamesInfoOneWithStats'].format(
-                    wins, win_text, loses, lose_text, url_games)
-        else:
-            text = httshots.strings['GamesInfoOne'].format(wins, win_text, loses, lose_text)
-
-    else:
-        win_text = httshots.get_end(wins, 'Wins')
-        lose_text = httshots.get_end(loses, 'Loses')
-        match_text = httshots.get_end(matches, 'Matches')
-        streak = httshots.streak
-
-        if url_games:
-            _text = 'GamesInfoMoreWithStats'
-        else:
-            _text = 'GamesInfoMore'
-
-        if streak[1] == 1:
-            streak_text = httshots.strings[streak[0]][1]
-            _text += 'NoStreak'
-        else:
-            streak_text = httshots.strings[streak[0]][2]
-
-        text = httshots.strings[_text].format(
-                matches, match_text, wins, win_text, loses,
-                lose_text, streak[1], streak_text, url=url_games)
-
     httshots.print_log('SendReplayInfo')
-
-    await httshots.tw_bot.channel.send(text)
 
 
 async def check_replays():

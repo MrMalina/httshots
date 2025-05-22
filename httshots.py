@@ -12,6 +12,7 @@ from json import load as json_load
 from os import path, sep, listdir
 from time import strftime
 from pathlib import Path
+from requests import get as req_get
 from configobj import ConfigObj, Section
 from imgurpython import ImgurClient
 from PIL import ImageFont
@@ -24,7 +25,7 @@ from . import bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.18.1"
+pkg_version = "0.19.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -70,6 +71,13 @@ def load(argv:list) -> None:
     strings = Strings(str(current_dir / 'data' / 'strings.ini'), language)
 
     print_log('BotStart')
+
+    # Проверка новой версии
+    check_version = req_get("https://httshots.ru/version")
+    if check_version:
+        check_version = check_version.text
+        if check_version and check_version > pkg_version:
+            print_log('NewVersion', pkg_version, check_version)
 
     # Поиск директории с реплеями
     current_user = getuser()

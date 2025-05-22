@@ -65,24 +65,16 @@ async def start_check_talents():
         await asyncio.sleep(5)
 
 
-def add_command(bot):
-    command = commands.Command('talent', talent, aliases=("талант", ))
-    bot.add_command(command)
-
-
-@commands.cooldown(rate=1, per=5, bucket=commands.Bucket.channel)
-async def talent(ctx: commands.Context, hero=None):
-    # if len(httshots.stream_replays) == len(httshots.stream_pregame):
-        # text = httshots.strings['TrackerNoActiveGame']
-        # await ctx.send(text)
-        # return
+async def talents(ctx: commands.Context, hero=None):
+    if not httshots.config.add_tracker_commands or not httshots.config.tracker_status:
+        return
 
     if hero is None:
         return
 
     hero = httshots.htts_data.get_hero_by_part(hero.lower().strip())
     if hero is None:
-        text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
+        text = httshots.strings['TrackerNotFoundHero'].format(ctx.author.name)
         await ctx.send(text)
         return
 
@@ -118,7 +110,7 @@ async def talent(ctx: commands.Context, hero=None):
             await ctx.send(text)
             return
 
-        text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
+        text = httshots.strings['TrackerNoHeroTalents'].format(ctx.author.name)
         await ctx.send(text)
         return
 
