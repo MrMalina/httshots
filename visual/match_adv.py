@@ -242,24 +242,24 @@ def get_shift(value):
 def create_image(replay):
     _name = 'match_adv.png'
 
-    hots.print_log('ImageStartCreateMatchAdvImage', uwaga=0)
-    hots.print_log('ImageLoadBackGround', uwaga=0)
+    hots.print_log('ImageStartCreateMatchAdvImage', level=0)
+    hots.print_log('ImageLoadBackGround', level=0)
     image = load_background()
 
-    hots.print_log('ImageCreateIcons', uwaga=0)
+    hots.print_log('ImageCreateIcons', level=0)
     map_stat = create_icons(image, replay.details.title)
 
-    hots.print_log('ImageGetMaxStats', uwaga=0)
+    hots.print_log('ImageGetMaxStats', level=0)
     max_stats = get_max_stats(replay, map_stat)
 
-    hots.print_log('ImageAddHeroes', uwaga=0)
+    hots.print_log('ImageAddHeroes', level=0)
     add_heroes(image, replay, max_stats, map_stat)
 
-    hots.print_log('ImageSaveImageMatch', uwaga=0)
+    hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadMatchAdv')
+    hots.print_log('ImageUploadMatchAdv', level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
     if hots.config.send_url_to_console:
-        hots.print_log('SendUrl', url)
+        hots.print_log('SendUrl', url, level=3)
     return url

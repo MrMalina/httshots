@@ -60,7 +60,7 @@ async def start_check_talents():
 
             except Exception as e:
                 raise e
-                httshots.print_log('TrackerNoHeroes')
+                httshots.print_log('TrackerNoHeroes', level=4)
 
         await asyncio.sleep(5)
 
@@ -70,6 +70,11 @@ async def talents(ctx: commands.Context, hero=None):
         return
 
     if hero is None:
+        return
+
+    if httshots.check_talents_task is None:
+        text = httshots.strings['TrackerNoActiveGame']
+        await ctx.send(text)
         return
 
     hero = httshots.htts_data.get_hero_by_part(hero.lower().strip())

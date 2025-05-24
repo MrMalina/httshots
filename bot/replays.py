@@ -6,7 +6,6 @@
 import asyncio
 
 # httshots
-import httshots
 from httshots import httshots
 
 
@@ -45,13 +44,13 @@ async def send_replay_info(replay_name):
         replay, protocol = httshots.parser.get_replay(replay_name)
         info = httshots.parser.get_match_info(replay, protocol)
     except:
-        httshots.print_log('GameTryOpenReplay')
+        httshots.print_log('GameTryOpenReplay', level=2)
         await asyncio.sleep(2)
         try:
             replay, protocol = httshots.parser.get_replay(replay_name)
             info = httshots.parser.get_match_info(replay, protocol)
         except:
-            httshots.print_log('GameUvi')
+            httshots.print_log('GameUvi', level=2)
             return
 
     # 50001 - Quick
@@ -61,7 +60,7 @@ async def send_replay_info(replay_name):
     amm_id = info.init_data.game_options.amm_id
     # Свою игру игнорируем
     if amm_id == 0:
-        httshots.print_log('GameUviAmmId')
+        httshots.print_log('GameUviAmmId', level=2)
         return
 
     # Определение пользователя в матче
@@ -72,15 +71,15 @@ async def send_replay_info(replay_name):
             check = True
             break
     if not check:
-        httshots.print_log('GameNoFoundAccount')
+        httshots.print_log('GameNoFoundAccount', level=2)
         return
 
-    httshots.print_log('GameAccount', me.name)
+    httshots.print_log('GameAccount', me.name, level=2)
 
     # Находится тут, чтобы ранее вывести информацию с какого аккаунты сыгран матч
     consider_matches = httshots.config.matches_type_to_consider
     if consider_matches == 1 and amm_id != 50091:
-        httshots.print_log('GameAmmIdIgnore', amm_id)
+        httshots.print_log('GameAmmIdIgnore', amm_id, level=2)
         return
 
     if amm_id == 50091 or consider_matches == 2:
@@ -174,7 +173,9 @@ async def send_replay_info(replay_name):
     sreplay.url_talents = url_talents
     sreplay.url_adv_stats = url_adv_stats
 
-    httshots.print_log('SendReplayInfo')
+    httshots.bot.events.match_end(sreplay)
+
+    httshots.print_log('SendReplayInfo', level=2)
 
 
 async def check_replays():
@@ -183,6 +184,6 @@ async def check_replays():
         if new_replay:
             tmp = new_replay.split('/')
             name = f".../{acc.id}/.../{tmp[-1][11:-12]}"
-            httshots.print_log('NewReplay', name)
+            httshots.print_log('NewReplay', name, level=3)
             await send_replay_info(new_replay)
             break

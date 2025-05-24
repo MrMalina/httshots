@@ -70,18 +70,18 @@ def add_users(image, info):
 
 
 def create_image(info):
-    _name = 'battlelobby.png'
-    hots.print_log('ImageStartCreateLobbyImage', uwaga=0)
+    _name = 'lobby.png'
+    hots.print_log('ImageStartCreateLobbyImage', level=0)
     image = load_background()
 
-    hots.print_log('ImageAddUsers', uwaga=0)
+    hots.print_log('ImageAddUsers', level=0)
     add_users(image, info)
 
-    hots.print_log('ImageSaveImageMatch', uwaga=0)
+    hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadBattleLobby')
+    hots.print_log('ImageUploadBattleLobby', level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
     if hots.config.send_url_to_console:
-        hots.print_log('SendUrl', url)
+        hots.print_log('SendUrl', url, level=3)
     return url

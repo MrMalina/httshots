@@ -182,31 +182,31 @@ def add_other_info(image, replays):
 def create_image():
     _name = 'games.png'
 
-    hots.print_log('ImageStartCreateGamesImage', uwaga=0)
-    hots.print_log('ImageLoadBackGround', uwaga=0)
+    hots.print_log('ImageStartCreateGamesImage', level=0)
+    hots.print_log('ImageLoadBackGround', level=0)
     image = load_background()
 
-    hots.print_log('ImageGetReplays', uwaga=0)
+    hots.print_log('ImageGetReplays', level=0)
     replays = hots.stream_replays
     if len(replays) <= 10:
         replays = replays[:10]
     else:
         replays = replays[len(replays)-10:len(replays)]
 
-    hots.print_log('ImageCreateIcons', uwaga=0)
+    hots.print_log('ImageCreateIcons', level=0)
     create_icons(image)
 
-    hots.print_log('ImageAddGames', len(replays), uwaga=0)
+    hots.print_log('ImageAddGames', len(replays), level=0)
     add_games(image, replays)
 
-    hots.print_log('ImageAddOtherInfo', uwaga=0)
+    hots.print_log('ImageAddOtherInfo', level=0)
     add_other_info(image, replays)
 
-    hots.print_log('ImageSaveImageGames', uwaga=0)
+    hots.print_log('ImageSaveImageGames', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadGames')
+    hots.print_log('ImageUploadGames', level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
     if hots.config.send_url_to_console:
-        hots.print_log('SendUrl', url)
+        hots.print_log('SendUrl', url, level=3)
     return url

@@ -18,14 +18,14 @@ from imgurpython import ImgurClient
 from PIL import ImageFont
 
 # Httshots
-from . import bot, parser, visual
+from . import addons, bot, parser, visual
 
 
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.19.0"
+pkg_version = "0.20.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -70,14 +70,14 @@ def load(argv:list) -> None:
     language = config.language
     strings = Strings(str(current_dir / 'data' / 'strings.ini'), language)
 
-    print_log('BotStart')
+    print_log('BotStart', level=5)
 
     # Проверка новой версии
     check_version = req_get("https://httshots.ru/version")
     if check_version:
         check_version = check_version.text
         if check_version and check_version > pkg_version:
-            print_log('NewVersion', pkg_version, check_version)
+            print_log('NewVersion', pkg_version, check_version, level=4)
 
     # Поиск директории с реплеями
     current_user = getuser()
@@ -85,10 +85,10 @@ def load(argv:list) -> None:
     for folder in config.folder_hots_accounts:
         hots_folder = folder.format(current_user)
         if path.isdir(hots_folder):
-            print_log('FindHoTSFolder', hots_folder)
+            print_log('FindHoTSFolder', hots_folder, level=3)
             break
     else:
-        print_log('ErrorFindHoTSFolder')
+        print_log('ErrorFindHoTSFolder', level=4)
         return
 
     # Файлы для текущих талантов и информации о лобби
@@ -100,22 +100,37 @@ def load(argv:list) -> None:
     accounts = get_accounts_list(hots_folder)
 
     # Check argv
+    config.starting_hour = 0
     if len(argv) > 1:
         if 'IGNORE_PREV_MATCHES' in argv:
             config.add_previous_games = 0
-            print_log('ParamIgnorePrevMatches')
+            print_log('ParamIgnorePrevMatches', level=3)
         if 'SEND_BATTLE_LOBBY' in argv:
             config.send_previous_battle_lobby = 1
-            print_log('ParamSendBattleLobby')
+            print_log('ParamSendBattleLobby', level=3)
         if 'RU_REPLAY' in argv:
             config.replay_language = 'ru'
-            print_log('ParamReplayRu')
+            print_log('ParamReplayRu', level=3)
         elif 'EN_REPLAY' in argv:
             config.replay_language = 'en'
-            print_log('ParamReplayEn')
-        elif 'URL_TO_CONSOLE' in argv:
+            print_log('ParamReplayEn', level=3)
+        if 'URL_TO_CONSOLE' in argv:
             config.send_url_to_console = 1
-            print_log('ParamUrlToConsole')
+            print_log('ParamUrlToConsole', level=3)
+        if 'STARTING_FROM_HOUR' in argv:
+            index = argv.index('STARTING_FROM_HOUR')
+
+            if len(argv) > index+1:
+                _time = argv[index+1]
+
+                if not _time.isdigit():
+                    print_log('ParamFromTimeErrorType', level=4)
+                else:
+                    config.starting_hour = int(_time)
+                    print_log('ParamFromTime', _time, level=3)
+
+            else:
+                print_log('ParamFromTimeErrorNoValue', level=4)
 
     hero_data = HeroData(str(current_dir / 'files' / 'herodata.json'))
     htts_data = DataStrings(str(current_dir / 'data' / 'data.ini'), config.replay_language)
@@ -162,21 +177,28 @@ def load(argv:list) -> None:
     # Image upload format
     if config.image_upload == 1:
         imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
-        print_log('ImgurLogin')
+        print_log('ImgurLogin', level=3)
 
     elif config.image_upload == 2:
         try:
             ftp = FTP(config.ftp_ip)
             ftp.login(config.ftp_login, config.ftp_passwd)
             ftp.close()
-            print_log('FTPLogin', config.site_name)
+            print_log('FTPLogin', config.site_name, level=3)
         except FTP_Error as e:
-            print_log('FTPLoginError', config.site_name)
+            print_log('FTPLoginError', config.site_name, level=4)
             raise e
+
+    # Загрузка аддонов
+    addons.load_addons(config.config['addons'])
 
     # Запуск бота
     tw_bot = bot.TwitchBot(config.twitch_access_token, '!', config.twitch_channel)
+
+    bot.events.bot_initialized(tw_bot)
+
     tw_bot.run()
+
 
 
 # ======================================================================
@@ -196,8 +218,8 @@ def get_accounts_list(hots_folder: str) -> list:
     return _accounts
 
 
-def print_log(string, *args, uwaga=True):
-    if config.use_logs and (not config.only_uwaga_logs or uwaga):
+def print_log(string, *args, level=0):
+    if config.log_level <= level:
         print(strings[string].format(*args))
 
 
@@ -237,7 +259,7 @@ class DataStrings:
 
         if not replay_lang in self.data:
             self.language = 'ru'
-            print_log('HeroesStringsNoLanguage', replay_lang)
+            print_log('HeroesStringsNoLanguage', replay_lang, level=4)
 
         # need to talents in tracker
         self.icy_en_names = self.data['en'].get('icy_names', {})
@@ -325,7 +347,6 @@ class Config:
 
         self.config.indent_type = '    '
         self.config.encoding = 'UTF-8'
-        self.config.initial_comment = ["../httshots/httshots.py"]
 
         for cvar, value in self.config.items():
             if isinstance(value, Section):

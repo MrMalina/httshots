@@ -16,6 +16,7 @@ from httshots import httshots
 from . import replays
 from . import pregame
 from . import tracker
+from . import events
 
 
 # ======================================================================
@@ -30,14 +31,15 @@ class TwitchBot(commands.Bot):
         if channels:
             self.channel = channels[0]
             channel = self.channel.name
-            httshots.print_log('ReadyInfo', self.nick, self.user_id, channel)
+            httshots.print_log('ReadyInfo', self.nick, self.user_id,
+                                channel, level=4)
         else:
-            httshots.print_log('ReadyError')
+            httshots.print_log('ReadyError', level=4)
             return
 
         if httshots.config.add_previous_games == 1:
             consider_matches = httshots.config.matches_type_to_consider
-
+            starting_hour = httshots.config.starting_hour
             found = 0
             replayes_count = 0
             for acc in httshots.accounts:
@@ -47,6 +49,15 @@ class TwitchBot(commands.Bot):
                     replay, protocol = httshots.parser.get_replay(replay_path)
                     info = httshots.parser.get_match_info(replay, protocol)
                     replay_title = replay_path.split('/')[-1]
+
+                    tmp = replay_title.split()
+                    hour = int(tmp[1][:2])
+                    if starting_hour > hour:
+                        httshots.print_log('FoundPreviousGameSkipTime',
+                                            replay_title[11:-12], starting_hour,
+                                            level=1)
+                        continue
+
                     me = None
                     for player in info.players.values():
                         if player.name in httshots.config.accounts:
@@ -57,7 +68,8 @@ class TwitchBot(commands.Bot):
                     if consider_matches == 2 or amm_id == 50091:
                         if me is None:
                             httshots.print_log('FoundPreviousGameNoAcc',
-                                                replay_title[11:-12])
+                                                replay_title[11:-12],
+                                                level=1)
                             continue
 
                         if me.result == 1:
@@ -79,10 +91,12 @@ class TwitchBot(commands.Bot):
                         httshots.stream_replays.append(sreplay)
                         sreplay.url_games = None
                         httshots.print_log('FoundRankedPreviousGame',
-                                            me.name, replay_title[11:-12])
+                                            me.name, replay_title[11:-12],
+                                            level=1)
                     else:
                         httshots.print_log('FoundNoRankedPreviousGames',
-                                            me.name, replay_title[11:-12])
+                                            me.name, replay_title[11:-12],
+                                            level=1)
 
             if found:
                 # 2024-11-28 21.35.03 Завод Вольской -> 24-11-28 21-35
@@ -97,13 +111,16 @@ class TwitchBot(commands.Bot):
                     sreplay.url_games = None
 
                 httshots.print_log('FoundPreviousGames', replayes_count,
-                                    len(httshots.stream_replays))
+                                    len(httshots.stream_replays), level=2)
 
+            elif consider_matches == 1:
+                httshots.print_log('FoundZeroLeaguePreviousGames', level=2)
             else:
-                httshots.print_log('FoundZeroPreviousGames')
+                httshots.print_log('FoundZeroPreviousGames', level=2)
 
         httshots.print_log('BotStarted', httshots.pkg_name,
-                           httshots.pkg_author, httshots.pkg_version)
+                           httshots.pkg_author, httshots.pkg_version,
+                           level=4)
         await self.endless_loop()
 
     async def endless_loop(self):

@@ -126,20 +126,20 @@ def add_heroes(image, players):
 
 def create_image(players):
     _name = 'gametalents.png'
-    hots.print_log('ImageStartCreateTalentsImage', uwaga=0)
-    hots.print_log('ImageLoadBackGround', uwaga=0)
+    hots.print_log('ImageStartCreateTalentsImage', level=0)
+    hots.print_log('ImageLoadBackGround', level=0)
     image = load_background()
 
-    hots.print_log('ImageCreateIcons', uwaga=0)
+    hots.print_log('ImageCreateIcons', level=0)
     create_icons(image)
 
-    hots.print_log('ImageAddHeroes', uwaga=0)
+    hots.print_log('ImageAddHeroes', level=0)
     tmp = add_heroes(image, players)
 
-    hots.print_log('ImageSaveImageMatch', uwaga=0)
+    hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadTracker', tmp)
+    hots.print_log('ImageUploadTracker', tmp, level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name,
                                  _name, True, 'curgame')
     return url

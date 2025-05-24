@@ -84,5 +84,5 @@ def upload_file_imgur(file_name):
             return url['link'].replace('i.', '')
         return None
     except Exception as e:
-        httshots.print_log('ImgurError', e)
+        httshots.print_log('ImgurError', e, level=4)
         return None

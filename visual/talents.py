@@ -169,24 +169,24 @@ def add_other_info(image, replay):
 
 def create_image(replay):
     _name = 'talents.png'
-    hots.print_log('ImageStartCreateTalentsImage', uwaga=0)
-    hots.print_log('ImageLoadBackGround', uwaga=0)
+    hots.print_log('ImageStartCreateTalentsImage', level=0)
+    hots.print_log('ImageLoadBackGround', level=0)
     image = load_background()
 
-    hots.print_log('ImageCreateIcons', uwaga=0)
+    hots.print_log('ImageCreateIcons', level=0)
     create_icons(image)
 
-    hots.print_log('ImageAddHeroes', uwaga=0)
+    hots.print_log('ImageAddHeroes', level=0)
     add_heroes(image, replay)
 
-    hots.print_log('ImageAddOtherInfo', uwaga=0)
+    hots.print_log('ImageAddOtherInfo', level=0)
     add_other_info(image, replay)
 
-    hots.print_log('ImageSaveImageMatch', uwaga=0)
+    hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadTalents')
+    hots.print_log('ImageUploadTalents', level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
     if hots.config.send_url_to_console:
-        hots.print_log('SendUrl', url)
+        hots.print_log('SendUrl', url, level=3)
     return url
