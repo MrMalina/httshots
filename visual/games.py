@@ -2,10 +2,11 @@
 # >> IMPORTS
 # ======================================================================
 
+# Python
 from PIL import Image
 from PIL import ImageDraw
 
-import httshots
+# httshots
 from httshots import httshots as hots
 
 # ======================================================================
@@ -55,13 +56,13 @@ def add_games(image, replays):
     add = 100
     rng = 60
 
+    acc_names = hots.config.accounts
     for x, replay in enumerate(reversed(replays)):
-        for player in replay.info.players.values():
-            if player.name in hots.config.accounts:
-                me = player
+        players = {x.name:x for x in replay.info.players.values()}
+        for acc_name in acc_names:
+            if acc_name in players:
+                player = players[acc_name]
                 break
-
-        player = me
 
         hero_name = hots.htts_data.get_eng_hero(player.hero)
         hero = Image.open(hots.paths.heroes / (hero_name + '.png')).convert('RGBA')
@@ -156,27 +157,44 @@ def get_shift(value):
 def add_other_info(image, replays):
     wins = 0
     loses = 0
+    language = hots.config.language
 
+    acc_names = hots.config.accounts
     for replay in replays:
-        for player in replay.info.players.values():
-            if player.name in hots.config.accounts:
+        players = {x.name:x for x in replay.info.players.values()}
+        for acc_name in acc_names:
+            if acc_name in players:
+                player = players[acc_name]
                 if player.result == 1:
                     wins += 1
                 else:
                     loses += 1
+                break
 
     draw = ImageDraw.Draw(image)
-    tmp = hots.strings['Wins'][2]
+    tmp = hots.strings['Wins'][2].capitalize()
     draw.text((125, 700), tmp, (185,213,255), font=hots.fonts.large)
-    draw.text((150, 725), f"{wins}", (39,153,165), font=hots.fonts.big)
+    draw.text((150, 725), str(wins), (39,153,165), font=hots.fonts.big)
 
-    tmp = hots.strings['Loses'][2]
+    tmp = hots.strings['Loses'][2].capitalize()
     draw.text((1350-260, 700), tmp, (234,140,140), font=hots.fonts.large)
-    draw.text((1350-200, 725), f"{loses}", (175,76,105), font=hots.fonts.big)
+    draw.text((1350-200, 725), str(loses), (175,76,105), font=hots.fonts.big)
 
     tmp = hots.strings['ImageTotalGames']
-    draw.text((1350/2-40, 700), tmp, (138,166,251), font=hots.fonts.large)
-    draw.text((1350/2, 725), f"{len(replays)}", WHITE, font=hots.fonts.big)
+    _replays = len(replays)
+    games = str(_replays)
+
+    shift = 0
+    if language == 'ru':
+        if len(games) == 1:
+            shift = -5
+
+    draw.text((1350/2-35, 700), tmp, (138,166,251), font=hots.fonts.large)
+    draw.text((1350/2-shift, 725), games, WHITE, font=hots.fonts.big)
+
+    if _replays >= 10:
+        tmp = hots.strings['ImageLast10Games']
+        draw.text((25, 50), tmp, WHITE, font=hots.fonts.default)
 
 
 def create_image():
@@ -189,15 +207,15 @@ def create_image():
     hots.print_log('ImageGetReplays', level=0)
     replays = hots.stream_replays
     if len(replays) <= 10:
-        replays = replays[:10]
+        _replays = replays[:10]
     else:
-        replays = replays[len(replays)-10:len(replays)]
+        _replays = replays[len(replays)-10:len(replays)]
 
     hots.print_log('ImageCreateIcons', level=0)
     create_icons(image)
 
     hots.print_log('ImageAddGames', len(replays), level=0)
-    add_games(image, replays)
+    add_games(image, _replays)
 
     hots.print_log('ImageAddOtherInfo', level=0)
     add_other_info(image, replays)
@@ -207,6 +225,6 @@ def create_image():
 
     hots.print_log('ImageUploadGames', level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.send_url_to_console:
+    if hots.config.duplicate_url_in_console:
         hots.print_log('SendUrl', url, level=3)
     return url

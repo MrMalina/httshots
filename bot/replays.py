@@ -65,11 +65,14 @@ async def send_replay_info(replay_name):
 
     # Определение пользователя в матче
     check = False
-    for player in info.players.values():
-        if player.name in httshots.config.accounts:
-            me = player
+    acc_names = httshots.config.accounts
+    players = {x.name:x for x in info.players.values()}
+    for acc_name in acc_names:
+        if acc_name in players:
+            me = players[acc_name]
             check = True
             break
+
     if not check:
         httshots.print_log('GameNoFoundAccount', level=2)
         return

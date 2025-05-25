@@ -25,10 +25,10 @@ async def start_check_talents():
         file = open(httshots.config.tracker_events_file, 'rb')
         contents = file.read()
         file.close()
-        hash = hashlib.md5(contents).hexdigest()
+        _hash = hashlib.md5(contents).hexdigest()
 
-        if httshots.tracker_events_hash != hash:
-            httshots.tracker_events_hash = hash
+        if httshots.tracker_events_hash != _hash:
+            httshots.tracker_events_hash = _hash
 
             if not len(httshots.stream_pregame):
                 file = open(httshots.config.battle_lobby_file, 'rb')
@@ -40,12 +40,12 @@ async def start_check_talents():
 
             # Возможно, излишне
             try:
-                talents = httshots.parser.ingame.parse_content(contents, pre_game)
+                _talents = httshots.parser.ingame.parse_content(contents, pre_game)
                 if httshots.config.debug:
-                    print(talents, old_talents)
-                if talents:
+                    print(_talents, old_talents)
+                if _talents:
                     # Нет смысла генерировать изображение, если таланты не поменялись
-                    if talents != old_talents:
+                    if _talents != old_talents:
                         check = True
                         # Ситуация, когда появились надписи о героях, но не у всех игроков
                         for player in pre_game.players:
@@ -56,7 +56,7 @@ async def start_check_talents():
                         if check:
                             httshots.visual.tracker.create_image(pre_game.players)
                             httshots.visual.tracker.send_talents(pre_game.players)
-                        old_talents = copy.deepcopy(talents)
+                        old_talents = copy.deepcopy(_talents)
 
             except Exception as e:
                 raise e
@@ -66,7 +66,7 @@ async def start_check_talents():
 
 
 async def talents(ctx: commands.Context, hero=None):
-    if not httshots.config.add_tracker_commands or not httshots.config.tracker_status:
+    if not httshots.config.tracker_commands or not httshots.config.tracker_status:
         return
 
     if hero is None:
@@ -102,14 +102,14 @@ async def talents(ctx: commands.Context, hero=None):
         hero_eng = httshots.htts_data.get_data_name(hero_eng)
 
         if hero_eng in heroes:
-            talents = heroes[hero_eng]
+            _talents = heroes[hero_eng]
 
             hero_name = httshots.htts_data.get_hero(hero, 0)
             hero_name_eng = httshots.htts_data.get_eng_hero(hero)
-            talents = ''.join(map(str, talents))
-            tmp = f" [T{talents},{hero_name_eng}]"
+            _talents = ''.join(map(str, _talents))
+            tmp = f" [T{_talents},{hero_name_eng}]"
             icy_hero = httshots.htts_data.get_icy_hero(hero, hero_name_eng.lower())
-            icy_url = httshots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
+            icy_url = httshots.ICY_URL.format(icy_hero, _talents.replace('0', '-'))
             text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
 
             await ctx.send(text)

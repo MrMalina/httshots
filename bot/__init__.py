@@ -42,6 +42,7 @@ class TwitchBot(commands.Bot):
             starting_hour = httshots.config.starting_hour
             found = 0
             replayes_count = 0
+            acc_names = httshots.config.accounts
             for acc in httshots.accounts:
                 acc_replays = list(acc.get_all_replays())
                 for replay_path in acc_replays:
@@ -59,9 +60,10 @@ class TwitchBot(commands.Bot):
                         continue
 
                     me = None
-                    for player in info.players.values():
-                        if player.name in httshots.config.accounts:
-                            me = player
+                    players = {x.name:x for x in info.players.values()}
+                    for acc_name in acc_names:
+                        if acc_name in players:
+                            me = players[acc_name]
                             break
 
                     amm_id = info.init_data.game_options.amm_id
@@ -105,6 +107,9 @@ class TwitchBot(commands.Bot):
                 httshots.cur_game[1] = tmp[1][:-3].replace('.', '-')
 
                 if httshots.config.image_upload:
+                    # Единожды сортируем, так как чтение реплеев не обязательно по возрастающему времени
+                    _replays = sorted(httshots.stream_replays, key=lambda x: x.title)
+                    httshots.stream_replays = list(_replays)
                     url_games = httshots.visual.games.create_image()
                     sreplay.url_games = url_games
                 else:
@@ -141,7 +146,9 @@ class TwitchBot(commands.Bot):
 
     @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
     @commands.command(aliases=("матч", ))
-    async def game(self, ctx: commands.Context, hero: str = None, info: str = None):
+    async def game(self, ctx: commands.Context,
+                    hero: str | None = None,
+                    info: str | None = None):
         if not len(httshots.stream_replays):
             text = httshots.strings['GameNotFound']
             await ctx.send(text)

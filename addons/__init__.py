@@ -26,9 +26,9 @@ for _module in _modules:
 
 
 def load_addons(cfg):
-    for module in modules:
-        _name = module.__name__.split('.')[-1]
+    for mod in modules:
+        _name = mod.__name__.split('.')[-1]
         if not _name in cfg:
             continue
         if cfg[_name].isdigit() and int(cfg[_name]) == 1:
-            getattr(module, "load")()
+            getattr(mod, "load")()

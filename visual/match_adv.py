@@ -6,7 +6,7 @@
 from PIL import Image
 from PIL import ImageDraw
 
-import httshots
+# httshots
 from httshots import httshots as hots
 
 
@@ -145,16 +145,16 @@ def get_max_stats(replay, map_stat):
         for player in replay.players.values():
             value = getattr(player, stat)
             team_id = player.team_id
-            id = player.userid
+            _id = player.userid
             if not max_stats[team_id][stat]:
-                max_stats[team_id][stat] = [[id], value]
+                max_stats[team_id][stat] = [[_id], value]
                 continue
 
             if value > max_stats[team_id][stat][1]:
-                max_stats[team_id][stat] = [[id], value]
+                max_stats[team_id][stat] = [[_id], value]
 
             elif value == max_stats[team_id][stat][1]:
-                max_stats[team_id][stat][0].append(id)
+                max_stats[team_id][stat][0].append(_id)
 
     return max_stats
 
@@ -182,7 +182,7 @@ def add_heroes(image, replay, max_stats, map_stat):
         draw = ImageDraw.Draw(image)
 
         team_id = player.team_id
-        id = player.userid
+        _id = player.userid
 
         name = player.name
         check = hots.visual.check_name.match(name)[0]
@@ -213,7 +213,7 @@ def add_heroes(image, replay, max_stats, map_stat):
         for stat in stats:
             value = str(getattr(player, stat))
             shift = get_shift(value)
-            if id in max_stats[team_id][stat][0]:
+            if _id in max_stats[team_id][stat][0]:
                 draw.text((x-shift, add+(y*rng)+20), value, WHITE, font=hots.fonts.default)
             else:
                 draw.text((x-shift, add+(y*rng)+20), value, color, font=hots.fonts.default)
@@ -260,6 +260,6 @@ def create_image(replay):
 
     hots.print_log('ImageUploadMatchAdv', level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.send_url_to_console:
+    if hots.config.duplicate_url_in_console:
         hots.print_log('SendUrl', url, level=3)
     return url

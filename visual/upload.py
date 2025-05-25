@@ -6,8 +6,6 @@
 from ftplib import FTP
 
 # httshots
-import httshots
-
 from httshots import httshots
 
 

@@ -25,7 +25,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.20.0"
+pkg_version = "0.21.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -82,7 +82,7 @@ def load(argv:list) -> None:
     # Поиск директории с реплеями
     current_user = getuser()
 
-    for folder in config.folder_hots_accounts:
+    for folder in config.folder_hots_replays:
         hots_folder = folder.format(current_user)
         if path.isdir(hots_folder):
             print_log('FindHoTSFolder', hots_folder, level=3)
@@ -115,7 +115,7 @@ def load(argv:list) -> None:
             config.replay_language = 'en'
             print_log('ParamReplayEn', level=3)
         if 'URL_TO_CONSOLE' in argv:
-            config.send_url_to_console = 1
+            config.duplicate_url_in_console = 1
             print_log('ParamUrlToConsole', level=3)
         if 'STARTING_FROM_HOUR' in argv:
             index = argv.index('STARTING_FROM_HOUR')
@@ -192,13 +192,20 @@ def load(argv:list) -> None:
     # Загрузка аддонов
     addons.load_addons(config.config['addons'])
 
+    # Список имён аккаунтов должен быть списком, а не строкой
+    acc_names = config.accounts
+    if isinstance(acc_names, str):
+        config.accounts = (acc_names, )
+
     # Запуск бота
-    tw_bot = bot.TwitchBot(config.twitch_access_token, '!', config.twitch_channel)
+    tw_channel = config.twitch_channel
+    if isinstance(tw_channel, str):
+        tw_channel = (tw_channel, )
+    tw_bot = bot.TwitchBot(config.twitch_access_token, '!', tw_channel)
 
     bot.events.bot_initialized(tw_bot)
 
     tw_bot.run()
-
 
 
 # ======================================================================
@@ -210,8 +217,8 @@ def get_accounts_list(hots_folder: str) -> list:
     account_folders = listdir(hots_folder)
 
     for folder in account_folders:
-        id = folder.split(sep)[-1]
-        acc = Account(hots_folder, id)
+        _id = folder.split(sep)[-1]
+        acc = Account(hots_folder, _id)
         if acc.regions:
             _accounts.append(acc)
 

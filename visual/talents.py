@@ -187,6 +187,6 @@ def create_image(replay):
 
     hots.print_log('ImageUploadTalents', level=2)
     url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.send_url_to_console:
+    if hots.config.duplicate_url_in_console:
         hots.print_log('SendUrl', url, level=3)
     return url
