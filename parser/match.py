@@ -11,7 +11,7 @@ from . import classes
 # ======================================================================
 class Game:
     def __init__(self):
-        ...
+        self.game_units = None
 
     def add_details(self, data):
         details = classes.Details(data)

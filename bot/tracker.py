@@ -38,6 +38,10 @@ async def start_check_talents():
             else:
                 pre_game = httshots.stream_pregame[-1]
 
+            if len(pre_game.players) < 10:
+                httshots.print_log('TrackerLess10Players', level=1)
+                break
+
             # Возможно, излишне
             try:
                 _talents = httshots.parser.ingame.parse_content(contents, pre_game)

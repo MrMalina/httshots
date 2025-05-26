@@ -51,6 +51,11 @@ class TwitchBot(commands.Bot):
                     info = httshots.parser.get_match_info(replay, protocol)
                     replay_title = replay_path.split('/')[-1]
 
+                    if info == -1:
+                        httshots.print_log('FoundPreviousGameSkipPlayers',
+                                            replay_title[11:-12], level=1)
+                        continue
+
                     tmp = replay_title.split()
                     hour = int(tmp[1][:2])
                     if starting_hour > hour:
@@ -111,9 +116,7 @@ class TwitchBot(commands.Bot):
                     _replays = sorted(httshots.stream_replays, key=lambda x: x.title)
                     httshots.stream_replays = list(_replays)
                     url_games = httshots.visual.games.create_image()
-                    sreplay.url_games = url_games
-                else:
-                    sreplay.url_games = None
+                    httshots.stream_replays[-1].url_games = url_games
 
                 httshots.print_log('FoundPreviousGames', replayes_count,
                                     len(httshots.stream_replays), level=2)
@@ -195,6 +198,20 @@ class TwitchBot(commands.Bot):
                 await ctx.send(text)
                 return
 
+            if hero in ('meat', 'мясо'):
+                player = _game.try_find_hero(hero.lower().strip())
+                if player is None:
+                    text = httshots.strings['GameNoButcherInGame'].format(ctx.author.name)
+
+                else:
+                    meats = 0
+                    for unit in _game.info.game_units.values():
+                        if unit.is_meat() and not unit.was_picked():
+                            meats += 20 if '20' in unit.name else 1
+                    text = httshots.strings['GameButcherLoseMeats'].format(player.name, meats)
+                await ctx.send(text)
+                return
+
             player = _game.try_find_hero(hero.lower().strip())
             if player is None:
                 text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
@@ -221,7 +238,6 @@ class TwitchBot(commands.Bot):
                                                                 player.assists)
             else:
                 value = getattr(player, info, None)
-                print(info, player, value)
                 if value is None:
                     text = httshots.strings['GameHeroInfoNotFound'].format(info)
                 else:

@@ -32,8 +32,11 @@ async def send_replay_info(replay_name):
         httshots.check_talents_task = None
         httshots.bot.tracker.old_talents = None
         httshots.visual.upload.remove_file('gametalents.png', 'curgame')
-        dest = httshots.cur_game[0] + '/' + httshots.cur_game[1] + '/info.log'
-        httshots.visual.upload.rename_file('curgame/info.log', dest)
+        try:
+            dest = httshots.cur_game[0] + '/' + httshots.cur_game[1] + '/info.log'
+            httshots.visual.upload.rename_file('curgame/info.log', dest)
+        except:
+            ...
     else:
         # Если бот включен и уже идёт матч, либо самостоятельно добавлен реплей
         tmp = replay_name.split('/')[-1].split()
@@ -53,10 +56,11 @@ async def send_replay_info(replay_name):
             httshots.print_log('GameUvi', level=2)
             return
 
-    # 50001 - Quick
-    # 50101 - ARAM
-    # 50021 - Bots
-    # 50091 - League
+    # Игнорируем матчи, где меньше 10 игроков
+    if info == -1:
+        httshots.print_log('GameLess10Players', level=2)
+        return
+
     amm_id = info.init_data.game_options.amm_id
     # Свою игру игнорируем
     if amm_id == 0:

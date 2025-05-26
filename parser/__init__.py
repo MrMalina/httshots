@@ -12,7 +12,9 @@ from configobj import ConfigObj
 import heroprotocol
 from heroprotocol import versions
 
-from . import classes, parse, match, battlelobby, ingame
+# httshots
+from httshots import httshots
+from . import classes, parse, match, battlelobby, ingame, units
 
 
 # ======================================================================
@@ -41,6 +43,9 @@ def get_match_info(replay, protocol):
     game = match.Game()
     game.add_details(details)
 
+    if len(game.details.players) < 10:
+        return -1
+
     contents = replay.read_file('replay.initData')
     init_data = protocol.decode_replay_initdata(contents)
     game.add_init_data(init_data)
@@ -51,14 +56,23 @@ def get_match_info(replay, protocol):
 
     contents = replay.read_file('replay.tracker.events')
     info = []
+    game_units = {}
     for event in protocol.decode_replay_tracker_events(contents):
         if event['_eventid'] == 11 and event['_event'] == 'NNet.Replay.Tracker.SScoreResultEvent':
             game.add_event(event['m_instanceList'])
-        if (event['_eventid'] == 13 and
+        elif (event['_eventid'] == 13 and
             event['_event'] == 'NNet.Replay.Tracker.SHeroBannedEvent') or \
             (event['_eventid'] == 14 and
             event['_event'] == 'NNet.Replay.Tracker.SHeroPickedEvent'):
             info.append(event)
+        elif event['_event'] == 'NNet.Replay.Tracker.SUnitBornEvent':
+            unit = units.GameUnit(event)
+            game_units[unit.tag] = unit
+        elif event['_event'] == 'NNet.Replay.Tracker.SUnitDiedEvent':
+            tag = units.get_unit_tag(event)
+            game_units[tag].unit_dead(event)
+
+    game.game_units = game_units
     game.add_lobby(info)
 
     return game
