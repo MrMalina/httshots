@@ -2,9 +2,17 @@
 # >> Imports
 # ======================================================================
 
+# Python
+from collections import namedtuple
+
 # HttsHots
 from . import consts, parse
 
+
+# ======================================================================
+# >> Consts
+# ======================================================================
+Death = namedtuple('Death', ['gameloop', 'killers'])
 
 # ======================================================================
 # >> Classes
@@ -21,7 +29,7 @@ class GameUnit:
         self.born_coords = (event['m_x'], event['m_y'])
 
         # dead
-        self.dead_gameloop = None
+        self.dead_gameloop = -1
         self.killer_player_id = None
         self.killer_index = None
         self.killer_recycle = None
@@ -50,8 +58,30 @@ class GameUnit:
         return self.alive_time < consts.ALIVE_TIME[self.name]
 
 
+class HeroUnit:
+    def __init__(self, event):
+        self.player_id = event['m_intData'][0]['m_value']
+        hero_name = event['m_stringData'][0]['m_value']
+        self.hero_name = parse.decode_string(hero_name)
+
+        # gameloop: Death
+        self.deaths = []
+
+    def add_death(self, event):
+        gameloop = event['_gameloop']
+        killers = []
+        for info in event['m_intData'][1:]:
+            killers.append(info['m_value'])
+        self.deaths.append(Death(gameloop, killers))
+
+
+
 # ======================================================================
 # >> Functions
 # ======================================================================
 def get_unit_tag(event):
     return (event['m_unitTagIndex'] << 18) + event['m_unitTagRecycle']
+
+
+def get_hero_unit(event):
+    return event['m_intData'][0]['m_value']

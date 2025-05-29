@@ -25,7 +25,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.22.0"
+pkg_version = "0.23.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -262,6 +262,7 @@ class HelpCls:
 class DataStrings:
     def __init__(self, file_name, replay_lang):
         self.data = ConfigObj(file_name)
+
         self.language = replay_lang
 
         if not replay_lang in self.data:
@@ -271,21 +272,29 @@ class DataStrings:
         # need to talents in tracker
         self.icy_en_names = self.data['en'].get('icy_names', {})
 
-        self.data = self.data[self.language]
+        self._data = self.data[self.language]
 
-        self.params = self.data['params']
-        self.maps = self.data['maps']
-        self.names = self.data['names']
-        self.rofl_names = self.data.get('rofl_names', {})
-        self.short_names = self.data.get('short_names', {})
-        self.data_names = self.data.get('data_names', {})
-        self.icy_names = self.data.get('icy_names', {})
-        self.data_names_revers = self.data.get('data_names_revers', {})
+        self.params = self._data['params']
+        self.maps = self._data['maps']
+        self.names = self._data['names']
+        self.rofl_names = self._data.get('rofl_names', {})
+        self.short_names = self._data.get('short_names', {})
+        self.icy_names = self._data.get('icy_names', {})
+        self.data_names = self.data['all']['data_names']
+        self.data_names_revers = self.data['all']['data_names_revers']
+        if self.language != 'en':
+            self.rofl_en_names = self.data['en']['rofl_names']
+            self.names_en = self.data['en']['names']
+            self.all_names = self.names.keys() + self.names_en.keys()
+            self.all_rofl_names = self.rofl_names.items() + self.rofl_en_names.items()
+            self.get_hero_by_part = self.get_hero_by_part_full
+        else:
+            self.get_hero_by_part = self.get_hero_by_part_short
 
     def get_eng_hero(self, hero):
         if self.language == 'en':
             return self.names[hero][0]
-        return self.data['en'][hero]
+        return self._data['en'].get(hero, hero)
 
     def get_icy_hero(self, hero, eng_name):
         return self.icy_names.get(hero, eng_name)
@@ -304,10 +313,28 @@ class DataStrings:
             return self.names[hero][0]
 
         if case is not None:
-            return self.names[hero][case]
+            if hero in self.names:
+                return self.names[hero][case]
+            return self.names_en[hero][case]
         return self.names[hero]
 
-    def get_hero_by_part(self, hero_name_part):
+    def get_hero_by_part_full(self, hero_name_part):
+        for hero in self.all_names:
+            if hero.lower().startswith(hero_name_part):
+               return hero
+
+        for rofl, hero in self.all_rofl_names:
+            if rofl.startswith(hero_name_part):
+                hero_name_part = hero
+                break
+
+        for hero in self.all_names:
+            if hero.lower().startswith(hero_name_part):
+               return hero
+
+        return None
+
+    def get_hero_by_part_short(self, hero_name_part):
         for hero in self.names.keys():
             if hero.lower().startswith(hero_name_part):
                 return hero
@@ -501,20 +528,53 @@ class StreamReplay:
         status = strings['GameResult'+['Win','Lose'][int(me.result)-1]]
         self.short_info = f"{self.info.details.title} - {self.account.hero} - {status}"
 
-    def try_find_hero(self, hero_name_part):
-        players = self.info.players.values()
-        for player in players:
-            if player.hero.lower().startswith(hero_name_part):
+        self.players = self.info.players.values()
+        self.heroes = [(x, x.hero.lower(),
+                       htts_data.get_eng_hero(x.hero).lower()) \
+                       for x in self.players]
+
+        if htts_data.language != 'en':
+            self.try_find_hero = self.try_find_hero_full
+        else:
+            self.try_find_hero = self.try_find_hero_short
+
+    def try_find_hero_short(self, hero_name_part):
+        for player, hero in self.heroes:
+            if hero.startswith(hero_name_part):
                 return player
 
         for _hero in htts_data.rofl_names:
-            if _hero.lower().startswith(hero_name_part):
-                hero_name_part = htts_data.rofl_names[_hero].lower()
+            if _hero.startswith(hero_name_part):
+                hero_name_part = htts_data.rofl_names[_hero]
                 break
 
-        for player in players:
-            if player.hero.lower().startswith(hero_name_part):
+        for player, hero in self.heroes:
+            if hero.startswith(hero_name_part):
                 return player
+
+        return None
+
+    def try_find_hero_full(self, hero_name_part):
+        for player, hero, en_hero in self.heroes:
+            if hero.startswith(hero_name_part) or \
+               en_hero.startswith(hero_name_part):
+                return player
+
+        for _hero in htts_data.rofl_names:
+            if _hero.startswith(hero_name_part):
+                hero_name_part = htts_data.rofl_names[_hero]
+                break
+
+        for _hero in htts_data.rofl_en_names:
+            if _hero.startswith(hero_name_part):
+                hero_name_part = htts_data.rofl_en_names[_hero]
+                break
+
+        for player, hero, en_hero in self.heroes:
+            if hero.startswith(hero_name_part) or \
+               en_hero.startswith(hero_name_part):
+                return player
+
         return None
 
     def get_players_with_heroes(self):

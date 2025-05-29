@@ -7,6 +7,7 @@ import sys
 import mpyq
 
 from configobj import ConfigObj
+from collections import defaultdict
 
 # Others
 import heroprotocol
@@ -56,7 +57,9 @@ def get_match_info(replay, protocol):
 
     contents = replay.read_file('replay.tracker.events')
     info = []
+    game_loops = defaultdict(list)
     game_units = {}
+    hero_units = {}
     for event in protocol.decode_replay_tracker_events(contents):
         if event['_eventid'] == 11 and event['_event'] == 'NNet.Replay.Tracker.SScoreResultEvent':
             game.add_event(event['m_instanceList'])
@@ -71,9 +74,28 @@ def get_match_info(replay, protocol):
         elif event['_event'] == 'NNet.Replay.Tracker.SUnitDiedEvent':
             tag = units.get_unit_tag(event)
             game_units[tag].unit_dead(event)
+        elif event['_event'] == 'NNet.Replay.Tracker.SStatGameEvent':
+            if event['m_eventName'] == b'PlayerSpawned':
+                hero = units.HeroUnit(event)
+                hero_units[hero.player_id] = hero
+            elif event['m_eventName'] == b'PlayerDeath':
+                player_id = units.get_hero_unit(event)
+                hero = hero_units[player_id]
+                hero.add_death(event)
 
     game.game_units = game_units
+    game.hero_units = hero_units
     game.add_lobby(info)
+
+    for unit in game_units.values():
+        game_loops[unit.born_gameloop].append(('SpawnUnit', unit))
+        game_loops[unit.dead_gameloop].append(('DeathUnit', unit))
+
+    for hero in hero_units.values():
+        for death in hero.deaths:
+            game_loops[death.gameloop].append(('DeathHero', hero))
+
+    game.game_loops = game_loops
 
     return game
 

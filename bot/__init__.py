@@ -51,6 +51,9 @@ class TwitchBot(commands.Bot):
                     info = httshots.parser.get_match_info(replay, protocol)
                     replay_title = replay_path.split('/')[-1]
 
+                    if httshots.config.debug:
+                        print(replay_path, replay_title)
+
                     if info == -1:
                         httshots.print_log('FoundPreviousGameSkipPlayers',
                                             replay_title[11:-12], level=1)
@@ -205,10 +208,33 @@ class TwitchBot(commands.Bot):
 
                 else:
                     meats = 0
-                    for unit in _game.info.game_units.values():
-                        if unit.is_meat() and not unit.was_picked():
-                            meats += 20 if '20' in unit.name else 1
-                    text = httshots.strings['GameButcherLoseMeats'].format(player.name, meats)
+                    still_meats = 0
+                    draise_meats = 0
+
+                    # ?????
+
+                    loops = list(_game.info.game_loops.keys())
+                    loops.sort()
+
+                    for loop in loops:
+                        events = _game.info.game_loops[loop]
+                        for event, unit in events:
+                            if event == 'DeathUnit':
+                                if unit.is_meat() and not unit.was_picked():
+                                    draise_meats += 20 if '20' in unit.name else 1
+                                elif unit.is_meat() and unit.was_picked():
+                                    meats += 20 if '20' in unit.name else 1
+
+                            if event == 'DeathHero':
+                                if unit.player_id == player.userid+1:
+                                    if meats < 200:
+                                        if meats >= 15:
+                                            still_meats += 15
+                                        else:
+                                            still_meats += meats
+                                        meats = max(0, meats-15)
+
+                    text = httshots.strings['GameButcherLoseMeats'].format(player.name, draise_meats, still_meats)
                 await ctx.send(text)
                 return
 
