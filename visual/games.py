@@ -47,11 +47,11 @@ def create_icons(image):
 
 
 def add_games(image, replays):
-    blue = Image.open(hots.paths.score / 'gold.png')
-    bplayer = Image.open(hots.paths.score / 'playergold.png').convert('RGBA')
-    red = Image.open(hots.paths.score / 'grey.png')
-    rplayer = Image.open(hots.paths.score / 'playergrey.png').convert('RGBA')
-    glow = Image.open(hots.paths.score / 'portrait.png').convert('RGBA')
+    blue = Image.open(hots.paths.utils / 'gold.png')
+    bplayer = Image.open(hots.paths.utils / 'playergold.png').convert('RGBA')
+    red = Image.open(hots.paths.utils / 'grey.png')
+    rplayer = Image.open(hots.paths.utils / 'playergrey.png').convert('RGBA')
+    glow = Image.open(hots.paths.utils / 'portrait.png').convert('RGBA')
 
     add = 100
     rng = 60
@@ -64,8 +64,9 @@ def add_games(image, replays):
                 player = players[acc_name]
                 break
 
-        hero_name = hots.htts_data.get_eng_hero(player.hero)
-        hero = Image.open(hots.paths.heroes / (hero_name + '.png')).convert('RGBA')
+        hero_name = hots.htts_data.get_en_hero(player.hero)
+        img_name = 'portrait_' + hero_name + '.png'
+        hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
 

@@ -189,13 +189,28 @@ class TwitchBot(commands.Bot):
                 await ctx.send(text)
                 return
 
+            if hero in ('draft', 'драфт'):
+                bans = _game.info.lobby.bans
+                if bans:
+                    if _game.url_draft is not None:
+                        text = httshots.strings['GameDraft'].format(_game.url_draft)
+                    else:
+                        text = httshots.strings['GameNoDraft']
+                else:
+                    text = httshots.strings['GameNoBans']
+                await ctx.send(text)
+                return
+
             if hero in ('bans', 'баны'):
                 bans = _game.info.lobby.bans
-                for _ in bans:
-                    blue_bans = ', '.join([x.hero for x in bans if x.team == 1])
-                    red_bans = ', '.join([x.hero for x in bans if x.team == 2])
                 if bans:
-                    text = httshots.strings['GameBans'].format(blue_bans, red_bans)
+                    if _game.url_draft is not None:
+                        text = httshots.strings['GameDraft'].format(_game.url_draft)
+                    else:
+                        for _ in bans:
+                            blue_bans = ', '.join([x.hero for x in bans if x.team == 1])
+                            red_bans = ', '.join([x.hero for x in bans if x.team == 2])
+                        text = httshots.strings['GameBans'].format(blue_bans, red_bans)
                 else:
                     text = httshots.strings['GameNoBans']
                 await ctx.send(text)
@@ -247,7 +262,7 @@ class TwitchBot(commands.Bot):
             if not info:
                 hero = player.hero
                 hero_name = httshots.htts_data.get_hero(hero, 0)
-                hero_name_eng = httshots.htts_data.get_eng_hero(hero)
+                hero_name_eng = httshots.htts_data.get_en_hero(hero)
                 talents = ''.join(map(str, player.talents))
                 tmp = f" [T{talents},{hero_name_eng}]"
                 icy_hero = httshots.htts_data.get_icy_hero(hero, hero_name_eng.lower())

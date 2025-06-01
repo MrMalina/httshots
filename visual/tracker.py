@@ -37,11 +37,11 @@ def create_icons(image):
 
 
 def add_heroes(image, players):
-    blue = Image.open(hots.paths.score / 'blue.png')
-    bplayer = Image.open(hots.paths.score / 'playerblue.png').convert('RGBA')
-    red = Image.open(hots.paths.score / 'red.png')
-    rplayer = Image.open(hots.paths.score / 'playerred.png').convert('RGBA')
-    glow = Image.open(hots.paths.score / 'portrait.png').convert('RGBA')
+    blue = Image.open(hots.paths.utils / 'blue.png')
+    bplayer = Image.open(hots.paths.utils / 'playerblue.png').convert('RGBA')
+    red = Image.open(hots.paths.utils / 'red.png')
+    rplayer = Image.open(hots.paths.utils / 'playerred.png').convert('RGBA')
+    glow = Image.open(hots.paths.utils / 'portrait.png').convert('RGBA')
 
     t_available = Image.open(hots.paths.talents / 'talent_available.png')
     t_available_ult = Image.open(hots.paths.talents / 'talent_available_ult.png')
@@ -52,8 +52,9 @@ def add_heroes(image, players):
 
     _gameloop = 0
     for x, player in enumerate(players):
-        hero_name = hots.htts_data.get_data_revers_name(player.hero)
-        hero = Image.open(hots.paths.heroes / (hero_name.lower() + '.png')).convert('RGBA')
+        hero_name = hots.htts_data.get_revers_data_name(player.hero)
+        img_name = 'portrait_' + hero_name.lower() + '.png'
+        hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
         team_id = player.userid > 4
@@ -150,13 +151,11 @@ def send_talents(players):
     _name = 'info.log'
     with open(hots.paths.upload / _name, 'w') as f:
         for _, player in enumerate(players):
-            hero_name = hots.htts_data.get_data_revers_name(player.hero)
+            hero_name = hots.htts_data.get_revers_data_name(player.hero)
             talents = ''.join(map(str, player.talents))
             tmp = f" [T{talents},{hero_name}]"
-            if hots.config.language != 'en':
-                icy_hero = hots.htts_data.icy_en_names.get(hero_name, hero_name.lower())
-            else:
-                icy_hero = hots.htts_data.get_icy_hero(hero_name, hero_name.lower())
+            lang = hots.config.language
+            icy_hero = hots.htts_data.get_icy_hero(hero_name, hero_name.lower(), lang)
             icy_url = hots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
             prep = f'<span>{tmp.strip()}</span>'
             tmp = ''.ljust(25-len(tmp))

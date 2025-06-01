@@ -16,6 +16,7 @@ MATCH_INFO = 1 << 0
 MATCH_STATS = 1 << 1
 MATCH_TALENTS = 1 << 2
 MATCH_ADV_STATS = 1 << 3
+MATCH_DRAFT = 1 << 4
 
 GAMES_INFO = 1 << 0
 GAMES_STREAK = 1 << 1
@@ -107,6 +108,7 @@ async def send_replay_info(replay_name):
     url_games = None
     url_talents = None
     url_adv_stats = None
+    url_draft = None
 
     # Вывод информации о сыгранном матче
     match_info = ""
@@ -135,6 +137,13 @@ async def send_replay_info(replay_name):
             if url_adv_stats:
                 tmp = httshots.strings['GameResultInfoStatsAdv'].format(url_adv_stats)
                 match_info += tmp
+
+        if MATCH_DRAFT & display_info and amm_id == 50091:
+            url_draft = httshots.visual.draft.create_image(info)
+            if url_draft:
+                tmp = httshots.strings['GameResultInfoDraft'].format(url_draft)
+                match_info += tmp
+
     await httshots.tw_bot.channel.send(match_info)
 
     # Добавляем новый реплей в список сыгранных, чтобы учесть его результат
@@ -179,6 +188,7 @@ async def send_replay_info(replay_name):
     sreplay.url_match = url_match
     sreplay.url_talents = url_talents
     sreplay.url_adv_stats = url_adv_stats
+    sreplay.url_draft = url_draft
 
     httshots.bot.events.match_end(sreplay)
 

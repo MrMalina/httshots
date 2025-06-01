@@ -102,14 +102,14 @@ async def talents(ctx: commands.Context, hero=None):
 
         heroes = httshots.parser.ingame.parse_content(contents, pre_game)
 
-        hero_eng = httshots.htts_data.get_eng_hero(hero)
+        hero_eng = httshots.htts_data.get_en_hero(hero)
         hero_eng = httshots.htts_data.get_data_name(hero_eng)
 
         if hero_eng in heroes:
             _talents = heroes[hero_eng]
 
             hero_name = httshots.htts_data.get_hero(hero, 0)
-            hero_name_eng = httshots.htts_data.get_eng_hero(hero)
+            hero_name_eng = httshots.htts_data.get_en_hero(hero)
             _talents = ''.join(map(str, _talents))
             tmp = f" [T{_talents},{hero_name_eng}]"
             icy_hero = httshots.htts_data.get_icy_hero(hero, hero_name_eng.lower())

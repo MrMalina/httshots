@@ -6,6 +6,7 @@ import re
 from PIL import Image
 
 # httshots
+from . import draft
 from . import match
 from . import match_adv
 from . import games

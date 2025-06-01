@@ -34,7 +34,9 @@ class TrackerEvents:
 class Lobby:
     class Ban:
         def __init__(self, info):
-            self.hero = parse.decode_string(info['m_hero'])
+            hero = parse.decode_string(info['m_hero'])
+            if hero == 'NONE': hero = 'skipban'
+            self.hero = hero
             self.team = info['m_controllingTeam']
     class Pick:
         def __init__(self, info):

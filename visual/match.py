@@ -87,18 +87,19 @@ def get_max_stats(replay):
 
 
 def add_heroes(image, replay, max_stats):
-    blue = Image.open(hots.paths.score / 'blue.png')
-    bplayer = Image.open(hots.paths.score / 'playerblue.png').convert('RGBA')
-    red = Image.open(hots.paths.score / 'red.png')
-    rplayer = Image.open(hots.paths.score / 'playerred.png').convert('RGBA')
-    glow = Image.open(hots.paths.score / 'portrait.png').convert('RGBA')
+    blue = Image.open(hots.paths.utils / 'blue.png')
+    bplayer = Image.open(hots.paths.utils / 'playerblue.png').convert('RGBA')
+    red = Image.open(hots.paths.utils / 'red.png')
+    rplayer = Image.open(hots.paths.utils / 'playerred.png').convert('RGBA')
+    glow = Image.open(hots.paths.utils / 'portrait.png').convert('RGBA')
 
     add = 100
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
-        hero_name = hots.htts_data.get_eng_hero(player.hero)
-        hero = Image.open(hots.paths.heroes / (hero_name.lower() + '.png')).convert('RGBA')
+        hero_name = hots.htts_data.get_en_hero(player.hero)
+        img_name = 'portrait_' + hero_name.lower() + '.png'
+        hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
 
