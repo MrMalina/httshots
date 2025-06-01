@@ -67,7 +67,7 @@ def add_bans_and_picks(image, info):
     image.paste(ban_icon, (rx, ry), mask=ban_icon)
 
     # 2. BAN TEAM 2
-    name = bans[3].hero
+    name = bans[1].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     if name == 'skipban':
@@ -83,7 +83,7 @@ def add_bans_and_picks(image, info):
 
     # 3. BAN TEAM 1
     x += shift_x
-    name = bans[1].hero
+    name = bans[2].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     if name == 'skipban':
@@ -98,7 +98,7 @@ def add_bans_and_picks(image, info):
     image.paste(ban_icon, (rx, ry), mask=ban_icon)
 
     # 4. BAN TEAM 2
-    name = bans[4].hero
+    name = bans[3].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     if name == 'skipban':
@@ -123,7 +123,7 @@ def add_bans_and_picks(image, info):
     image.paste(draft_frame, (x-17, y[0]-32), mask=draft_frame)
 
     # 6. PICK TEAM 2
-    name = picks[5].hero
+    name = picks[1].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -133,7 +133,7 @@ def add_bans_and_picks(image, info):
     # 7. PICK TEAM 2
     x += shift_x + 10
 
-    name = picks[6].hero
+    name = picks[2].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -141,7 +141,7 @@ def add_bans_and_picks(image, info):
     image.paste(draft_frame, (x-17, y[1]-32), mask=draft_frame)
 
     # 8. PICK TEAM 1
-    name = picks[1].hero
+    name = picks[3].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -151,7 +151,7 @@ def add_bans_and_picks(image, info):
     # 9. PICK TEAM 1
     x += shift_x + 10
 
-    name = picks[2].hero
+    name = picks[4].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -160,7 +160,7 @@ def add_bans_and_picks(image, info):
 
     # 10. BAN TEAM 2
     x += 10
-    name = bans[5].hero
+    name = bans[4].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     if name == 'skipban':
@@ -176,7 +176,7 @@ def add_bans_and_picks(image, info):
 
     # 11. BAN TEAM 1
     x += shift_x + 10
-    name = bans[2].hero
+    name = bans[5].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     if name == 'skipban':
@@ -192,7 +192,7 @@ def add_bans_and_picks(image, info):
 
     # 12. PICK TEAM 2
     x -= 10
-    name = picks[7].hero
+    name = picks[5].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -202,7 +202,7 @@ def add_bans_and_picks(image, info):
     # 13. PICK TEAM 2
     x += shift_x + 10
 
-    name = picks[8].hero
+    name = picks[6].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -210,7 +210,7 @@ def add_bans_and_picks(image, info):
     image.paste(draft_frame, (x-17, y[1]-32), mask=draft_frame)
 
     # 14. PICK TEAM 1
-    name = picks[3].hero
+    name = picks[7].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -219,7 +219,7 @@ def add_bans_and_picks(image, info):
 
     # 15. PICK TEAM 1
     x += shift_x + 10
-    name = picks[4].hero
+    name = picks[8].hero
     img_name = 'draft_' + name.lower() + '.png'
     hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
     hero = hero.resize((100, 117))
@@ -245,7 +245,7 @@ def add_others(image, info):
     y_text = 247
     y = [150, 360]
 
-    if info.lobby.bans[0].team == 2:
+    if info.lobby.bans[0].team == 1:
         colors = [BTEAM, RTEAM]
     else:
         colors = [RTEAM, BTEAM]
