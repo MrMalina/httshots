@@ -65,7 +65,7 @@ def add_games(image, replays):
                 break
 
         hero_name = player.hero
-        img_name = hots.htts_data.get_img_hero(hero_name)
+        img_name = hots.htts_data.remove_symbols(hero_name)
         img_name = 'portrait_' + img_name + '.png'
         hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 

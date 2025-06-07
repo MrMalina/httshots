@@ -25,7 +25,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.25.0"
+pkg_version = "0.25.1"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -283,8 +283,6 @@ class DataStrings:
         self.reverse_heroes = {hero: or_hero for or_hero, tr_hero in heroes.items() for hero in tr_hero}
         self.reverse_maps = {map_: or_map for or_map, tr_map in maps.items() for map_ in tr_map}
 
-        self.names_without_symbols = {hero: self.remove_symbols(hero) for hero in heroes.keys()}
-
         for lang in self.data:
             if lang == 'all':
                 continue
@@ -329,11 +327,8 @@ class DataStrings:
             return self.data['all']['icy_names'][name]
         return self.remove_symbols(name)
 
-    def get_img_hero(self, name):
-        return self.names_without_symbols[name].lower()
-
     def remove_symbols(self, name):
-        return name.replace('.', '').replace('-', '').replace(' ', '').replace("'", '')
+        return name.replace('.', '').replace('-', '').replace(' ', '').replace("'", '').lower()
 
     def get_data_name(self, name):
         return self.data_names.get(name, name)
