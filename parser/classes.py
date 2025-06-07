@@ -118,6 +118,8 @@ class Details(parse.Parse):
 
         self.parse_data('details', data)
 
+        self.title = httshots.htts_data.get_map(self.title)
+
     def __repr__(self):
         return f'{self.title}'
 
@@ -173,7 +175,8 @@ class Player:
         self.observer = info['m_observe']
         self.result = info['m_result']
         self.working_set_slot_id = info['m_workingSetSlotId']
-        self.hero = parse.decode_string(info['m_hero'])
+        hero = parse.decode_string(info['m_hero'])
+        self.hero = httshots.htts_data.get_hero(hero)
 
     def __repr__(self):
         return f"{self.userid} - {self.name} - {self.hero}"

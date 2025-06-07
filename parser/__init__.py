@@ -44,8 +44,8 @@ def get_match_info(replay, protocol):
     game = match.Game()
     game.add_details(details)
 
-    if len(game.details.players) < 10:
-        return -1
+    # if len(game.details.players) < 10:
+        # return -1
 
     contents = replay.read_file('replay.initData')
     init_data = protocol.decode_replay_initdata(contents)
@@ -54,6 +54,13 @@ def get_match_info(replay, protocol):
     contents = replay.header['user_data_header']['content']
     header = heroprotocol.versions.latest().decode_replay_header(contents)
     game.add_header(header)
+
+    # messages = []
+    # contents = replay.read_file('replay.message.events')
+    # for event in decode_replay_message_events(contents):
+        # print(event)
+
+    # game.add_init_data(init_data)
 
     contents = replay.read_file('replay.tracker.events')
     info = []

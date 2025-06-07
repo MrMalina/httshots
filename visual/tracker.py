@@ -52,8 +52,9 @@ def add_heroes(image, players):
 
     _gameloop = 0
     for x, player in enumerate(players):
-        hero_name = hots.htts_data.get_revers_data_name(player.hero)
-        img_name = 'portrait_' + hero_name.lower() + '.png'
+        hero_name = hots.htts_data.get_hero(player.hero)
+        img_name = hots.htts_data.get_img_hero(hero_name)
+        img_name = 'portrait_' + img_name + '.png'
         hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -78,7 +79,8 @@ def add_heroes(image, players):
             image.paste(hero, (40, add+(x*rng)), mask=glow)
             draw.text((155, add+(x*rng)+30), btag, RTEAM, font=name_font)
 
-        hero_short_name = hots.htts_data.get_short_hero(player.hero)
+        tr_hero_name = hots.htts_data.get_translate_hero(player.hero, 0)
+        hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
         draw.text((155, add+(x*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 
         data_hero_name = hots.htts_data.get_data_name(hero_name)
@@ -149,17 +151,18 @@ def create_image(players):
 
 def send_talents(players):
     _name = 'info.log'
-    with open(hots.paths.upload / _name, 'w') as f:
+    with open(hots.paths.upload / _name, 'w', encoding="utf-8") as f:
         for _, player in enumerate(players):
-            hero_name = hots.htts_data.get_revers_data_name(player.hero)
+            hero_name = hots.htts_data.get_hero(player.hero)
+            hots_hero_name = hots.htts_data.remove_symbols(hero_name)
+            tr_hero = hots.htts_data.get_translate_hero(hero_name, 0)
             talents = ''.join(map(str, player.talents))
-            tmp = f" [T{talents},{hero_name}]"
-            lang = hots.config.language
-            icy_hero = hots.htts_data.get_icy_hero(hero_name, hero_name.lower(), lang)
+            tmp = f" [T{talents},{hots_hero_name}]"
+            icy_hero = hots.htts_data.get_icy_hero(hero_name).lower()
             icy_url = hots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
             prep = f'<span>{tmp.strip()}</span>'
             tmp = ''.ljust(25-len(tmp))
-            f.write(f'{hero_name.ljust(20)} {prep} {tmp} - <a href="{icy_url}">Goto IcyVeins</a>\n')
+            f.write(f'{tr_hero.ljust(20)} {prep} {tmp} - <a href="{icy_url}">Goto IcyVeins</a>\n')
 
     hots.visual.upload.upload_file(hots.paths.upload / _name,
                                    _name, True, 'curgame')

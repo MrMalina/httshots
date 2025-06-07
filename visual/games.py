@@ -64,8 +64,9 @@ def add_games(image, replays):
                 player = players[acc_name]
                 break
 
-        hero_name = hots.htts_data.get_en_hero(player.hero)
-        img_name = 'portrait_' + hero_name + '.png'
+        hero_name = player.hero
+        img_name = hots.htts_data.get_img_hero(hero_name)
+        img_name = 'portrait_' + img_name + '.png'
         hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -96,7 +97,8 @@ def add_games(image, replays):
             color = (234,140,140)
             postfix = 'red'
 
-        hero_short_name = hots.htts_data.get_short_hero(player.hero)
+        tr_hero_name = hots.htts_data.get_translate_hero(hero_name, 0)
+        hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
         draw.text((155, add+(x*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 
         for mvp in hots.visual.mvps:
@@ -105,7 +107,8 @@ def add_games(image, replays):
                 tmp = tmp.resize((48, 48))
                 image.paste(tmp, (320, add+(x*rng)+4), mask=tmp)
 
-        draw.text((380, add+(x*rng)+20), replay.info.details.title, WHITE, font=hots.fonts.default)
+        map_name = hots.htts_data.get_translate_map(replay.info.details.title)
+        draw.text((380, add+(x*rng)+20), map_name, WHITE, font=hots.fonts.default)
 
         if team_id == 0:
             tmp = hots.strings['GameTeamBlue']

@@ -57,10 +57,14 @@ async def send_replay_info(replay_name):
             httshots.print_log('GameUvi', level=2)
             return
 
+    if httshots.config.debug:
+        print(info.details.title)
+        print([f'{x.name} - {x.hero}' for x in info.players.values()])
+
     # Игнорируем матчи, где меньше 10 игроков
-    if info == -1:
-        httshots.print_log('GameLess10Players', level=2)
-        return
+    # if info == -1:
+        # httshots.print_log('GameLess10Players', level=2)
+        # return
 
     amm_id = info.init_data.game_options.amm_id
     # Свою игру игнорируем
@@ -115,7 +119,7 @@ async def send_replay_info(replay_name):
     display_info = httshots.config.end_game_dispay_match_info
     if MATCH_INFO & display_info:
         status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
-        hero_name = httshots.htts_data.get_hero(me.hero, 1)
+        hero_name = httshots.htts_data.get_translate_hero(me.hero, 2)
         match_info = httshots.strings['GameResultInfo'].format(status, hero_name,
                                                                info.details.title)
 

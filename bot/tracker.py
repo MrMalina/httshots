@@ -38,9 +38,9 @@ async def start_check_talents():
             else:
                 pre_game = httshots.stream_pregame[-1]
 
-            if len(pre_game.players) < 10:
-                httshots.print_log('TrackerLess10Players', level=1)
-                break
+            # if len(pre_game.players) < 10:
+                # httshots.print_log('TrackerLess10Players', level=1)
+                # break
 
             # Возможно, излишне
             try:
@@ -81,7 +81,8 @@ async def talents(ctx: commands.Context, hero=None):
         await ctx.send(text)
         return
 
-    hero = httshots.htts_data.get_hero_by_part(hero.lower().strip())
+    hero = httshots.htts_data.get_hero_by_part(hero.strip())
+    print(hero)
     if hero is None:
         text = httshots.strings['TrackerNotFoundHero'].format(ctx.author.name)
         await ctx.send(text)
@@ -102,17 +103,20 @@ async def talents(ctx: commands.Context, hero=None):
 
         heroes = httshots.parser.ingame.parse_content(contents, pre_game)
 
-        hero_eng = httshots.htts_data.get_en_hero(hero)
-        hero_eng = httshots.htts_data.get_data_name(hero_eng)
+        hero_eng = httshots.htts_data.get_data_name(hero)
 
+        print(hero_eng, heroes)
         if hero_eng in heroes:
             _talents = heroes[hero_eng]
 
-            hero_name = httshots.htts_data.get_hero(hero, 0)
-            hero_name_eng = httshots.htts_data.get_en_hero(hero)
+            print(_talents)
+
+            hero_name = httshots.htts_data.get_translate_hero(hero, 1)
+            print(hero_name)
             _talents = ''.join(map(str, _talents))
-            tmp = f" [T{_talents},{hero_name_eng}]"
-            icy_hero = httshots.htts_data.get_icy_hero(hero, hero_name_eng.lower())
+            tmp = f" [T{_talents},{hero}]"
+            icy_hero = httshots.htts_data.get_icy_hero(hero_eng)
+            print(tmp, icy_hero)
             icy_url = httshots.ICY_URL.format(icy_hero, _talents.replace('0', '-'))
             text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
 

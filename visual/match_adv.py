@@ -26,8 +26,6 @@ def load_background():
 
 
 def create_icons(image, map_name):
-    map_number = int(hots.htts_data.maps.get(map_name.lower(), -1))
-
     y = 50
 
     # Физический урон
@@ -78,51 +76,45 @@ def create_icons(image, map_name):
     # Бухта Черносерда = 14
     # Сад ужасов = 15
 
-    if map_number in (-1, 1, 8, 15):
-        # На Альтераке, садах и вольской
-        return
-    if map_number == 2:
+    if map_name == "Sky Temple":
         img_name = 'adv_templemaster.png'
         stat = 'time_in_temple'
-    elif map_number == 3:
+    elif map_name == "Battlefield of Eternity":
         img_name = 'adv_immortalslayer.png'
         stat = 'immortal_damage'
-    elif map_number == 4:
+    elif map_name == "Tomb of the Spider Queen":
         img_name = 'adv_jeweler.png'
         stat = 'gems'
-    elif map_number == 5:
+    elif map_name == "Dragon Shire":
         img_name = 'adv_shriner.png'
         # stat = 'dragon_shrines_captured'
         stat = 'dragons'
-    elif map_number == 6:
+    elif map_name == "Cursed Hollow":
         img_name = 'adv_masterofthecurse.png'
         stat = 'curse_damage'
-    elif map_number == 7:
+    elif map_name == "Towers of Doom":
         img_name = 'adv_cannoneer.png'
         stat = 'altar_damage'
-    elif map_number == 8:
-        img_name = 'adv_pointguard.png'
-        stat = 'dragons'
-    elif map_number == 9:
+    elif map_name == "Hanamura":
         img_name = 'adv_pointguard.png'
         stat = 'time_on_payload'
-    elif map_number == 10:
+    elif map_name == "Braxis Holdout":
         img_name = 'adv_zergcrusher.png'
         stat = 'zerg_damage'
-    elif map_number == 11:
+    elif map_name == "Haunted Mines":
         img_name = 'adv_skullcollector.png'
-    elif map_number == 12:
+    elif map_name == "Infernal Shrines":
         img_name = 'adv_skull.png'
         stat = 'damage_to_shrine_minions'
-    elif map_number == 13:
+    elif map_name == "Warhead Junction":
         img_name = 'adv_dabomb.png'
         stat = 'nuke_damage'
-    elif map_number == 14:
+    elif map_name == "Blackheart's Bay":
         img_name = 'adv_moneybags.png'
         stat = 'doubloons_turned_in'
-    elif map_number == 15:
-        img_name = 'adv_gardenterror.png'
-        stat = 'plant_damage'
+    else:
+        # На Альтераке, садах и вольской
+        return
 
     tmp = Image.open(hots.paths.stats / img_name).convert('RGBA')
     image.paste(tmp, (1140, y), mask=tmp)
@@ -176,8 +168,9 @@ def add_heroes(image, replay, max_stats, map_stat):
         stats.append(map_stat)
 
     for y, player in enumerate(replay.players.values()):
-        hero_name = hots.htts_data.get_en_hero(player.hero)
-        img_name = 'portrait_' + hero_name.lower() + '.png'
+        hero_name = player.hero
+        img_name = hots.htts_data.get_img_hero(hero_name)
+        img_name = 'portrait_' + img_name + '.png'
         hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -206,7 +199,8 @@ def add_heroes(image, replay, max_stats, map_stat):
             draw.text((155, add+(y*rng)+30), name, RTEAM, font=name_font)
             color = RTEAM
 
-        hero_short_name = hots.htts_data.get_short_hero(player.hero)
+        tr_hero_name = hots.htts_data.get_translate_hero(hero_name, 0)
+        hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
 
         draw.text((155, add+(y*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 

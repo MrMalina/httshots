@@ -97,8 +97,9 @@ def add_heroes(image, replay, max_stats):
     rng = 60
 
     for x, player in enumerate(replay.players.values()):
-        hero_name = hots.htts_data.get_en_hero(player.hero)
-        img_name = 'portrait_' + hero_name.lower() + '.png'
+        hero_name = player.hero
+        img_name = hots.htts_data.get_img_hero(hero_name)
+        img_name = 'portrait_' + img_name + '.png'
         hero = Image.open(hots.paths.heroes / img_name).convert('RGBA')
 
         draw = ImageDraw.Draw(image)
@@ -129,7 +130,8 @@ def add_heroes(image, replay, max_stats):
             color = (234,140,140)
             postfix = 'red'
 
-        hero_short_name = hots.htts_data.get_short_hero(player.hero)
+        tr_hero_name = hots.htts_data.get_translate_hero(hero_name, 0)
+        hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
 
         draw.text((155, add+(x*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 

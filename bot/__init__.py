@@ -168,8 +168,10 @@ class TwitchBot(commands.Bot):
         else:
             hero = hero.lower().strip()
             if hero in ('heroes', 'герои'):
-                blue = [x.hero for x in _game.info.players.values() if x.team_id == 0]
-                red = [x.hero for x in _game.info.players.values() if x.team_id == 1]
+                blue = [httshots.htts_data.get_translate_hero(x.hero, 0) \
+                        for x in _game.info.players.values() if x.team_id == 0]
+                red = [httshots.htts_data.get_translate_hero(x.hero, 0) \
+                        for x in _game.info.players.values() if x.team_id == 1]
                 text = httshots.strings['GameHeroes'].format(', '.join(blue), ', '.join(red))
                 await ctx.send(text)
                 return
@@ -204,20 +206,27 @@ class TwitchBot(commands.Bot):
             if hero in ('bans', 'баны'):
                 bans = _game.info.lobby.bans
                 if bans:
-                    if _game.url_draft is not None:
-                        text = httshots.strings['GameDraft'].format(_game.url_draft)
-                    else:
-                        for _ in bans:
-                            blue_bans = ', '.join([x.hero for x in bans if x.team == 1])
-                            red_bans = ', '.join([x.hero for x in bans if x.team == 2])
-                        text = httshots.strings['GameBans'].format(blue_bans, red_bans)
+                    # if _game.url_draft is not None:
+                        # text = httshots.strings['GameDraft'].format(_game.url_draft)
+                    # else:
+                    blue_bans = []
+                    red_bans = []
+                    for ban in bans:
+                        hero = httshots.htts_data.get_hero(ban.hero)
+                        hero  = httshots.htts_data.get_translate_hero(hero, 0)
+                        if ban.team == 1:
+                            blue_bans.append(hero)
+                        else:
+                            red_bans.append(hero)
+                    text = httshots.strings['GameBans'].format(', '.join(blue_bans),
+                                                               ', '.join(red_bans))
                 else:
                     text = httshots.strings['GameNoBans']
                 await ctx.send(text)
                 return
 
             if hero in ('meat', 'мясо'):
-                player = _game.try_find_hero(hero.lower().strip())
+                player = _game.try_find_hero('Butcher')
                 if player is None:
                     text = httshots.strings['GameNoButcherInGame'].format(ctx.author.name)
 
@@ -261,11 +270,11 @@ class TwitchBot(commands.Bot):
 
             if not info:
                 hero = player.hero
-                hero_name = httshots.htts_data.get_hero(hero, 0)
-                hero_name_eng = httshots.htts_data.get_en_hero(hero)
+                hero_name = httshots.htts_data.get_translate_hero(hero, 1)
+                hots_hero_name = httshots.htts_data.remove_symbols(hero)
                 talents = ''.join(map(str, player.talents))
-                tmp = f" [T{talents},{hero_name_eng}]"
-                icy_hero = httshots.htts_data.get_icy_hero(hero, hero_name_eng.lower())
+                tmp = f" [T{talents},{hots_hero_name}]"
+                icy_hero = httshots.htts_data.get_icy_hero(hero).lower()
                 icy_url = httshots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
                 text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
                 await ctx.send(text)
@@ -274,7 +283,8 @@ class TwitchBot(commands.Bot):
             info = info.strip().lower()
             info = httshots.htts_data.params.get(info, info)
             if info in ('счёт', 'счет', 'score'):
-                text = httshots.strings['GameHeroScore'].format(player.name, player.hero,
+                hero = httshots.htts_data.get_translate_hero(player.hero, 0)
+                text = httshots.strings['GameHeroScore'].format(player.name, hero,
                                                                 player.solo_kill, player.deaths,
                                                                 player.assists)
             else:
@@ -282,7 +292,8 @@ class TwitchBot(commands.Bot):
                 if value is None:
                     text = httshots.strings['GameHeroInfoNotFound'].format(info)
                 else:
-                    text = httshots.strings['GameHeroInfo'].format(player.hero, info, value)
+                    hero = httshots.htts_data.get_translate_hero(player.hero, 0)
+                    text = httshots.strings['GameHeroInfo'].format(hero, info, value)
             await ctx.send(text)
 
 
