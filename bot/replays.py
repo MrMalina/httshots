@@ -120,8 +120,9 @@ async def send_replay_info(replay_name):
     if MATCH_INFO & display_info:
         status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
         hero_name = httshots.htts_data.get_translate_hero(me.hero, 2)
+        map_name = httshots.htts_data.get_translate_map(info.details.title)
         match_info = httshots.strings['GameResultInfo'].format(status, hero_name,
-                                                               info.details.title)
+                                                               map_name)
 
     if httshots.config.image_upload:
         if MATCH_STATS & display_info:

@@ -82,7 +82,6 @@ async def talents(ctx: commands.Context, hero=None):
         return
 
     hero = httshots.htts_data.get_hero_by_part(hero.strip())
-    print(hero)
     if hero is None:
         text = httshots.strings['TrackerNotFoundHero'].format(ctx.author.name)
         await ctx.send(text)
@@ -103,21 +102,17 @@ async def talents(ctx: commands.Context, hero=None):
 
         heroes = httshots.parser.ingame.parse_content(contents, pre_game)
 
-        hero_eng = httshots.htts_data.get_data_name(hero)
+        data_hero = httshots.htts_data.get_data_name(hero)
 
-        print(hero_eng, heroes)
-        if hero_eng in heroes:
-            _talents = heroes[hero_eng]
-
-            print(_talents)
+        if data_hero in heroes:
+            _talents = heroes[data_hero]
 
             hero_name = httshots.htts_data.get_translate_hero(hero, 1)
-            print(hero_name)
-            _talents = ''.join(map(str, _talents))
-            tmp = f" [T{_talents},{hero}]"
-            icy_hero = httshots.htts_data.get_icy_hero(hero_eng)
-            print(tmp, icy_hero)
-            icy_url = httshots.ICY_URL.format(icy_hero, _talents.replace('0', '-'))
+            hots_hero_name = httshots.htts_data.remove_symbols(hero)
+            talents = ''.join(map(str, _talents))
+            tmp = f" [T{talents},{hots_hero_name}]"
+            icy_hero = httshots.htts_data.get_icy_hero(hero).lower()
+            icy_url = httshots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
             text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
 
             await ctx.send(text)

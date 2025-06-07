@@ -25,7 +25,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.25.1"
+pkg_version = "0.25.2"
 pkg_author = "MrMalina"
 
 # initialization of constant
