@@ -30,7 +30,9 @@ async def send_battle_lobby_info(pre_game):
     pre_game.url = url
     httshots.stream_pregame.append(pre_game)
 
-    await httshots.tw_bot.channel.send(text)
+    httshots.bot.events.match_start()
+
+    await httshots.tw_bot._send_message(text)
 
 
 async def check_battle_lobby():

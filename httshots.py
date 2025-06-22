@@ -4,6 +4,8 @@
 
 # Python
 import sys
+import asyncio
+import asqlite
 
 from ftplib import FTP, Error as FTP_Error
 from getpass import getuser
@@ -25,7 +27,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "0.25.2"
+pkg_version = "1.0.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -49,7 +51,6 @@ hero_data = None
 htts_data = None
 tw_bot = None
 data_replay = None
-
 
 # ======================================================================
 # >> Load
@@ -79,6 +80,57 @@ def load(argv:list) -> None:
         if check_version and check_version > pkg_version:
             print_log('NewVersion', pkg_version, check_version, level=4)
 
+    # Параметры запуска
+    config.starting_hour = 0
+    get_twitch_id = 0
+    if len(argv) > 1:
+        if 'GET_TWITCH_ID' in argv:
+            index = argv.index('GET_TWITCH_ID')
+            if len(argv) > index+1:
+                user = argv[index+1]
+                get_twitch_id = user
+
+        if 'IGNORE_PREV_MATCHES' in argv:
+            config.add_previous_games = 0
+            print_log('ParamIgnorePrevMatches', level=3)
+        if 'SEND_BATTLE_LOBBY' in argv:
+            config.send_previous_battle_lobby = 1
+            print_log('ParamSendBattleLobby', level=3)
+        if 'URL_TO_CONSOLE' in argv:
+            config.duplicate_url_in_console = 1
+            print_log('ParamUrlToConsole', level=3)
+        if 'STARTING_FROM_HOUR' in argv:
+            index = argv.index('STARTING_FROM_HOUR')
+
+            if len(argv) > index+1:
+                _time = argv[index+1]
+
+                if not _time.isdigit():
+                    print_log('ParamFromTimeErrorType', level=4)
+                else:
+                    config.starting_hour = int(_time)
+                    print_log('ParamFromTime', _time, level=3)
+
+            else:
+                print_log('ParamFromTimeErrorNoValue', level=4)
+
+    if get_twitch_id:
+        async def runner_get_id() -> None:
+            async with bot.twitchio.Client(client_id=str(config.twitch_client_id),
+                                       client_secret=str(config.twitch_client_secret)) as client:
+                await client.login()
+                user = await client.fetch_users(logins=[get_twitch_id])
+                for u in user:
+                    print(f"User: {u.name} - ID: {u.id}")
+                return
+
+        try:
+            asyncio.run(runner_get_id())
+        except KeyboardInterrupt:
+            ...
+
+        return
+
     # Поиск директории с реплеями
     current_user = getuser()
 
@@ -104,33 +156,6 @@ def load(argv:list) -> None:
 
     # Список аккаунтов для поиска сыгранных игр
     accounts = get_accounts_list(hots_folder)
-
-    # Параметры запуска
-    config.starting_hour = 0
-    if len(argv) > 1:
-        if 'IGNORE_PREV_MATCHES' in argv:
-            config.add_previous_games = 0
-            print_log('ParamIgnorePrevMatches', level=3)
-        if 'SEND_BATTLE_LOBBY' in argv:
-            config.send_previous_battle_lobby = 1
-            print_log('ParamSendBattleLobby', level=3)
-        if 'URL_TO_CONSOLE' in argv:
-            config.duplicate_url_in_console = 1
-            print_log('ParamUrlToConsole', level=3)
-        if 'STARTING_FROM_HOUR' in argv:
-            index = argv.index('STARTING_FROM_HOUR')
-
-            if len(argv) > index+1:
-                _time = argv[index+1]
-
-                if not _time.isdigit():
-                    print_log('ParamFromTimeErrorType', level=4)
-                else:
-                    config.starting_hour = int(_time)
-                    print_log('ParamFromTime', _time, level=3)
-
-            else:
-                print_log('ParamFromTimeErrorNoValue', level=4)
 
     hero_data = HeroData(str(current_dir / 'files' / 'herodata.json'))
     htts_data = DataStrings(str(current_dir / 'data' / 'data.ini'), language)
@@ -160,7 +185,7 @@ def load(argv:list) -> None:
     paths.add('heroes', main_path / "heroes")
     paths.add('talents', main_path / "talents")
     paths.add('mvp', main_path / "mvp")
-    paths.add('maps', main_path / "maps")
+    paths.add('data', main_path / "data")
 
     # Fonts
     ascii_ttf = paths.ttf / 'Exo2-Bold.ttf'
@@ -198,17 +223,23 @@ def load(argv:list) -> None:
     if isinstance(acc_names, str):
         config.accounts = (acc_names, )
 
-    # Twitch-аккаунт должен быть списком, а не строкой
-    tw_channel = config.twitch_channel
-    if isinstance(tw_channel, str):
-        tw_channel = (tw_channel, )
-    tw_bot = bot.TwitchBot(config.twitch_access_token, '!', tw_channel)
+    async def runner() -> None:
+        global tw_bot
+        _path = paths.data / "tokens.db"
+        async with (asqlite.create_pool(str(_path)) as tdb,
+                   bot.TwitchBot(str(config.twitch_client_id),
+                                 str(config.twitch_client_secret),
+                                 str(config.bot_id),
+                                 str(config.owner_id),
+                                 "!", tdb) as tw_bot):
 
-    # Событие инициализации бота для аддонов
-    bot.events.bot_initialized(tw_bot)
+            await tw_bot.setup_database()
+            await tw_bot.start()
 
-    # Запуск бота
-    tw_bot.run()
+    try:
+        asyncio.run(runner())
+    except KeyboardInterrupt:
+        ...
 
 
 # ======================================================================
@@ -524,7 +555,11 @@ class StreamReplay:
 
         self.heroes = map(lambda x: x.hero, self.info.players.values())
         status = strings['GameResult'+['Win','Lose'][int(me.result)-1]]
-        self.short_info = f"{self.info.details.title} - {self.account.hero} - {status}"
+
+        hero_name = htts_data.get_translate_hero(self.account.hero, 0)
+        map_name = htts_data.get_translate_map(self.info.details.title)
+
+        self.short_info = f"{map_name} - {hero_name} - {status}"
 
         self.players = self.info.players.values()
 

@@ -149,7 +149,7 @@ async def send_replay_info(replay_name):
                 tmp = httshots.strings['GameResultInfoDraft'].format(url_draft)
                 match_info += tmp
 
-    await httshots.tw_bot.channel.send(match_info)
+    await httshots.tw_bot._send_message(match_info)
 
     # Добавляем новый реплей в список сыгранных, чтобы учесть его результат
     sreplay = httshots.StreamReplay(replay_name, me, info)
@@ -187,7 +187,7 @@ async def send_replay_info(replay_name):
         tmp = httshots.strings['GamesInfoUrl'].format(url_games)
         games_info += tmp
 
-    await httshots.tw_bot.channel.send(games_info)
+    await httshots.tw_bot._send_message(games_info)
 
     sreplay.url_games = url_games
     sreplay.url_match = url_match

@@ -4,18 +4,20 @@
 
 # Python
 import asyncio
-import time
+import asqlite
 
 # twitchio
 import twitchio
 from twitchio.ext import commands
+from twitchio import eventsub
+from twitchio.exceptions import HTTPException
 
 # httshots
 import httshots
 from httshots import httshots
+from . import bot
 from . import replays
 from . import pregame
-from . import tracker
 from . import events
 
 
@@ -23,19 +25,79 @@ from . import events
 # >> TwitchBot
 # ======================================================================
 class TwitchBot(commands.Bot):
-    def __init__(self, token: str, prefix: str, channels: list):
-        super().__init__(token=token, prefix=prefix, initial_channels=channels)
+    def __init__(self, client_id: str, client_secret: str,
+                 bot_id: str, owner_id: str, prefix: str,
+                 token_database: asqlite.Pool):
+        self.token_database = token_database
+        super().__init__(
+                    client_id=client_id,
+                    client_secret=client_secret,
+                    bot_id=bot_id,
+                    owner_id=owner_id,
+                    prefix=prefix
+                )
 
-    async def event_ready(self):
-        channels = self.connected_channels
-        if channels:
-            self.channel = channels[0]
-            channel = self.channel.name
-            httshots.print_log('ReadyInfo', self.nick, self.user_id,
-                                channel, level=4)
-        else:
-            httshots.print_log('ReadyError', level=4)
-            return
+    async def setup_hook(self) -> None:
+        await self.add_component(bot.BotCommands(self))
+        chat_message = eventsub.ChatMessageSubscription(broadcaster_user_id=str(self.owner_id),
+                                                        user_id=str(self.bot_id))
+        try:
+            await self.subscribe_websocket(payload=chat_message, as_bot=True)
+        except HTTPException as e:
+            if e.extra['message'] == 'invalid transport and auth combination':
+                httshots.print_log('BotTransportError', level=5)
+                httshots.print_log('BotStop', level=5)
+
+        await events.bot_setup_hook(self)
+
+
+    async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
+        # Make sure to call super() as it will add the tokens interally and return us some data...
+        resp: twitchio.authentication.ValidateTokenPayload = await super().add_token(token, refresh)
+
+        # Store our tokens in a simple SQLite Database when they are authorized...
+        query = """
+        INSERT INTO tokens (user_id, token, refresh)
+        VALUES (?, ?, ?)
+        ON CONFLICT(user_id)
+        DO UPDATE SET
+            token = excluded.token,
+            refresh = excluded.refresh;
+        """
+
+        async with self.token_database.acquire() as connection:
+            await connection.execute(query, (resp.user_id, token, refresh))
+
+        if httshots.config.debug:
+            httshots.print_log("BotAddToken", resp.user_id, level=5)
+        return resp
+
+    async def load_tokens(self, path: str | None = None) -> None:
+        # We don't need to call this manually, it is called in .login() from .start() internally...
+
+        async with self.token_database.acquire() as connection:
+            rows: list = await connection.fetchall("""SELECT * from tokens""")
+
+        for row in rows:
+            if httshots.config.debug:
+                print(row["token"], row["refresh"])
+            await self.add_token(row["token"], row["refresh"])
+
+    async def setup_database(self) -> None:
+        # Create our token table, if it doesn't exist..
+        query = """CREATE TABLE IF NOT EXISTS tokens(user_id TEXT PRIMARY KEY, token TEXT NOT NULL, refresh TEXT NOT NULL)"""
+        async with self.token_database.acquire() as connection:
+            await connection.execute(query)
+
+    async def _send_message(self, message: str) -> None:
+        await self.chat.send_message(sender=self.user, message=message)
+
+    async def event_ready(self) -> None:
+        self.chat = self.create_partialuser(user_id=str(self.owner_id))
+
+        channel = await self.fetch_channel(self.owner_id)
+        httshots.print_log('ReadyInfo', self.user, self.bot_id,
+                            channel.user, level=4)
 
         if httshots.config.add_previous_games == 1:
             consider_matches = httshots.config.matches_type_to_consider
@@ -132,6 +194,9 @@ class TwitchBot(commands.Bot):
         httshots.print_log('BotStarted', httshots.pkg_name,
                            httshots.pkg_author, httshots.pkg_version,
                            level=4)
+
+        await events.bot_ready(self)
+
         await self.endless_loop()
 
     async def endless_loop(self):
@@ -144,202 +209,3 @@ class TwitchBot(commands.Bot):
             while True:
                 await replays.check_replays()
                 await asyncio.sleep(httshots.config.replay_check_period)
-
-    async def event_message(self, message: twitchio.Message):
-        if hasattr(message.author, 'name'):
-            await httshots.tw_bot.handle_commands(message)
-            return
-
-    @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
-    @commands.command(aliases=("матч", ))
-    async def game(self, ctx: commands.Context,
-                    hero: str | None = None,
-                    info: str | None = None):
-        if not len(httshots.stream_replays):
-            text = httshots.strings['GameNotFound']
-            await ctx.send(text)
-            return
-
-        _game = httshots.stream_replays[-1]
-        if hero is None:
-            text = httshots.strings['GameInfo'].format(_game.short_info)
-            await ctx.send(text)
-
-        else:
-            hero = hero.lower().strip()
-            if hero in ('heroes', 'герои'):
-                blue = [httshots.htts_data.get_translate_hero(x.hero, 0) \
-                        for x in _game.info.players.values() if x.team_id == 0]
-                red = [httshots.htts_data.get_translate_hero(x.hero, 0) \
-                        for x in _game.info.players.values() if x.team_id == 1]
-                text = httshots.strings['GameHeroes'].format(', '.join(blue), ', '.join(red))
-                await ctx.send(text)
-                return
-
-            if hero in ('счёт', 'счет', 'score'):
-                kills = [0, 0]
-                for _player in _game.info.players.values():
-                    if _player.team_id == 0:
-                        team_level_blue = _player.team_level
-                        kills[0] += _player.solo_kill
-                    else:
-                        team_level_red = _player.team_level
-                        kills[1] += _player.solo_kill
-
-                text = httshots.strings['GameScore'].format(team_level_blue, team_level_red,
-                                                            kills[0], kills[1])
-                await ctx.send(text)
-                return
-
-            if hero in ('draft', 'драфт'):
-                bans = _game.info.lobby.bans
-                if bans:
-                    if _game.url_draft is not None:
-                        text = httshots.strings['GameDraft'].format(_game.url_draft)
-                    else:
-                        text = httshots.strings['GameNoDraft']
-                else:
-                    text = httshots.strings['GameNoBans']
-                await ctx.send(text)
-                return
-
-            if hero in ('bans', 'баны'):
-                bans = _game.info.lobby.bans
-                if bans:
-                    # if _game.url_draft is not None:
-                        # text = httshots.strings['GameDraft'].format(_game.url_draft)
-                    # else:
-                    blue_bans = []
-                    red_bans = []
-                    for ban in bans:
-                        hero = httshots.htts_data.get_hero(ban.hero)
-                        hero  = httshots.htts_data.get_translate_hero(hero, 0)
-                        if ban.team == 1:
-                            blue_bans.append(hero)
-                        else:
-                            red_bans.append(hero)
-                    text = httshots.strings['GameBans'].format(', '.join(blue_bans),
-                                                               ', '.join(red_bans))
-                else:
-                    text = httshots.strings['GameNoBans']
-                await ctx.send(text)
-                return
-
-            if hero in ('meat', 'мясо'):
-                player = _game.try_find_hero('Butcher')
-                if player is None:
-                    text = httshots.strings['GameNoButcherInGame'].format(ctx.author.name)
-
-                else:
-                    meats = 0
-                    still_meats = 0
-                    draise_meats = 0
-
-                    # ?????
-
-                    loops = list(_game.info.game_loops.keys())
-                    loops.sort()
-
-                    for loop in loops:
-                        events = _game.info.game_loops[loop]
-                        for event, unit in events:
-                            if event == 'DeathUnit':
-                                if unit.is_meat() and not unit.was_picked():
-                                    draise_meats += 20 if '20' in unit.name else 1
-                                elif unit.is_meat() and unit.was_picked():
-                                    meats += 20 if '20' in unit.name else 1
-
-                            if event == 'DeathHero':
-                                if unit.player_id == player.userid+1:
-                                    if meats < 200:
-                                        if meats >= 15:
-                                            still_meats += 15
-                                        else:
-                                            still_meats += meats
-                                        meats = max(0, meats-15)
-
-                    text = httshots.strings['GameButcherLoseMeats'].format(player.name, draise_meats, still_meats)
-                await ctx.send(text)
-                return
-
-            player = _game.try_find_hero(hero.lower().strip())
-            if player is None:
-                text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
-                await ctx.send(text)
-                return
-
-            if not info:
-                hero = player.hero
-                hero_name = httshots.htts_data.get_translate_hero(hero, 1)
-                hots_hero_name = httshots.htts_data.remove_symbols(hero)
-                talents = ''.join(map(str, player.talents))
-                tmp = f" [T{talents},{hots_hero_name}]"
-                icy_hero = httshots.htts_data.get_icy_hero(hero).lower()
-                icy_url = httshots.ICY_URL.format(icy_hero, talents.replace('0', '-'))
-                text = httshots.strings['GameHeroTalents'].format(hero_name, tmp, icy_url)
-                await ctx.send(text)
-                return
-
-            info = info.strip().lower()
-            info = httshots.htts_data.params.get(info, info)
-            if info in ('счёт', 'счет', 'score'):
-                hero = httshots.htts_data.get_translate_hero(player.hero, 0)
-                text = httshots.strings['GameHeroScore'].format(player.name, hero,
-                                                                player.solo_kill, player.deaths,
-                                                                player.assists)
-            else:
-                value = getattr(player, info, None)
-                if value is None:
-                    text = httshots.strings['GameHeroInfoNotFound'].format(info)
-                else:
-                    hero = httshots.htts_data.get_translate_hero(player.hero, 0)
-                    text = httshots.strings['GameHeroInfo'].format(hero, info, value)
-            await ctx.send(text)
-
-
-    @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
-    @commands.command(aliases=("матчи", ))
-    async def games(self, ctx: commands.Context):
-        matches = len(httshots.stream_replays)
-        if not matches:
-            text = httshots.strings['GameNotFound']
-            await ctx.send(text)
-            return
-
-        wins = len(list(filter(lambda x: x.account.result == 1, httshots.stream_replays)))
-        loses = len(list(filter(lambda x: x.account.result == 2, httshots.stream_replays)))
-        url_games = httshots.stream_replays[-1].url_games
-
-        if matches == 1:
-            win_text = httshots.get_end(wins, 'Wins')
-            lose_text = httshots.get_end(loses, 'Loses')
-            text = httshots.strings['GamesInfoOne'].format(
-                    wins, win_text, loses, lose_text)
-
-        else:
-            win_text = httshots.get_end(wins, 'Wins')
-            lose_text = httshots.get_end(loses, 'Loses')
-            match_text = httshots.get_end(matches, 'Matches')
-            streak = httshots.streak
-
-            text = httshots.strings['GamesInfoMore'].format(
-                    matches, match_text, wins,
-                    win_text, loses, lose_text)
-
-            if streak[1] > 1:
-                streak_text = httshots.strings[streak[0]][2]
-
-                tmp = httshots.strings['GamesInfoStreak'].format(
-                       streak[1], streak_text)
-                text += tmp
-
-        if url_games:
-            tmp = httshots.strings['GamesInfoUrl'].format(url_games)
-            text += tmp
-
-        await ctx.send(text)
-
-    @commands.cooldown(rate=1, per=2, bucket=commands.Bucket.channel)
-    @commands.command(aliases=("таланты", ))
-    async def talents(self, ctx: commands.Context, hero: str | None = None):
-        await tracker.talents(ctx, hero)

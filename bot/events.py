@@ -42,7 +42,19 @@ def match_end(stream_replay):
         _callback(stream_replay)
 
 
-def bot_initialized(tw_bot):
-    events = htts_events.get_callbacks("bot_initialized")
+def match_start():
+    events = htts_events.get_callbacks("match_start")
     for _callback in events:
-        _callback(tw_bot)
+        _callback()
+
+
+async def bot_ready(bot):
+    events = htts_events.get_callbacks("bot_ready")
+    for _callback in events:
+        await _callback(bot)
+
+
+async def bot_setup_hook(bot):
+    events = htts_events.get_callbacks("setup_hook")
+    for _callback in events:
+        await _callback(bot)
