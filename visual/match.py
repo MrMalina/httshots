@@ -96,7 +96,9 @@ def add_heroes(image, replay, max_stats):
     add = 100
     rng = 60
 
-    for x, player in enumerate(replay.players.values()):
+    _players = list(replay.players.values())
+    for y, userid in enumerate(replay.sort_ids):
+        player = _players[userid]
         hero_name = player.hero
         img_name = hots.htts_data.remove_symbols(hero_name)
         img_name = 'portrait_' + img_name + '.png'
@@ -115,102 +117,104 @@ def add_heroes(image, replay, max_stats):
             name_font = hots.fonts.ch_default
 
         if team_id == 0:
-            image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
-            image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
-            image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), name, BTEAM, font=name_font)
+            image.paste(bplayer, (25, add+(y*rng)), mask=bplayer)
+            image.paste(blue, (25+rplayer.size[0], add+(y*rng)), mask=blue)
+            image.paste(hero, (40, add+(y*rng)), mask=glow)
+            draw.text((155, add+(y*rng)+30), name, BTEAM, font=name_font)
             color = (105,156,249)
             postfix = 'blue'
 
         else:
-            image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
-            image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
-            image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), name, RTEAM, font=name_font)
+            image.paste(rplayer, (25, add+(y*rng)), mask=rplayer)
+            image.paste(red, (25+rplayer.size[0], add+(y*rng)), mask=red)
+            image.paste(hero, (40, add+(y*rng)), mask=glow)
+            draw.text((155, add+(y*rng)+30), name, RTEAM, font=name_font)
             color = (234,140,140)
             postfix = 'red'
 
         tr_hero_name = hots.htts_data.get_translate_hero(hero_name, 0)
         hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
 
-        draw.text((155, add+(x*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
+        draw.text((155, add+(y*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 
         for mvp in hots.visual.mvps:
             if getattr(player, 'award_'+mvp):
                 tmp = Image.open(hots.paths.mvp / f'{hots.visual.mvps[mvp]}_{postfix}.png')
                 tmp = tmp.resize((48, 48))
-                image.paste(tmp, (270, add+(x*rng)+4), mask=tmp)
+                image.paste(tmp, (270, add+(y*rng)+4), mask=tmp)
+
+        y_pos = add+(y*rng)+20
 
         solo_kill = str(player.solo_kill)
         shift = get_shift(solo_kill)
-        draw.text((340-shift, add+(x*rng)+20), solo_kill, color, font=hots.fonts.default)
+        draw.text((340-shift, y_pos), solo_kill, color, font=hots.fonts.default)
 
         assists = str(player.assists)
         shift = get_shift(assists)
-        draw.text((400-shift, add+(x*rng)+20), assists, color, font=hots.fonts.default)
+        draw.text((400-shift, y_pos), assists, color, font=hots.fonts.default)
 
         deaths = str(player.deaths)
         shift = get_shift(deaths)
-        draw.text((460-shift, add+(x*rng)+20), deaths, color, font=hots.fonts.default)
+        draw.text((460-shift, y_pos), deaths, color, font=hots.fonts.default)
 
         structure_dmg = str(player.structure_damage)
         shift = get_shift(structure_dmg)
         if _id in max_stats[team_id]['structure_damage'][0]:
-            draw.text((560-shift, add+(x*rng)+20), structure_dmg, WHITE, font=hots.fonts.default)
+            draw.text((560-shift, y_pos), structure_dmg, WHITE, font=hots.fonts.default)
         else:
-            draw.text((560-shift, add+(x*rng)+20), structure_dmg, color, font=hots.fonts.default)
+            draw.text((560-shift, y_pos), structure_dmg, color, font=hots.fonts.default)
 
         minion_dmg = str(player.minion_damage)
         shift = get_shift(minion_dmg)
         if _id in max_stats[team_id]['minion_damage'][0]:
-            draw.text((660-shift, add+(x*rng)+20), minion_dmg, WHITE, font=hots.fonts.default)
+            draw.text((660-shift, y_pos), minion_dmg, WHITE, font=hots.fonts.default)
         else:
-            draw.text((660-shift, add+(x*rng)+20), minion_dmg, color, font=hots.fonts.default)
+            draw.text((660-shift, y_pos), minion_dmg, color, font=hots.fonts.default)
 
         hero_dmg = str(player.hero_damage)
         shift = get_shift(hero_dmg)
         if _id in max_stats[team_id]['hero_damage'][0]:
-            draw.text((760-shift, add+(x*rng)+20), hero_dmg, WHITE, font=hots.fonts.default)
+            draw.text((760-shift, y_pos), hero_dmg, WHITE, font=hots.fonts.default)
         else:
-            draw.text((760-shift, add+(x*rng)+20), hero_dmg, color, font=hots.fonts.default)
+            draw.text((760-shift, y_pos), hero_dmg, color, font=hots.fonts.default)
 
         taken_dmg = str(player.taken_damage)
         shift = get_shift(taken_dmg)
         if _id in max_stats[team_id]['taken_damage'][0]:
-            draw.text((860-shift, add+(x*rng)+20), taken_dmg, WHITE, font=hots.fonts.default)
+            draw.text((860-shift, y_pos), taken_dmg, WHITE, font=hots.fonts.default)
         else:
-            draw.text((860-shift, add+(x*rng)+20), taken_dmg, color, font=hots.fonts.default)
+            draw.text((860-shift, y_pos), taken_dmg, color, font=hots.fonts.default)
 
         healing = str(player.healing)
         shift = get_shift(healing)
         if healing == '0': healing = '-'
         if _id in max_stats[team_id]['healing'][0]:
-            draw.text((960-shift, add+(x*rng)+20), healing, WHITE, font=hots.fonts.default)
+            draw.text((960-shift, y_pos), healing, WHITE, font=hots.fonts.default)
         else:
-            draw.text((960-shift, add+(x*rng)+20), healing, color, font=hots.fonts.default)
+            draw.text((960-shift, y_pos), healing, color, font=hots.fonts.default)
 
         self_healing = str(player.self_healing)
         shift = get_shift(self_healing)
         if self_healing == '0': self_healing = '-'
         if _id in max_stats[team_id]['self_healing'][0]:
-            draw.text((1060-shift, add+(x*rng)+20), self_healing, WHITE, font=hots.fonts.default)
+            draw.text((1060-shift, y_pos), self_healing, WHITE, font=hots.fonts.default)
         else:
-            draw.text((1060-shift, add+(x*rng)+20), self_healing, color, font=hots.fonts.default)
+            draw.text((1060-shift, y_pos), self_healing, color, font=hots.fonts.default)
 
         merc_camps = str(player.merc_camps)
         shift = get_shift(merc_camps)
         if merc_camps == '0': merc_camps = '-'
         if _id in max_stats[team_id]['merc_camps'][0]:
-            draw.text((1160-shift, add+(x*rng)+20), merc_camps, WHITE, font=hots.fonts.default)
+            draw.text((1160-shift, y_pos), merc_camps, WHITE, font=hots.fonts.default)
         else:
-            draw.text((1160-shift, add+(x*rng)+20), merc_camps, color, font=hots.fonts.default)
+            draw.text((1160-shift, y_pos), merc_camps, color, font=hots.fonts.default)
 
         experience = str(player.experience)
         shift = get_shift(experience)
         if _id in max_stats[team_id]['experience'][0]:
-            draw.text((1260-shift, add+(x*rng)+20), experience, WHITE, font=hots.fonts.default)
+            draw.text((1260-shift, y_pos), experience, WHITE, font=hots.fonts.default)
         else:
-            draw.text((1260-shift, add+(x*rng)+20), experience, color, font=hots.fonts.default)
+            draw.text((1260-shift, y_pos), experience, color, font=hots.fonts.default)
 
 
 def get_shift(value):
@@ -236,6 +240,8 @@ def add_other_info(image, replay):
     bluekills = Image.open(hots.paths.stats / 'bluekills.png')
     language = hots.config.language
 
+    blue_level = 0
+    red_level = 0
     red_kills = 0
     blue_kills = 0
     for player in replay.players.values():

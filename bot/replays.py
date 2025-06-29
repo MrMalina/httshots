@@ -44,18 +44,11 @@ async def send_replay_info(replay_name):
         httshots.cur_game[0] = tmp[0][2:]
         httshots.cur_game[1] = tmp[1][:-3].replace('.', '-')
 
-    try:
-        replay, protocol = httshots.parser.get_replay(replay_name)
-        info = httshots.parser.get_match_info(replay, protocol)
-    except:
-        httshots.print_log('GameTryOpenReplay', level=2)
-        await asyncio.sleep(2)
-        try:
-            replay, protocol = httshots.parser.get_replay(replay_name)
-            info = httshots.parser.get_match_info(replay, protocol)
-        except:
-            httshots.print_log('GameUvi', level=2)
-            return
+    retr = httshots.parser.get_replay(replay_name)
+    if retr is None:
+        return
+    replay, protocol = retr
+    info = httshots.parser.get_match_info(replay, protocol)
 
     if httshots.config.debug:
         print(info.details.title)
@@ -69,8 +62,7 @@ async def send_replay_info(replay_name):
     amm_id = info.init_data.game_options.amm_id
     # Свою игру игнорируем
     if amm_id == 0:
-        httshots.print_log('GameUviAmmId', level=2)
-        return
+        httshots.print_log('GameOwnAmmId', level=2)
 
     # Определение пользователя в матче
     check = False
@@ -118,7 +110,7 @@ async def send_replay_info(replay_name):
     match_info = ""
     display_info = httshots.config.end_game_dispay_match_info
     if MATCH_INFO & display_info:
-        status = httshots.strings['GameResult'+{1:'Win',2:'Lose'}[int(me.result)]]
+        status = httshots.strings['GameResult'+{0:'Draw',1:'Win',2:'Lose'}[int(me.result)]]
         hero_name = httshots.htts_data.get_translate_hero(me.hero, 2)
         map_name = httshots.htts_data.get_translate_map(info.details.title)
         match_info = httshots.strings['GameResultInfo'].format(status, hero_name,
@@ -143,7 +135,7 @@ async def send_replay_info(replay_name):
                 tmp = httshots.strings['GameResultInfoStatsAdv'].format(url_adv_stats)
                 match_info += tmp
 
-        if MATCH_DRAFT & display_info and amm_id == 50091:
+        if MATCH_DRAFT & display_info and info.lobby.bans:
             url_draft = httshots.visual.draft.create_image(info)
             if url_draft:
                 tmp = httshots.strings['GameResultInfoDraft'].format(url_draft)

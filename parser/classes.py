@@ -14,7 +14,7 @@ from . import parse
 # >> Classes
 # ======================================================================
 class TrackerEvents:
-    def __init__(self, event, players):
+    def __init__(self, event, players, userids):
         # Перевернуть?
         cfg = httshots.data_replay['instance-list']
 
@@ -22,10 +22,10 @@ class TrackerEvents:
         for info in event:
             name = parse.decode_string(info['m_name'])
             if name in cfg:
-                for n, player in enumerate(players):
+                for n, player in zip(userids, players):
                     setattr(player, cfg[name], info['m_values'][n][0]['m_value'])
 
-        for player in players:
+        for n, player in zip(userids, players):
             player.time = info['m_values'][n][0]['m_time']
             player.talents = [player.talent1, player.talent2, player.talent3,
                               player.talent4, player.talent5, player.talent6,
@@ -78,7 +78,7 @@ class InitData(parse.Parse):
         for info in data:
             userid = info['m_userId']
 
-            if userid is None:
+            if userid is None or userid >= 10:
                 continue
 
             player = players[userid]
@@ -109,12 +109,16 @@ class InitData(parse.Parse):
 
 class Details(parse.Parse):
     def __init__(self, data):
-        players = data['m_playerList']
+        _players = data['m_playerList']
 
         self.players = {}
 
-        for userid, info in enumerate(players):
+        for userid, info in enumerate(_players):
             self.players[userid] = Player(userid, info)
+
+        _players = sorted(self.players.values(), key=lambda x: x.team_id)
+
+        self.sort_ids = [x.userid for x in _players]
 
         self.parse_data('details', data)
 

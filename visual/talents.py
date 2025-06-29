@@ -51,7 +51,9 @@ def add_heroes(image, replay):
     add = 100
     rng = 60
 
-    for x, player in enumerate(replay.players.values()):
+    _players = list(replay.players.values())
+    for y, userid in enumerate(replay.sort_ids):
+        player = _players[userid]
         hero_name = player.hero
         img_name = hots.htts_data.remove_symbols(hero_name)
         img_name = 'portrait_' + img_name + '.png'
@@ -68,21 +70,23 @@ def add_heroes(image, replay):
         else:
             name_font = hots.fonts.ch_default
 
+        y_pos = add+(y*rng)
+
         if team_id == 0:
-            image.paste(bplayer, (25, add+(x*rng)), mask=bplayer)
-            image.paste(blue, (25+rplayer.size[0], add+(x*rng)), mask=blue)
-            image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), name, BTEAM, font=name_font)
+            image.paste(bplayer, (25, y_pos), mask=bplayer)
+            image.paste(blue, (25+rplayer.size[0], y_pos), mask=blue)
+            image.paste(hero, (40, y_pos), mask=glow)
+            draw.text((155, y_pos+30), name, BTEAM, font=name_font)
 
         else:
-            image.paste(rplayer, (25, add+(x*rng)), mask=rplayer)
-            image.paste(red, (25+rplayer.size[0], add+(x*rng)), mask=red)
-            image.paste(hero, (40, add+(x*rng)), mask=glow)
-            draw.text((155, add+(x*rng)+30), name, RTEAM, font=name_font)
+            image.paste(rplayer, (25, y_pos), mask=rplayer)
+            image.paste(red, (25+rplayer.size[0], y_pos), mask=red)
+            image.paste(hero, (40, y_pos), mask=glow)
+            draw.text((155, y_pos+30), name, RTEAM, font=name_font)
 
         tr_hero_name = hots.htts_data.get_translate_hero(player.hero, 0)
         hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
-        draw.text((155, add+(x*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
+        draw.text((155, y_pos+10), hero_short_name, WHITE, font=hots.fonts.default)
 
         team_level = player.team_level
 
@@ -95,29 +99,29 @@ def add_heroes(image, replay):
             talent = z[1]
             if level <= team_level:
                 if talent == 0:
-                    image.paste(t_unselected, (start+13, add+(x*rng+7)), mask=t_unselected)
+                    image.paste(t_unselected, (start+13, add+(y*rng+7)), mask=t_unselected)
                 else:
                     icon = info['level'+str(level)][talent-1]['icon']
                     icon = Image.open(hots.paths.talents /icon)
                     icon = icon.resize((46, 46))
-                    image.paste(icon, (start+11, add+(x*rng+6)))
+                    image.paste(icon, (start+11, add+(y*rng+6)))
 
             else:
-                image.paste(t_bg, (start+11, add+(x*rng+6)), mask=t_bg)
-                image.paste(t_unavailable, (start, add+(x*rng-6)), mask=t_unavailable)
+                image.paste(t_bg, (start+11, add+(y*rng+6)), mask=t_bg)
+                image.paste(t_unavailable, (start, add+(y*rng-6)), mask=t_unavailable)
                 start += 100
                 continue
 
             if data_hero_name != 'Varian':
                 if level != 10:
-                    image.paste(t_available, (start, add+(x*rng-6)), mask=t_available)
+                    image.paste(t_available, (start, add+(y*rng-6)), mask=t_available)
                 else:
-                    image.paste(t_available_ult, (start, add+(x*rng - 6)), mask=t_available_ult)
+                    image.paste(t_available_ult, (start, add+(y*rng-6)), mask=t_available_ult)
             else:
                 if level != 4:
-                    image.paste(t_available, (start, add+(x*rng-6)), mask=t_available)
+                    image.paste(t_available, (start, add+(y*rng-6)), mask=t_available)
                 else:
-                    image.paste(t_available_ult, (start, add+(x*rng - 6)), mask=t_available_ult)
+                    image.paste(t_available_ult, (start, add+(y*rng-6)), mask=t_available_ult)
 
             start += 100
 

@@ -31,7 +31,7 @@ def get_replay(replay):
     try:
         protocol = versions.build(base_build)
     except:
-        print('Unsupported base build: %d' % base_build, file=sys.stderr)
+        httshots.print_log('BotHeroprotocolBuild', base_build, level=5)
         return None
 
     return replay, protocol
@@ -70,6 +70,8 @@ def get_match_info(replay, protocol):
     for event in protocol.decode_replay_tracker_events(contents):
         if event['_eventid'] == 11 and event['_event'] == 'NNet.Replay.Tracker.SScoreResultEvent':
             game.add_event(event['m_instanceList'])
+        elif event['_event'] == 'NNet.Replay.Tracker.SPlayerSetupEvent':
+            game.add_user_id(event['m_userId'])
         elif (event['_eventid'] == 13 and
             event['_event'] == 'NNet.Replay.Tracker.SHeroBannedEvent') or \
             (event['_eventid'] == 14 and

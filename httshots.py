@@ -27,7 +27,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "1.0.0"
+pkg_version = "1.1.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -51,6 +51,7 @@ hero_data = None
 htts_data = None
 tw_bot = None
 data_replay = None
+current_dir = None
 
 # ======================================================================
 # >> Load
@@ -62,7 +63,7 @@ def load(argv:list) -> None:
            hero_data, data_replay, \
            battle_lobby_hash, config, \
            htts_data, imgur, tracker_events_hash, \
-           tw_bot, fonts, paths
+           tw_bot, fonts, paths, current_dir
 
     current_dir = Path(path.dirname(__file__))
     data_replay = ConfigObj(str(current_dir / 'data' / 'replay.ini'))
