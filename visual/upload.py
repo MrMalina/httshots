@@ -25,7 +25,7 @@ def upload_file(full_name, file_name, replace_file=False, ftp_unique_path=False)
     elif upl == 2:
         with FTP(httshots.config.ftp_ip) as ftp:
             ftp.login(httshots.config.ftp_login, httshots.config.ftp_passwd)
-            real_pwd = f"www/{httshots.config.site_name}/{httshots.config.ftp_folder}"
+            real_pwd = f"www/{httshots.config.ftp_site_name}/{httshots.config.ftp_folder}"
             if not ftp_unique_path:
                 pwd = prepare_ftp_folders(ftp)
             else:

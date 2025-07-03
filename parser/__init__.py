@@ -33,7 +33,6 @@ def get_replay(replay):
     except:
         httshots.print_log('BotHeroprotocolBuild', base_build, level=5)
         return None
-
     return replay, protocol
 
 

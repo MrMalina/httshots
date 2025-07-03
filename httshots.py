@@ -27,7 +27,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "1.1.0"
+pkg_version = "1.1.1"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -74,6 +74,9 @@ def load(argv:list) -> None:
 
     print_log('BotStart', level=5)
 
+    for param in config.all_params:
+        print_log('BotConfigParamNotFound', param, level=5)
+
     # Проверка новой версии
     check_version = req_get("https://httshots.ru/version")
     if check_version:
@@ -82,7 +85,6 @@ def load(argv:list) -> None:
             print_log('NewVersion', pkg_version, check_version, level=4)
 
     # Параметры запуска
-    config.starting_hour = 0
     get_twitch_id = 0
     if len(argv) > 1:
         if 'GET_TWITCH_ID' in argv:
@@ -211,9 +213,9 @@ def load(argv:list) -> None:
             ftp = FTP(config.ftp_ip)
             ftp.login(config.ftp_login, config.ftp_passwd)
             ftp.close()
-            print_log('FTPLogin', config.site_name, level=3)
+            print_log('FTPLogin', config.ftp_site_name, level=3)
         except FTP_Error as e:
-            print_log('FTPLoginError', config.site_name, level=4)
+            print_log('FTPLoginError', config.ftp_site_name, level=4)
             raise e
 
     # Загрузка аддонов
@@ -230,8 +232,8 @@ def load(argv:list) -> None:
         async with (asqlite.create_pool(str(_path)) as tdb,
                    bot.TwitchBot(str(config.twitch_client_id),
                                  str(config.twitch_client_secret),
-                                 str(config.bot_id),
-                                 str(config.owner_id),
+                                 str(config.twitch_bot_id),
+                                 str(config.twitch_owner_id),
                                  "!", tdb) as tw_bot):
 
             await tw_bot.setup_database()
@@ -312,8 +314,8 @@ class DataStrings:
         self.all_rofl_names = {}
         heroes = self.data['all']['heroes']
         maps = self.data['all']['maps']
-        self.reverse_heroes = {hero: or_hero for or_hero, tr_hero in heroes.items() for hero in tr_hero}
-        self.reverse_maps = {map_: or_map for or_map, tr_map in maps.items() for map_ in tr_map}
+        self.reverse_heroes = {hero: o_hero for o_hero, t_hero in heroes.items() for hero in t_hero}
+        self.reverse_maps = {map_: o_map for o_map, t_map in maps.items() for map_ in t_map}
 
         for lang in self.data:
             if lang == 'all':
@@ -404,6 +406,17 @@ class HeroData:
 
 class Config:
     def __init__(self, file_name):
+        self.all_params = [
+            'accounts', 'debug', 'log_level', 'use_colors', 'language', 
+            'replay_check_period', 'add_previous_games', 'duplicate_url_in_console',
+            'matches_type_to_consider', 'battlelobby_status', 'tracker_status',
+            'tracker_commands', 'send_previous_battle_lobby', 'parse_message_file', 'image_upload', 
+            'end_game_dispay_match_info', 'end_game_dispay_games_info', 'ftp_site_name',
+            'ftp_ip', 'ftp_login', 'ftp_passwd', 'ftp_folder', 'imgur_client_id',
+            'imgur_client_secret', 'try_reupload_image', 'twitch_client_id', 'twitch_client_secret',
+            'twitch_bot_id', 'twitch_owner_id', 
+        ]
+
         self.config = ConfigObj(file_name)
 
         self.config.indent_type = '    '
@@ -414,7 +427,10 @@ class Config:
                 for var, val in value.items():
                     object.__setattr__(self, cvar+'_'+var, self.change_type(val))
             else:
+                self.all_params.remove(cvar)
                 object.__setattr__(self, cvar, self.change_type(value))
+
+        self.starting_hour = 0
 
     def change_type(self, value):
         if isinstance(value, str):
