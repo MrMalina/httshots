@@ -34,9 +34,10 @@ py -m pip install -U git+https://github.com/MrMalina/heroprotocol
 
 **_Уточнение:_** Установить heroprotocol можно из [официального репозитория Blizzard](https://github.com/Blizzard/heroprotocol), но в этом случае, потребуется устанавливать устаревшую (начиная с python 3.12) библиотеку `imp.py`. Получить устаревшую библиотеку можно где-то в интернете, либо скачав `python < 3.12` и скопировав оттуда файл `python\Lib\imp.py` в такую же директорию актуального питона.
 
-4. Скачать [архив с ботом](https://github.com/MrMalina/httshots/archive/refs/heads/master.zip)
+4. Скачать актуальный [релиз бота](https://github.com/MrMalina/httshots/releases)
 
 5. Разархивировать архив с ботом в директорию, где установлен python. Например: d:\python\
+Переименовать разархивированную директорию в `httshots`
 
 6. Заполнить конфигурационный файл
 
