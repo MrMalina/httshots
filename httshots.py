@@ -427,7 +427,8 @@ class Config:
                 for var, val in value.items():
                     object.__setattr__(self, cvar+'_'+var, self.change_type(val))
             else:
-                self.all_params.remove(cvar)
+                if cvar in self.all_params:
+                    self.all_params.remove(cvar)
                 object.__setattr__(self, cvar, self.change_type(value))
 
         self.starting_hour = 0
