@@ -82,6 +82,7 @@ class InitData(parse.Parse):
                 continue
 
             player = players[userid]
+            player.hero_level = 0
 
             player.color_pref = info['m_colorPref']['m_color']
             player.race_pref = info['m_racePref']['m_race']
@@ -186,7 +187,7 @@ class Player:
         return f"{self.userid} - {self.name} - {self.hero}"
 
 
-class Color(object):
+class Color:
     def __init__(self, tmp):
         self.a = tmp['m_a']
         self.r = tmp['m_r']

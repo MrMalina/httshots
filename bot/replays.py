@@ -2,9 +2,6 @@
 # >> IMPORTS
 # ======================================================================
 
-# Python
-import asyncio
-
 # httshots
 from httshots import httshots
 

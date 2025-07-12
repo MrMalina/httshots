@@ -6,6 +6,7 @@
 import sys
 import asyncio
 import asqlite
+import requests
 
 from ftplib import FTP, Error as FTP_Error
 from getpass import getuser
@@ -14,7 +15,6 @@ from json import load as json_load
 from os import path, sep, listdir
 from time import strftime
 from pathlib import Path
-from requests import get as req_get
 from configobj import ConfigObj, Section
 from imgurpython import ImgurClient
 from PIL import ImageFont
@@ -27,11 +27,12 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "1.1.1"
+pkg_version = "1.2.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
+HOTS_VERSION = "94470"
 
 # Declaration global variables
 stream_replays = []
@@ -52,6 +53,7 @@ htts_data = None
 tw_bot = None
 data_replay = None
 current_dir = None
+
 
 # ======================================================================
 # >> Load
@@ -78,11 +80,16 @@ def load(argv:list) -> None:
         print_log('BotConfigParamNotFound', param, level=5)
 
     # Проверка новой версии
-    check_version = req_get("https://httshots.ru/version")
-    if check_version:
-        check_version = check_version.text
-        if check_version and check_version > pkg_version:
-            print_log('NewVersion', pkg_version, check_version, level=4)
+    try:
+        check_version = req_get("https://httshots.ru/version", timeout=2)
+        if check_version:
+            check_version = check_version.text
+            if check_version and check_version > pkg_version:
+                print_log('NewVersion', pkg_version, check_version, level=4)
+    except requests.exceptions.Timeout:
+        print_log('CheckVersionError', level=4)
+    except:
+        ...
 
     # Параметры запуска
     get_twitch_id = 0
@@ -217,6 +224,9 @@ def load(argv:list) -> None:
         except FTP_Error as e:
             print_log('FTPLoginError', config.ftp_site_name, level=4)
             raise e
+
+    # Вывод какие версии реплеев поддерживаются
+    print_log('BotHoTSVersions', HOTS_VERSION, level=3)
 
     # Загрузка аддонов
     addons.load_addons(config.config['addons'])
@@ -432,6 +442,7 @@ class Config:
                 object.__setattr__(self, cvar, self.change_type(value))
 
         self.starting_hour = 0
+        self.spectator_mode = 0
 
     def change_type(self, value):
         if isinstance(value, str):
@@ -449,8 +460,6 @@ class Colors:
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 
 class Strings:

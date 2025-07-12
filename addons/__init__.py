@@ -17,8 +17,8 @@ modules = []
 
 for _module in _modules:
     pre = path.basename(_module)[:-3]
-    
-    if pre.startswith("__"): 
+
+    if pre.startswith("__"):
         continue
 
     module = import_module("httshots.addons." + pre)
@@ -26,6 +26,8 @@ for _module in _modules:
 
 
 def load_addons(cfg):
+    """Загрузка аддонов"""
+
     for mod in modules:
         _name = mod.__name__.split('.')[-1]
         if not _name in cfg:

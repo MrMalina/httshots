@@ -6,7 +6,6 @@
 import sys
 import mpyq
 
-from configobj import ConfigObj
 from collections import defaultdict
 
 # Others
@@ -42,9 +41,6 @@ def get_match_info(replay, protocol):
 
     game = match.Game()
     game.add_details(details)
-
-    # if len(game.details.players) < 10:
-        # return -1
 
     contents = replay.read_file('replay.initData')
     init_data = protocol.decode_replay_initdata(contents)
@@ -104,6 +100,17 @@ def get_match_info(replay, protocol):
             game_loops[death.gameloop].append(('DeathHero', hero))
 
     game.game_loops = game_loops
+
+    # hero_level
+    # contents = replay.read_file('replay.attributes.events')
+    # attributes = protocol.decode_replay_attributes_events(contents)
+    # for player_id in attributes['scopes'].keys():
+        # if player_id > 10: continue
+        # print(player_id)
+        # print(attributes['scopes'][player_id][500][0]['value'])
+        # if attributes['scopes'][player_id][500][0]['value'] == b'Humn':
+            # lvl = attributes['scopes'][player_id][4008][0]['value']
+            # game.players[int(player_id)-1].hero_level = int(lvl.decode().strip())
 
     return game
 

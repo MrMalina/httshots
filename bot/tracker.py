@@ -6,8 +6,8 @@
 import asyncio
 import copy
 import hashlib
-from twitchio.ext import commands
 import os
+from twitchio.ext import commands
 
 # httshots
 import httshots
@@ -22,25 +22,19 @@ old_talents = None
 async def start_check_talents():
     global old_talents
     while True:
-        file = open(httshots.config.tracker_events_file, 'rb')
-        contents = file.read()
-        file.close()
+        with open(httshots.config.tracker_events_file, 'rb') as f:
+            contents = f.read()
         _hash = hashlib.md5(contents).hexdigest()
 
         if httshots.tracker_events_hash != _hash:
             httshots.tracker_events_hash = _hash
 
             if not len(httshots.stream_pregame):
-                file = open(httshots.config.battle_lobby_file, 'rb')
-                _contents = file.read()
-                file.close()
+                with open(httshots.config.battle_lobby_file, 'rb') as f:
+                    _contents = f.read()
                 pre_game = httshots.parser.get_battle_lobby(_contents)
             else:
                 pre_game = httshots.stream_pregame[-1]
-
-            # if len(pre_game.players) < 10:
-                # httshots.print_log('TrackerLess10Players', level=1)
-                # break
 
             # Возможно, излишне
             try:
@@ -64,7 +58,6 @@ async def start_check_talents():
 
             except Exception as e:
                 raise e
-                httshots.print_log('TrackerNoHeroes', level=4)
 
         await asyncio.sleep(5)
 
@@ -92,7 +85,7 @@ async def talents(ctx: commands.Context, hero=None):
         contents = file.read()
         file.close()
 
-        if not len(httshots.stream_pregame):
+        if not httshots.stream_pregame:
             file = open(httshots.config.battle_lobby_file, 'rb')
             _contents = file.read()
             file.close()
@@ -122,7 +115,6 @@ async def talents(ctx: commands.Context, hero=None):
         await ctx.send(text)
         return
 
-    else:
-        text = httshots.strings['TrackerNoActiveGame']
-        await ctx.send(text)
-        return
+    text = httshots.strings['TrackerNoActiveGame']
+    await ctx.send(text)
+    return

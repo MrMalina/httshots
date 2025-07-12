@@ -15,6 +15,7 @@ from . import tracker
 # ======================================================================
 class BotCommands(commands.Component):
     def __init__(self, bot):
+        """Инициализация класса"""
         self.bot = bot
 
     @commands.cooldown(rate=1, per=2)
@@ -22,19 +23,25 @@ class BotCommands(commands.Component):
     async def game(self, ctx: commands.Context,
                     hero: str | None = None,
                     info: str | None = None):
-        if not len(httshots.stream_replays):
+        """Выводит информацию из сыгранного матча"""
+
+        # Должен быть сыгран хотя бы один матч
+        if not httshots.stream_replays:
             text = httshots.strings['GameNotFound']
             await ctx.send(text)
             return
 
         _game = httshots.stream_replays[-1]
         if hero is None:
+            # Если не указан герой, выводит общую информацию о матче
+            # Карта - герой - победа/поражение/ничья
             text = httshots.strings['GameInfo'].format(_game.short_info)
             await ctx.send(text)
 
         else:
             hero = hero.lower().strip()
             if hero in ('heroes', 'герои'):
+                # Выводит героев красной и синей команд
                 blue = [httshots.htts_data.get_translate_hero(x.hero, 0) \
                         for x in _game.info.players.values() if x.team_id == 0]
                 red = [httshots.htts_data.get_translate_hero(x.hero, 0) \
@@ -44,7 +51,11 @@ class BotCommands(commands.Component):
                 return
 
             if hero in ('счёт', 'счет', 'score'):
+                # Выводит уровни команд и количество убийств
                 kills = [0, 0]
+                # Имеет смысл, так как в матче может не быть игроков в одной из команд
+                team_level_blue = 0
+                team_level_red = 0
                 for _player in _game.info.players.values():
                     if _player.team_id == 0:
                         team_level_blue = _player.team_level
@@ -59,6 +70,7 @@ class BotCommands(commands.Component):
                 return
 
             if hero in ('draft', 'драфт'):
+                # Выводит порядок драфта, если матч сыгран в режиме, где был выбор героев
                 bans = _game.info.lobby.bans
                 if bans:
                     if _game.url_draft is not None:
@@ -71,11 +83,9 @@ class BotCommands(commands.Component):
                 return
 
             if hero in ('bans', 'баны'):
+                # Выводит список банов
                 bans = _game.info.lobby.bans
                 if bans:
-                    # if _game.url_draft is not None:
-                        # text = httshots.strings['GameDraft'].format(_game.url_draft)
-                    # else:
                     blue_bans = []
                     red_bans = []
                     for ban in bans:
@@ -93,16 +103,23 @@ class BotCommands(commands.Component):
                 return
 
             if hero in ('meat', 'мясо'):
+                # Выводит количество мяса, которое не собрал и потерял при смерти Мясник
                 player = _game.try_find_hero('Butcher')
                 if player is None:
                     text = httshots.strings['GameNoButcherInGame'].format(ctx.author.name)
 
                 else:
+                    """Порядок подсчёта довольно прост:
+                    При смерти миньона (если мясо меньше 200) или героя появляется объект
+                    с именем ButcherFreshMeat1 или ButcherFreshMeat20, если объект был уничтожен
+                    меньше чем за 240 тиков, то его поднял Мясник, иначе мясо пропало
+                    Таким образом можно посчитать, сколько мясо не было поднято, а через потиковый
+                    проход по всем игровым событиям можно узнать, сколько было мяса при гибели Мясника,
+                    и вычислить, сколько он потерял при гибели (15 или меньше, если было меньше 15)
+                    """
                     meats = 0
                     still_meats = 0
                     draise_meats = 0
-
-                    # ?????
 
                     loops = list(_game.info.game_loops.keys())
                     loops.sort()
@@ -125,10 +142,12 @@ class BotCommands(commands.Component):
                                             still_meats += meats
                                         meats = max(0, meats-15)
 
-                    text = httshots.strings['GameButcherLoseMeats'].format(player.name, draise_meats, still_meats)
+                    text = httshots.strings['GameButcherLoseMeats'].format(
+                            player.name, draise_meats, still_meats)
                 await ctx.send(text)
                 return
 
+            # Получение игрока по имени героя
             player = _game.try_find_hero(hero.lower().strip())
             if player is None:
                 text = httshots.strings['GameNotFoundHero'].format(ctx.author.name)
@@ -136,6 +155,7 @@ class BotCommands(commands.Component):
                 return
 
             if not info:
+                # Вывод талантов игрока
                 hero = player.hero
                 hero_name = httshots.htts_data.get_translate_hero(hero, 1)
                 hots_hero_name = httshots.htts_data.remove_symbols(hero)
@@ -150,11 +170,13 @@ class BotCommands(commands.Component):
             info = info.strip().lower()
             info = httshots.htts_data.params.get(info, info)
             if info in ('счёт', 'счет', 'score'):
+                # Вывод счёта - имя игрока, герой, КДА
                 hero = httshots.htts_data.get_translate_hero(player.hero, 0)
                 text = httshots.strings['GameHeroScore'].format(player.name, hero,
                                                                 player.solo_kill, player.deaths,
                                                                 player.assists)
             else:
+                # Любой другой параметр из replay.ini
                 value = getattr(player, info, None)
                 if value is None:
                     text = httshots.strings['GameHeroInfoNotFound'].format(info)
@@ -167,6 +189,8 @@ class BotCommands(commands.Component):
     @commands.cooldown(rate=1, per=2)
     @commands.command(aliases=("матчи", ))
     async def games(self, ctx: commands.Context):
+        """Выводит список сыгранных матчей и череду побед"""
+
         matches = len(httshots.stream_replays)
         if not matches:
             text = httshots.strings['GameNotFound']
@@ -209,4 +233,6 @@ class BotCommands(commands.Component):
     @commands.cooldown(rate=1, per=2)
     @commands.command(aliases=("таланты", ))
     async def talents(self, ctx: commands.Context, hero: str | None = None):
+        """Выводит актуальные таланты из матча"""
+
         await tracker.talents(ctx, hero)

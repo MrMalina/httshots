@@ -9,7 +9,7 @@ from collections import defaultdict
 # ======================================================================
 # >> HttsEvents
 # ======================================================================
-class HttsEvents(object):
+class HttsEvents:
     def __init__(self):
         self.events = defaultdict(list)
 

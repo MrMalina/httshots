@@ -40,7 +40,6 @@ mvps = {
     'silences': 'silencer',
     'stuns': 'stunner',
     'pushing': 'pusher',
-    'outnumbered_deaths': 'solesurvivor',
     'hat_trick': 'hattrick',
     'shields': 'protector',
     'siege_damage': 'siegemaster',
