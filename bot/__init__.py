@@ -17,6 +17,7 @@ import httshots
 from httshots import httshots
 from . import bot
 from . import replays
+from . import score
 from . import pregame
 from . import events
 
@@ -109,7 +110,12 @@ class TwitchBot(commands.Bot):
                 acc_replays = list(acc.get_all_replays())
                 for replay_path in acc_replays:
                     replayes_count += 1
-                    replay, protocol = httshots.parser.get_replay(replay_path)
+                    tmp = httshots.parser.get_replay(replay_path)
+                    # На случай попытки прочитать реплей старой версии
+                    if tmp is None:
+                        continue
+
+                    replay, protocol = tmp
                     info = httshots.parser.get_match_info(replay, protocol)
                     replay_title = replay_path.split('/')[-1]
 
@@ -136,7 +142,7 @@ class TwitchBot(commands.Bot):
                             me = players[acc_name]
                             break
 
-                    amm_id = info.init_data.game_options.amm_id
+                    amm_id = info.game_type
                     if consider_matches == 2 or amm_id == 50091:
                         if me is None:
                             httshots.print_log('FoundPreviousGameNoAcc',
@@ -190,6 +196,9 @@ class TwitchBot(commands.Bot):
                 httshots.print_log('FoundZeroLeaguePreviousGames', level=2)
             else:
                 httshots.print_log('FoundZeroPreviousGames', level=2)
+
+        if httshots.config.score_use:
+            httshots.bot.score.update_score()
 
         httshots.print_log('BotStarted', httshots.pkg_name,
                            httshots.pkg_author, httshots.pkg_version,

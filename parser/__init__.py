@@ -27,10 +27,14 @@ def get_replay(replay):
     header = versions.latest().decode_replay_header(contents)
 
     base_build = header['m_version']['m_baseBuild']
+
     try:
         protocol = versions.build(base_build)
     except:
-        httshots.print_log('BotHeroprotocolBuild', base_build, level=5)
+        if base_build < int(httshots.HOTS_VERSION):
+            httshots.print_log('BotHeroprotocolBuildOld', base_build, level=5)
+        elif base_build > int(httshots.HOTS_VERSION):
+            httshots.print_log('BotHeroprotocolBuildNew', base_build, level=5)
         return None
     return replay, protocol
 

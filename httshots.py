@@ -27,7 +27,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "1.2.0"
+pkg_version = "1.3.0"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -68,13 +68,14 @@ def load(argv:list) -> None:
            tw_bot, fonts, paths, current_dir
 
     current_dir = Path(path.dirname(__file__))
-    data_replay = ConfigObj(str(current_dir / 'data' / 'replay.ini'))
 
     config = Config(str(current_dir / 'config' / 'config.ini'))
     language = config.language
     strings = Strings(str(current_dir / 'data' / 'strings.ini'), language)
 
     print_log('BotStart', level=5)
+
+    data_replay = ConfigObj(str(current_dir / 'data' / 'replay.ini'))
 
     for param in config.all_params:
         print_log('BotConfigParamNotFound', param, level=5)
@@ -357,12 +358,13 @@ class DataStrings:
         return self.reverse_maps.get(name, name)
 
     def get_translate_map(self, name):
-        map = self.reverse_maps.get(name, name)
-        if self.plang == 'en':
-            return map
+        map_name = self.reverse_maps.get(name, name)
 
-        if map in self.data[self.plang]['maps']:
-            return self.data[self.plang]['maps'][map]
+        if self.plang == 'en':
+            return map_name
+
+        if map_name in self.data[self.plang]['maps']:
+            return self.data[self.plang]['maps'][map_name]
 
         return 'NoName'
 
@@ -420,7 +422,7 @@ class Config:
             'accounts', 'debug', 'log_level', 'use_colors', 'language', 
             'replay_check_period', 'add_previous_games', 'duplicate_url_in_console',
             'matches_type_to_consider', 'battlelobby_status', 'tracker_status',
-            'tracker_commands', 'send_previous_battle_lobby', 'parse_message_file', 'image_upload', 
+            'tracker_commands', 'send_previous_battle_lobby', 'image_upload', 
             'end_game_dispay_match_info', 'end_game_dispay_games_info', 'ftp_site_name',
             'ftp_ip', 'ftp_login', 'ftp_passwd', 'ftp_folder', 'imgur_client_id',
             'imgur_client_secret', 'try_reupload_image', 'twitch_client_id', 'twitch_client_secret',

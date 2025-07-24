@@ -22,6 +22,7 @@ class Game:
 
     def add_init_data(self, data):
         self.init_data = classes.InitData(data, self.players)
+        self.game_type = self.init_data.game_options.amm_id
 
     def add_header(self, data):
         self.header = classes.Header(data)

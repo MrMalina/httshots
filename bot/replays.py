@@ -56,8 +56,8 @@ async def send_replay_info(replay_name):
         # httshots.print_log('GameLess10Players', level=2)
         # return
 
-    amm_id = info.init_data.game_options.amm_id
-    # Свою игру игнорируем
+    amm_id = info.game_type
+    # Уведомляем о возможных ошибках в своей игре
     if amm_id == 0:
         httshots.print_log('GameOwnAmmId', level=2)
 
@@ -110,8 +110,9 @@ async def send_replay_info(replay_name):
         status = httshots.strings['GameResult'+{0:'Draw',1:'Win',2:'Lose'}[int(me.result)]]
         hero_name = httshots.htts_data.get_translate_hero(me.hero, 2)
         map_name = httshots.htts_data.get_translate_map(info.details.title)
+        map_type = httshots.strings['GameType%s'%info.init_data.game_options.amm_id]
         match_info = httshots.strings['GameResultInfo'].format(status, hero_name,
-                                                               map_name)
+                                                               map_name, map_type)
 
     if httshots.config.image_upload:
         if MATCH_STATS & display_info:
@@ -177,6 +178,9 @@ async def send_replay_info(replay_name):
         games_info += tmp
 
     await httshots.tw_bot._send_message(games_info)
+
+    if httshots.config.score_use:
+        httshots.bot.score.update_score()
 
     sreplay.url_games = url_games
     sreplay.url_match = url_match

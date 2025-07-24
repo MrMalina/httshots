@@ -30,20 +30,20 @@ def create_icons(image):
     tmp = hots.strings['ImageMap']
     draw.text((380, 50), tmp, WHITE, font=hots.fonts.default)
     tmp = hots.strings['ImageSide']
-    draw.text((675, 50), tmp, WHITE, font=hots.fonts.default)
+    draw.text((750, 50), tmp, WHITE, font=hots.fonts.default)
     tmp = hots.strings['ImageResult']
-    draw.text((825, 50), tmp, WHITE, font=hots.fonts.default)
+    draw.text((875, 50), tmp, WHITE, font=hots.fonts.default)
     tmp = hots.strings['ImageDuration']
-    draw.text((975, 50), tmp, WHITE, font=hots.fonts.default)
+    draw.text((1000, 50), tmp, WHITE, font=hots.fonts.default)
 
     tmp = Image.open(hots.paths.stats / 'kill.png').convert('RGBA')
-    image.paste(tmp, (1125, 50), mask=tmp)
+    image.paste(tmp, (1140, 50), mask=tmp)
 
     tmp = Image.open(hots.paths.stats / 'assist.png').convert('RGBA')
-    image.paste(tmp, (1185, 50), mask=tmp)
+    image.paste(tmp, (1200, 50), mask=tmp)
 
     tmp = Image.open(hots.paths.stats / 'death.png').convert('RGBA')
-    image.paste(tmp, (1245, 50), mask=tmp)
+    image.paste(tmp, (1260, 50), mask=tmp)
 
 
 def add_games(image, replays):
@@ -108,36 +108,38 @@ def add_games(image, replays):
                 image.paste(tmp, (320, add+(x*rng)+4), mask=tmp)
 
         map_name = hots.htts_data.get_translate_map(replay.info.details.title)
-        draw.text((380, add+(x*rng)+20), map_name, WHITE, font=hots.fonts.default)
+        map_type = hots.strings['GameType%s'%replay.info.game_type]
+        tmp = "%s (%s)"%(map_name, map_type)
+        draw.text((380, add+(x*rng)+20), tmp, WHITE, font=hots.fonts.default)
 
         if team_id == 0:
             tmp = hots.strings['GameTeamBlue']
-            draw.text((675, add+(x*rng)+20), tmp, BTEAM, font=hots.fonts.default)
+            draw.text((750, add+(x*rng)+20), tmp, BTEAM, font=hots.fonts.default)
         else:
             tmp = hots.strings['GameTeamRed']
-            draw.text((675, add+(x*rng)+20), tmp, RTEAM, font=hots.fonts.default)
+            draw.text((750, add+(x*rng)+20), tmp, RTEAM, font=hots.fonts.default)
 
         if player.result == 1:
             tmp = hots.strings['GameResultWin']
-            draw.text((825, add+(x*rng)+20), tmp, GREEN, font=hots.fonts.default)
+            draw.text((875, add+(x*rng)+20), tmp, GREEN, font=hots.fonts.default)
         else:
             tmp = hots.strings['GameResultLose']
-            draw.text((825, add+(x*rng)+20), tmp, RTEAM, font=hots.fonts.default)
+            draw.text((875, add+(x*rng)+20), tmp, RTEAM, font=hots.fonts.default)
 
-        draw.text((1000, add+(x*rng)+20), f"{str(time//60).zfill(2)}:{str(time%60).zfill(2)}",
+        draw.text((1040, add+(x*rng)+20), f"{str(time//60).zfill(2)}:{str(time%60).zfill(2)}",
                   WHITE, font=hots.fonts.default)
 
         solo_kill = str(player.solo_kill)
         shift = get_shift(solo_kill)
-        draw.text((1125-shift, add+(x*rng)+20), solo_kill, color, font=hots.fonts.default)
+        draw.text((1140-shift, add+(x*rng)+20), solo_kill, color, font=hots.fonts.default)
 
         assists = str(player.assists)
         shift = get_shift(assists)
-        draw.text((1185-shift, add+(x*rng)+20), assists, color, font=hots.fonts.default)
+        draw.text((1200-shift, add+(x*rng)+20), assists, color, font=hots.fonts.default)
 
         deaths = str(player.deaths)
         shift = get_shift(deaths)
-        draw.text((1245-shift, add+(x*rng)+20), deaths, color, font=hots.fonts.default)
+        draw.text((1260-shift, add+(x*rng)+20), deaths, color, font=hots.fonts.default)
 
 
 def get_shift(value):
