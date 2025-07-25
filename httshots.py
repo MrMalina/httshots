@@ -27,7 +27,7 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "1.3.0"
+pkg_version = "1.3.1"
 pkg_author = "MrMalina"
 
 # initialization of constant
@@ -82,7 +82,7 @@ def load(argv:list) -> None:
 
     # Проверка новой версии
     try:
-        check_version = req_get("https://httshots.ru/version", timeout=2)
+        check_version = requests.get("https://httshots.ru/version", timeout=2)
         if check_version:
             check_version = check_version.text
             if check_version and check_version > pkg_version:

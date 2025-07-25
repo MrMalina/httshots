@@ -50,6 +50,6 @@ def update_score(clear_score=0):
         text = f.readlines()
         text[20] = score_string + '<br>' + streak
 
-    with open(httshots.paths.upload / 'score.html', 'w') as f:
+    with open(httshots.paths.upload / 'score.html', 'w', encoding='ansi') as f:
         for line in text:
             f.write(line)
