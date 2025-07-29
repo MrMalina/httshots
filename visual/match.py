@@ -98,6 +98,7 @@ def add_heroes(image, replay, max_stats):
 
     _players = list(replay.players.values())
     for y, userid in enumerate(replay.sort_ids):
+    # for y, player in enumerate(replay.players.values()):
         player = _players[userid]
         hero_name = player.hero
         img_name = hots.htts_data.remove_symbols(hero_name)

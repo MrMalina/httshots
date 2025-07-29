@@ -113,9 +113,12 @@ class Details(parse.Parse):
         _players = data['m_playerList']
 
         self.players = {}
+        self.real_ids = []
 
         for userid, info in enumerate(_players):
-            self.players[userid] = Player(userid, info)
+            tmp = Player(userid, info)
+            self.players[userid] = tmp
+            self.real_ids.append(tmp.working_set_slot_id)
 
         _players = sorted(self.players.values(), key=lambda x: x.team_id)
 
