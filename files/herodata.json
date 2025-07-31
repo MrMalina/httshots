@@ -731,7 +731,7 @@
         "nameId": "HeroWeaponAlarak",
         "range": 1.5,
         "period": 0.8332,
-        "damage": 150.0,
+        "damage": 160.0,
         "damageScale": 0.04
       }
     ],
@@ -788,7 +788,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 25</s>",
           "cooldownTooltip": "Cooldown: 6 seconds",
           "shortTooltip": "Damage enemies in a line",
-          "fullTooltip": "Deal <c val=\"bfd4fd\">62~~0.04~~</c> damage to an enemy and an additional <c val=\"bfd4fd\">100%</c> damage to enemies between Alarak and the target. Restore <c val=\"bfd4fd\">70~~0.04~~</c> health for each Hero hit.",
+          "fullTooltip": "Deal <c val=\"bfd4fd\">62~~0.04~~</c> damage to an enemy and an additional <c val=\"bfd4fd\">100%</c> damage to enemies between Alarak and the target. Restore <c val=\"bfd4fd\">75~~0.04~~</c> health for each Hero hit.",
           "abilityType": "E"
         }
       ],
@@ -912,7 +912,7 @@
               "icon": "storm_ui_icon_alarak_lightningsurge.png",
               "toggleCooldown": 0.125,
               "shortTooltip": "Damage enemies in a line",
-              "fullTooltip": "Deal <c val=\"bfd4fd\">62~~0.04~~</c> damage to an enemy and an additional <c val=\"bfd4fd\">100%</c> damage to enemies between Alarak and the target. Restore <c val=\"bfd4fd\">70~~0.04~~</c> health for each Hero hit.",
+              "fullTooltip": "Deal <c val=\"bfd4fd\">62~~0.04~~</c> damage to an enemy and an additional <c val=\"bfd4fd\">100%</c> damage to enemies between Alarak and the target. Restore <c val=\"bfd4fd\">75~~0.04~~</c> health for each Hero hit.",
               "abilityType": "E"
             }
           ]
@@ -972,7 +972,7 @@
           "name": "Overwhelming Power",
           "icon": "storm_ui_icon_alarak_discordstrike.png",
           "shortTooltip": "Discord Strike grants Attack Speed, Lifesteal",
-          "fullTooltip": "Hitting an enemy Hero with Discord Strike grants <c val=\"bfd4fd\">40%</c> Attack Speed and causes Basic Attacks to heal for <c val=\"bfd4fd\">50%</c> of the damage dealt for <c val=\"bfd4fd\">4</c> seconds.",
+          "fullTooltip": "Hitting an enemy Hero with Discord Strike grants <c val=\"bfd4fd\">40%</c> Attack Speed and causes Basic Attacks to heal for <c val=\"bfd4fd\">15%</c> of the damage dealt, increased by <c val=\"bfd4fd\">50%</c> of Sadism's bonus when hitting Heroes. These effects last for <c val=\"bfd4fd\">4</c> seconds.",
           "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -1090,7 +1090,7 @@
           "name": "Applied Force",
           "icon": "storm_ui_icon_alarak_telekinesis.png",
           "shortTooltip": "Reduce Sadism, increase Telekinesis distance, range",
-          "fullTooltip": "Reduce Sadism by <c val=\"bfd4fd\">10%</c>, but Telekinesis pushes <c val=\"bfd4fd\">20%</c> further and has <c val=\"bfd4fd\">20% </c>increased range.",
+          "fullTooltip": "Reduce Sadism by <c val=\"bfd4fd\">10%</c>, but Telekinesis pushes <c val=\"bfd4fd\">15%</c> further and has <c val=\"bfd4fd\">20%</c> increased range.",
           "abilityType": "W",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -1223,43 +1223,26 @@
       ],
       "level20": [
         {
-          "nameId": "AlarakCounterStrikeItem",
-          "buttonId": "AlarakCounterStrike2ndHeroic",
-          "name": "Counter-Strike",
-          "icon": "storm_ui_icon_alarak_counterstrike.png",
-          "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 50</s>",
-          "cooldownTooltip": "Cooldown: 30 seconds",
-          "shortTooltip": "Prevents damage to deal damage in a large area",
-          "fullTooltip": "Alarak targets an area and channels for <c val=\"bfd4fd\">1</c> second, becoming Protected and Unstoppable. After, if he took damage from an enemy Hero, he sends a shockwave that deals <c val=\"bfd4fd\">275~~0.04~~</c> damage.<n/><n/><c val=\"ffff8a\">This ability will take over Alarak's Trait button.</c>",
+          "nameId": "AlarakWrathOfTheHighlord",
+          "buttonId": "AlarakWrathOfTheHighlord",
+          "name": "Wrath of the Highlord",
+          "icon": "storm_ui_icon_alarak_sadism.png",
+          "shortTooltip": "Deadly Charge empowers Sadism's damage<n/>Basic Abilities reduce Counter-Strike's cooldown",
+          "fullTooltip": "If Deadly Charge was the selected Heroic, Heroes hit by Deadly Charge take bonus damage from Alarak's Abilities equal to <c val=\"bfd4fd\">75%</c> of Sadism's bonus damage for <c val=\"bfd4fd\">4</c> seconds.<n/><n/>If Counter-Strike was the selected Heroic, its cooldown is reduced by <c val=\"bfd4fd\">2.5</c> seconds for each enemy Hero hit by Alarak's Basic Abilities.",
           "abilityType": "Heroic",
-          "isActive": true,
-          "sort": 1,
-          "abilityTalentLinkIds": [
-            "AlarakCounterStrikeTargeted"
-          ],
-          "prerequisiteTalentIds": [
-            "AlarakDeadlyChargeFirstHeroic"
-          ]
+          "sort": 1
         },
         {
-          "nameId": "AlarakDeadlyChargeSecondHeroic",
-          "buttonId": "AlarakDeadlyCharge",
-          "name": "Deadly Charge",
-          "icon": "storm_ui_icon_alarak_recklesscharge.png",
+          "nameId": "AlarakMightOfTheHighlord",
+          "buttonId": "AlarakMightOfTheHighlord",
+          "name": "Might of the Highlord",
+          "icon": "storm_ui_icon_alarak_sadism_a.png",
           "toggleCooldown": 0.5,
-          "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 60</s>",
-          "cooldownTooltip": "Cooldown: 45 seconds",
-          "shortTooltip": "Channel to charge a long distance",
-          "fullTooltip": "After channeling, Alarak charges forward dealing <c val=\"bfd4fd\">200~~0.04~~</c> damage to all enemies in his path. Distance is increased based on the amount of time channeled, up to <c val=\"bfd4fd\">1.5</c> seconds.<n/><n/>Issuing a Move order while this is channeling will cancel it at no cost. Taking damage will interrupt the channeling.",
-          "abilityType": "Heroic",
+          "shortTooltip": "Gain both Heroic Abilities",
+          "fullTooltip": "Alarak gains access to both of his Heroic Abilities. This can be activated to change which Ability occupies the Heroic slot, with the other Ability using the Trait slot.",
+          "abilityType": "Active",
           "isActive": true,
-          "sort": 2,
-          "abilityTalentLinkIds": [
-            "AlarakDeadlyChargeActivate"
-          ],
-          "prerequisiteTalentIds": [
-            "AlarakHeroicAbilityCounterStrike"
-          ]
+          "sort": 2
         },
         {
           "nameId": "AlarakLastLaugh",
@@ -1431,7 +1414,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 50</s>",
           "cooldownTooltip": "Cooldown: 50 seconds",
           "shortTooltip": "Link Alexstrasza's Health with an ally",
-          "fullTooltip": "Bind Alexstrasza's life force with an allied Hero. Both her and her target are healed for <c val=\"bfd4fd\">480~~0.04~~</c> Health over <c val=\"bfd4fd\">2</c> seconds. Afterwards, the Hero with a lower percentage of Health is healed to the same Health percentage as the other Hero.",
+          "fullTooltip": "Bind Alexstrasza's life force with an allied Hero. Both her and her target are healed for <c val=\"bfd4fd\">480~~0.04~~</c> Health over <c val=\"bfd4fd\">2</c> seconds. Afterwards, the Hero with a lower percentage of Health is healed to the same Health percentage as the other Hero.<n/><n/><c val=\"D65CFF\">Dragonqueen:</c> Cast range increased by <c val=\"bfd4fd\">50%</c>.",
           "abilityType": "Heroic"
         },
         {
@@ -1651,7 +1634,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 50</s>",
           "cooldownTooltip": "Cooldown: 50 seconds",
           "shortTooltip": "Link Alexstrasza's Health with an ally",
-          "fullTooltip": "Bind Alexstrasza's life force with an allied Hero. Both her and her target are healed for <c val=\"bfd4fd\">480~~0.04~~</c> Health over <c val=\"bfd4fd\">2</c> seconds. Afterwards, the Hero with a lower percentage of Health is healed to the same Health percentage as the other Hero.",
+          "fullTooltip": "Bind Alexstrasza's life force with an allied Hero. Both her and her target are healed for <c val=\"bfd4fd\">480~~0.04~~</c> Health over <c val=\"bfd4fd\">2</c> seconds. Afterwards, the Hero with a lower percentage of Health is healed to the same Health percentage as the other Hero.<n/><n/><c val=\"D65CFF\">Dragonqueen:</c> Cast range increased by <c val=\"bfd4fd\">50%</c>.",
           "abilityType": "Heroic",
           "isActive": true,
           "sort": 1,
@@ -1900,7 +1883,7 @@
                 "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 50</s>",
                 "cooldownTooltip": "Cooldown: 50 seconds",
                 "shortTooltip": "Link Alexstrasza's Health with an ally",
-                "fullTooltip": "Bind Alexstrasza's life force with an allied Hero. Both her and her target are healed for <c val=\"bfd4fd\">480~~0.04~~</c> Health over <c val=\"bfd4fd\">2</c> seconds. Afterwards, the Hero with a lower percentage of Health is healed to the same Health percentage as the other Hero.",
+                "fullTooltip": "Bind Alexstrasza's life force with an allied Hero. Both her and her target are healed for <c val=\"bfd4fd\">480~~0.04~~</c> Health over <c val=\"bfd4fd\">2</c> seconds. Afterwards, the Hero with a lower percentage of Health is healed to the same Health percentage as the other Hero.<n/><n/><c val=\"D65CFF\">Dragonqueen:</c> Cast range increased by <c val=\"bfd4fd\">50%</c>.",
                 "abilityType": "Heroic"
               },
               {
@@ -4089,7 +4072,7 @@
           "name": "Regeneration Master",
           "icon": "storm_ui_icon_talent_regenerationmaster.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Regen Globes increase Health Regen",
-          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Gathering a Regeneration Globe increases your Health Regeneration by <c val=\"bfd4fd\">1</c> per second, up to <c val=\"bfd4fd\">30</c>. <n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After gathering <c val=\"bfd4fd\">30</c> Regeneration Globes, you also gain <c val=\"bfd4fd\">500</c> Health.",
+          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Gathering a Regeneration Globe increases your Health Regeneration by <c val=\"bfd4fd\">1</c> per second, up to <c val=\"bfd4fd\">30</c>. <n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After gathering <c val=\"bfd4fd\">25</c> Regeneration Globes, you also gain <c val=\"bfd4fd\">500</c> Health.",
           "abilityType": "Passive",
           "isQuest": true,
           "sort": 3
@@ -5838,7 +5821,7 @@
           "name": "Repeated Offense",
           "icon": "storm_ui_icon_auriel_restrainingblow_a.png",
           "shortTooltip": "Increases Detainment Strike range<n/><c val=\"e4b800\">Quest:</c> Increases damage when Heroes are stunned",
-          "fullTooltip": "Enemies hit by Detainment Strike are knocked back <c val=\"bfd4fd\">25%</c> farther.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every time Detainment Strike stuns a Hero, increase the stun damage by <c val=\"bfd4fd\">10</c>, up to <c val=\"bfd4fd\">60</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After stunning <c val=\"bfd4fd\">6</c> Heroes, increase this damage bonus to <c val=\"bfd4fd\">250</c>.",
+          "fullTooltip": "Enemies hit by Detainment Strike are knocked back <c val=\"bfd4fd\">30%</c> farther.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every time Detainment Strike stuns a Hero, increase the stun damage by <c val=\"bfd4fd\">10</c>, up to <c val=\"bfd4fd\">60</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After stunning <c val=\"bfd4fd\">6</c> Heroes, increase this damage bonus to <c val=\"bfd4fd\">250</c>.",
           "abilityType": "E",
           "isQuest": true,
           "sort": 3,
@@ -10250,7 +10233,7 @@
           "icon": "storm_btn_d3ros_crusader_blessedhammer.png",
           "cooldownTooltip": "Cooldown: 30 seconds",
           "shortTooltip": "Activate to create spinning hammers",
-          "fullTooltip": "Activate to create <c val=\"bfd4fd\">2</c> hammers that spiral outward from Johanna, dealing <c val=\"bfd4fd\">65~~0.04~~</c> damage to enemies hit. Damaging enemies with Basic Abilities reduce the cooldown of this Ability by <c val=\"bfd4fd\">2</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Every <c val=\"bfd4fd\">3rd</c> Basic Attack against enemy Heroes releases a hammer.",
+          "fullTooltip": "Activate to create <c val=\"bfd4fd\">2</c> hammers that spiral outward from Johanna, dealing <c val=\"bfd4fd\">65~~0.04~~</c> damage to enemies hit. Damaging enemies with Basic Abilities reduce the cooldown of this Ability by <c val=\"bfd4fd\">2.5</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Every <c val=\"bfd4fd\">3rd</c> Basic Attack against enemy Heroes releases a hammer.",
           "abilityType": "Active",
           "isActive": true,
           "sort": 3
@@ -11835,7 +11818,7 @@
           "name": "Enhanced Agility",
           "icon": "storm_ui_icon_dehaka_brushstalker.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Essence increases Brushstalker Move Speed",
-          "fullTooltip": "Brushstalker's Movement Speed bonus now lasts for <c val=\"bfd4fd\">5</c> seconds after leaving a bush.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Repeatable Quest:</c> Every <c val=\"bfd4fd\">50</c> Essence collected permanently increases the Movement Speed bonus of Brushstalker by <c val=\"bfd4fd\">2%</c>, up to <c val=\"bfd4fd\">20%</c>.",
+          "fullTooltip": "Brushstalker's Movement Speed bonus now lasts for <c val=\"bfd4fd\">4</c> seconds after leaving a bush.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Repeatable Quest:</c> Every <c val=\"bfd4fd\">50</c> Essence collected permanently increases the Movement Speed bonus of Brushstalker by <c val=\"bfd4fd\">2%</c>, up to <c val=\"bfd4fd\">20%</c>.",
           "abilityType": "Z",
           "isQuest": true,
           "sort": 3,
@@ -11917,7 +11900,7 @@
           "name": "Paralyzing Enzymes",
           "icon": "storm_ui_icon_dehaka_drag_var1.png",
           "shortTooltip": "Drag Slows, reduces Healing",
-          "fullTooltip": "Drag Slows the target by <c val=\"bfd4fd\">40%</c> and reduces their healing received by <c val=\"bfd4fd\">40%</c> while active and for <c val=\"bfd4fd\">2</c> seconds after ending.",
+          "fullTooltip": "Drag Slows the target by <c val=\"bfd4fd\">40%</c> and reduces their healing received by <c val=\"bfd4fd\">50%</c> while active and for <c val=\"bfd4fd\">2</c> seconds after ending. Dehaka's Basic Attacks increase the duration of the healing reduction to <c val=\"bfd4fd\">2</c> seconds.",
           "abilityType": "Q",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -12051,7 +12034,7 @@
           "name": "Pack Leader",
           "icon": "storm_ui_icon_dehaka_brushstalker.png",
           "shortTooltip": "Gain Armor, Attack Speed near bushes",
-          "fullTooltip": "Dehaka gains <c val=\"bfd4fd\">40</c> Armor and <c val=\"bfd4fd\">15%</c> increased Attack Speed while in a bush and for <c val=\"bfd4fd\">5</c> seconds after leaving.",
+          "fullTooltip": "Dehaka gains <c val=\"bfd4fd\">40</c> Armor and <c val=\"bfd4fd\">15%</c> increased Attack Speed while in a bush and for <c val=\"bfd4fd\">4</c> seconds after leaving.",
           "abilityType": "Z",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -21660,7 +21643,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 75</s>",
           "cooldownTooltip": "Cooldown: 12 seconds",
           "shortTooltip": "Burn nearby enemies",
-          "fullTooltip": "Shroud Imperius in flames for <c val=\"bfd4fd\">3</c> seconds, striking a nearby enemy for <c val=\"bfd4fd\">19~~0.04~~</c> damage every <c val=\"bfd4fd\">0.25</c> seconds. Imperius heals for <c val=\"bfd4fd\">50%</c> of the damage dealt, increased to <c val=\"bfd4fd\">100%</c> against Heroes. Strikes <c val=\"bfd4fd\">2</c> additional targets if no Heroes are in range.",
+          "fullTooltip": "Shroud Imperius in flames for <c val=\"bfd4fd\">3</c> seconds, striking a nearby enemy for <c val=\"bfd4fd\">19~~0.04~~</c> damage every <c val=\"bfd4fd\">0.25</c> seconds. Imperius heals for <c val=\"bfd4fd\">50%</c> of the damage dealt, increased to <c val=\"bfd4fd\">100%</c> against Heroes. Strikes <c val=\"bfd4fd\">2</c> additional targets if no Heroes are in range, and restores <c val=\"bfd4fd\">1</c> Mana for each strike on expiration.",
           "abilityType": "E"
         }
       ],
@@ -21770,7 +21753,7 @@
           "name": "Impaling Light",
           "icon": "storm_ui_icon_imperius_q.png",
           "shortTooltip": "Empower Celestial Charge with Valorous Brand",
-          "fullTooltip": "Celestial Charge deals <c val=\"bfd4fd\">180%</c> more damage to Heroes, reduced by <c val=\"bfd4fd\">20%</c> for each additional Hero hit. For each Valorous Brand on the target when Celestial Charge's Stun completes, reduce its cooldown by <c val=\"bfd4fd\">1</c> second.<n/><n/><c val=\"00ff90\">Passive:</c> Reduce Celestial Charge's cooldown by <c val=\"bfd4fd\">2</c> seconds, and its Mana cost from <c val=\"bfd4fd\">40</c> to <c val=\"bfd4fd\">30</c>.",
+          "fullTooltip": "Celestial Charge deals <c val=\"bfd4fd\">150%</c> more damage to Heroes, reduced by <c val=\"bfd4fd\">25%</c> for each additional Hero hit. For each Valorous Brand on the target when Celestial Charge's Stun completes, reduce its cooldown by <c val=\"bfd4fd\">1</c> second.<n/><n/><c val=\"00ff90\">Passive:</c> Reduce Celestial Charge's cooldown by <c val=\"bfd4fd\">1.5</c> seconds, and its Mana cost from <c val=\"bfd4fd\">40</c> to <c val=\"bfd4fd\">30</c>.",
           "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -21811,7 +21794,7 @@
           "name": "Sovereign Armor",
           "icon": "storm_ui_icon_imperius_e.png",
           "shortTooltip": "Molten Armor grants Armor",
-          "fullTooltip": "Molten Armor grants <c val=\"bfd4fd\">20</c> Armor for <c val=\"bfd4fd\">1.5</c> seconds. Damaging an enemy Hero with Molten Armor increases the duration of the Armor by <c val=\"bfd4fd\">0.5</c> seconds.",
+          "fullTooltip": "Molten Armor grants <c val=\"bfd4fd\">20</c> Armor for <c val=\"bfd4fd\">1.5</c> seconds. Hitting an enemy Hero with Molten Armor extends the duration of this Armor by <c val=\"bfd4fd\">0.5</c> seconds.",
           "abilityType": "E",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -21865,7 +21848,7 @@
           "name": "Blaze of Glory",
           "icon": "storm_ui_icon_imperius_w.png",
           "shortTooltip": "Solarion's Fire creates a delayed explosion",
-          "fullTooltip": "Solarion's Fire leaves a line of scorched earth along its center that explodes after <c val=\"bfd4fd\">1.75</c> seconds for <c val=\"bfd4fd\">205~~0.04~~</c> damage, dealing bonus damage with Valorous Brand marks.",
+          "fullTooltip": "Solarion's Fire leaves a line of scorched earth along its center that explodes after <c val=\"bfd4fd\">1.75</c> seconds for <c val=\"bfd4fd\">212~~0.04~~</c> damage, dealing bonus damage with Valorous Brand marks.",
           "abilityType": "W",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -21879,7 +21862,7 @@
           "icon": "storm_ui_icon_imperius_item_01.png",
           "cooldownTooltip": "Cooldown: 25 seconds",
           "shortTooltip": "Activate to gain cleaving Basic Attacks",
-          "fullTooltip": "Activate to cause the next <c val=\"bfd4fd\">4</c> Basic Attacks within <c val=\"bfd4fd\">10</c> seconds to cleave for <c val=\"bfd4fd\">30%</c> additional damage.",
+          "fullTooltip": "Activate to reset Imperius's Basic Attack cooldown and cause the next <c val=\"bfd4fd\">4</c> Basic Attacks within <c val=\"bfd4fd\">10</c> seconds to cleave for <c val=\"bfd4fd\">30%</c> additional damage.",
           "abilityType": "Active",
           "isActive": true,
           "sort": 3
@@ -22039,7 +22022,7 @@
           "name": "Molten Wrath",
           "icon": "storm_ui_icon_imperius_e.png",
           "shortTooltip": "Molten Armor always hits extra targets",
-          "fullTooltip": "Molten Armor always strikes <c val=\"bfd4fd\">2</c> additional targets, even if there are Heroes in range.",
+          "fullTooltip": "Molten Armor's radius is increased by <c val=\"bfd4fd\">25%</c>, and it always strikes <c val=\"bfd4fd\">2</c> additional targets, even if there are Heroes in range.",
           "abilityType": "E",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -23232,7 +23215,7 @@
           "name": "Extra Oomph",
           "icon": "storm_ui_icon_junkrat_rip_tire.png",
           "shortTooltip": "Increase RIP-Tire knockback, reduce cooldown",
-          "fullTooltip": "Increase RIP-Tire's knockback distance by <c val=\"bfd4fd\">50%</c>, and its cooldown is reduced by <c val=\"bfd4fd\">25</c> seconds for each enemy Hero hit.",
+          "fullTooltip": "Increase RIP-Tire's knockback distance by <c val=\"bfd4fd\">80%</c>, and its cooldown is reduced by <c val=\"bfd4fd\">25</c> seconds for each enemy Hero hit.",
           "abilityType": "Heroic",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -26268,7 +26251,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 25</s>",
           "cooldownTooltip": "Cooldown: 4 seconds",
           "shortTooltip": "Heal a nearby ally",
-          "fullTooltip": "Heal the lowest Health allied Hero within <c val=\"bfd4fd\">6</c> range for <c val=\"bfd4fd\">175~~0.04~~</c> Health.",
+          "fullTooltip": "Heal the lowest Health allied Hero within <c val=\"bfd4fd\">6</c> range for <c val=\"bfd4fd\">210~~0.04~~</c> Health.",
           "abilityType": "Q"
         },
         {
@@ -26482,7 +26465,7 @@
           "name": "Surging Winds",
           "icon": "storm_ui_icon_lili_blindingwind.png",
           "shortTooltip": "Gain Spell Power from Blinding Wind",
-          "fullTooltip": "If Blinding Wind hits <c val=\"bfd4fd\">2</c> Heroes, its cooldown is reduced by <c val=\"bfd4fd\">2</c> seconds and Li Li gains <c val=\"bfd4fd\">10%</c> Spell Power for <c val=\"bfd4fd\">10</c> seconds.",
+          "fullTooltip": "If Blinding Wind targets <c val=\"bfd4fd\">2</c> or more Heroes, its cooldown is instantly reduced by <c val=\"bfd4fd\">2</c> seconds and Li Li gains <c val=\"bfd4fd\">10%</c> Spell Power for <c val=\"bfd4fd\">10</c> seconds.",
           "abilityType": "E",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -26526,7 +26509,7 @@
           "name": "Mass Vortex",
           "icon": "storm_ui_icon_lili_blindingwind.png",
           "shortTooltip": "Blinding Wind hits more targets",
-          "fullTooltip": "Increase the number of enemies hit by Blinding Wind from <c val=\"bfd4fd\">2</c> to <c val=\"bfd4fd\">3</c>. Blinding Wind deals <c val=\"bfd4fd\">75%</c> additional damage if all <c val=\"bfd4fd\">3</c> enemies hit are Heroes.",
+          "fullTooltip": "Increase the number of enemies hit by Blinding Wind from <c val=\"bfd4fd\">2</c> to <c val=\"bfd4fd\">3</c>. Blinding Wind deals <c val=\"bfd4fd\">75%</c> more damage when it targets <c val=\"bfd4fd\">3</c> Heroes.",
           "abilityType": "E",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -28205,7 +28188,7 @@
           "name": "Subwoofer",
           "icon": "storm_ui_icon_lucio_soundwave.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Empower Soundwave",
-          "fullTooltip": "Enemies within the first half of Soundwave's range are knocked back <c val=\"bfd4fd\">75%</c> further.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Hit <c val=\"bfd4fd\">3</c> enemy Heroes with a single Soundwave.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> Increase Soundwave's arc by <c val=\"bfd4fd\">50%</c> and its range by <c val=\"bfd4fd\">20%</c>.",
+          "fullTooltip": "Enemies within the first half of Soundwave's range are knocked back <c val=\"bfd4fd\">-100%</c> further.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Hit <c val=\"bfd4fd\">3</c> enemy Heroes with a single Soundwave.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> Increase Soundwave's arc by <c val=\"bfd4fd\">50%</c> and its range by <c val=\"bfd4fd\">20%</c>.",
           "abilityType": "Q",
           "isQuest": true,
           "sort": 1,
@@ -28391,7 +28374,7 @@
           "name": "Up To Eleven",
           "icon": "storm_ui_icon_lucio_ampitup_a.png",
           "shortTooltip": "Increase Amp It Up duration",
-          "fullTooltip": "Hitting an enemy Hero with Soundwave or Push Off increases the duration of Amp It Up.<n/><n/>Soundwave grants <c val=\"bfd4fd\">0.25</c> seconds and Push Off grants <c val=\"bfd4fd\">0.5</c> seconds. If Amp It Up is not active, these bonuses are granted to its next activation, up to <c val=\"bfd4fd\">1.5</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Increase the duration of Amp It Up by <c val=\"bfd4fd\">1</c> second.",
+          "fullTooltip": "Hitting an enemy Hero with Soundwave or Push Off increases the duration of Amp It Up.<n/><n/>Soundwave grants <c val=\"bfd4fd\">0.5</c> seconds and Push Off grants <c val=\"bfd4fd\">1</c> second. If Amp It Up is not active, these bonuses are granted to its next activation, up to <c val=\"bfd4fd\">3</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Increase the duration of Amp It Up by <c val=\"bfd4fd\">1</c> second.",
           "abilityType": "E",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -31184,7 +31167,7 @@
           "name": "EMP Grenade",
           "icon": "storm_ui_icon_medic_displacementgrenade.png",
           "shortTooltip": "Displacement Grenade deals more damage to Shields",
-          "fullTooltip": "Displacement Grenade deals an additional <c val=\"bfd4fd\">96~~0.04~~</c> damage over <c val=\"bfd4fd\">2</c> seconds, and up to <c val=\"bfd4fd\">400~~0.04~~</c> bonus damage to Shields.",
+          "fullTooltip": "Displacement Grenade deals an additional <c val=\"bfd4fd\">96~~0.04~~</c> damage over <c val=\"bfd4fd\">2</c> seconds, and up to <c val=\"bfd4fd\">400~~0.04~~</c> bonus damage to Heroes' Shields.",
           "abilityType": "E",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -34517,8 +34500,8 @@
           "buttonId": "MurkyFishEye",
           "name": "Fish Eye",
           "icon": "storm_ui_icon_murky_trait_spawnegg.png",
-          "shortTooltip": "Egg sees further, detects Stealth",
-          "fullTooltip": "Egg's Health is increased by <c val=\"bfd4fd\">100%</c>, its sight radius is increased by <c val=\"bfd4fd\">300%</c> and it can see Stealthed enemies. <n/><n/><c val=\"00ff90\">Passive:</c> Spawning from his Egg increases Murky's mount speed to <c val=\"bfd4fd\">45%</c> for <c val=\"bfd4fd\">5</c> seconds.",
+          "shortTooltip": "Egg reveals large area, increased Health",
+          "fullTooltip": "Spawning from his Egg increases Murky's mount speed to <c val=\"bfd4fd\">45%</c> for <c val=\"bfd4fd\">5</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Increase the Egg's Health and Shields by <c val=\"bfd4fd\">100%</c>, its sight radius by <c val=\"bfd4fd\">300%</c>, and it reveals all enemies in its sight radius.",
           "abilityType": "Trait",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -43630,7 +43613,8 @@
     "skins": [
       "ThrallUltimate",
       "ThrallHellhammer",
-      "ThrallEarthbreaker"
+      "ThrallEarthbreaker",
+      "ThrallToon20"
     ],
     "variationSkins": [
       "ThrallSilver",
@@ -44072,7 +44056,7 @@
             "recastCooldown": 0.5
           },
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Hit Heroes to make Chain Lightning Slow",
-          "fullTooltip": "Chain Lightning Slows targets by <c val=\"bfd4fd\">8%</c> for <c val=\"bfd4fd\">2</c> seconds.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Targeting a Hero directly with Chain Lightning increases this Slow by <c val=\"bfd4fd\">8%</c>, up to an additional <c val=\"bfd4fd\">40%</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> While at a <c val=\"bfd4fd\">40%</c> bonus, Chain Lightning's damage is increased by <c val=\"bfd4fd\">25%</c>.<n/><n/>Bonuses are reset if Chain Lightning is used on the same Hero it was last used on, or if Thrall dies.",
+          "fullTooltip": "Chain Lightning Slows the primary target by <c val=\"bfd4fd\">8%</c> for <c val=\"bfd4fd\">2</c> seconds when used on Heroes.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Targeting a Hero directly with Chain Lightning increases this Slow by <c val=\"bfd4fd\">8%</c>, up to an additional <c val=\"bfd4fd\">40%</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> While at a <c val=\"bfd4fd\">40%</c> bonus, Chain Lightning's damage is increased by <c val=\"bfd4fd\">25%</c>.<n/><n/>Bonuses are reset if Chain Lightning is used on the same Hero it was last used on, or if Thrall dies.",
           "abilityType": "Q",
           "isQuest": true,
           "sort": 2,
@@ -44328,8 +44312,8 @@
           "name": "Grav-O-Bomb 3000",
           "icon": "storm_ui_icon_gazlowe_gravobomb.png",
           "cooldownTooltip": "Cooldown: 60 seconds",
-          "shortTooltip": "Pulls and damages enemies",
-          "fullTooltip": "After a <c val=\"bfd4fd\">1.5</c> second delay, pull enemies toward the center of an area and deal <c val=\"bfd4fd\">220~~0.04~~</c> damage. Basic Abilities deal <c val=\"bfd4fd\">30%</c> more damage for <c val=\"bfd4fd\">5</c> seconds after casting Grav-O-Bomb 3000.",
+          "shortTooltip": "Pulls, Stuns, and damages enemies",
+          "fullTooltip": "After a <c val=\"bfd4fd\">1.5</c> second delay, pull enemies toward the center of an area, dealing <c val=\"bfd4fd\">220~~0.04~~</c> damage and Stunning them for <c val=\"bfd4fd\">0.5</c> seconds. Basic Abilities deal <c val=\"bfd4fd\">30%</c> more damage for <c val=\"bfd4fd\">5</c> seconds after casting Grav-O-Bomb 3000.",
           "abilityType": "Heroic"
         }
       ],
@@ -44581,8 +44565,8 @@
           "name": "Grav-O-Bomb 3000",
           "icon": "storm_ui_icon_gazlowe_gravobomb.png",
           "cooldownTooltip": "Cooldown: 60 seconds",
-          "shortTooltip": "Pulls and damages enemies",
-          "fullTooltip": "After a <c val=\"bfd4fd\">1.5</c> second delay, pull enemies toward the center of an area and deal <c val=\"bfd4fd\">220~~0.04~~</c> damage. Basic Abilities deal <c val=\"bfd4fd\">30%</c> more damage for <c val=\"bfd4fd\">5</c> seconds after casting Grav-O-Bomb 3000.",
+          "shortTooltip": "Pulls, Stuns, and damages enemies",
+          "fullTooltip": "After a <c val=\"bfd4fd\">1.5</c> second delay, pull enemies toward the center of an area, dealing <c val=\"bfd4fd\">220~~0.04~~</c> damage and Stunning them for <c val=\"bfd4fd\">0.5</c> seconds. Basic Abilities deal <c val=\"bfd4fd\">30%</c> more damage for <c val=\"bfd4fd\">5</c> seconds after casting Grav-O-Bomb 3000.",
           "abilityType": "Heroic",
           "isActive": true,
           "sort": 2,
@@ -46099,7 +46083,7 @@
       "amount": 2517.0,
       "scale": 0.04,
       "type": "Health",
-      "regenRate": 5.2382,
+      "regenRate": 5.24375,
       "regenScale": 0.04
     },
     "energy": {
@@ -46122,7 +46106,7 @@
         "nameId": "TyraelHeroWeapon",
         "range": 1.5,
         "period": 0.8,
-        "damage": 78.0,
+        "damage": 82.0,
         "damageScale": 0.04
       }
     ],
@@ -46159,7 +46143,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 45</s>",
           "cooldownTooltip": "Cooldown: 12 seconds",
           "shortTooltip": "Slow and damage enemies in an area. Use ability again to teleport to the area",
-          "fullTooltip": "Throw El'druin to the target area, dealing <c val=\"bfd4fd\">110~~0.04~~</c> damage to nearby enemies and Slowing them by <c val=\"bfd4fd\">25%</c> for <c val=\"bfd4fd\">2.5</c> seconds. It can be reactivated within <c val=\"bfd4fd\">5</c> seconds to teleport Tyrael to El'druin and Slow nearby enemies again.",
+          "fullTooltip": "Throw El'druin to the target area, dealing <c val=\"bfd4fd\">110~~0.04~~</c> damage to nearby enemies and Slowing them by <c val=\"bfd4fd\">30%</c> for <c val=\"bfd4fd\">2.5</c> seconds. It can be reactivated within <c val=\"bfd4fd\">5</c> seconds to teleport Tyrael to El'druin and Slow nearby enemies again.",
           "abilityType": "Q"
         },
         {
@@ -46170,7 +46154,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 45</s>",
           "cooldownTooltip": "Cooldown: 9 seconds",
           "shortTooltip": "Gain a temporary Shield",
-          "fullTooltip": "Shields Tyrael for <c val=\"bfd4fd\">336~~0.04~~</c> damage and nearby allied Heroes and Minions for <c val=\"bfd4fd\">40%</c> as much for <c val=\"bfd4fd\">4</c> seconds.",
+          "fullTooltip": "Shields Tyrael for <c val=\"bfd4fd\">350~~0.04~~</c> damage and nearby allied Heroes and Minions for <c val=\"bfd4fd\">40%</c> as much for <c val=\"bfd4fd\">4</c> seconds.",
           "abilityType": "W"
         },
         {
@@ -46181,7 +46165,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 45</s>",
           "cooldownTooltip": "Cooldown: 6 seconds",
           "shortTooltip": "Damage an area and speed up nearby allies",
-          "fullTooltip": "Rake target area for <c val=\"bfd4fd\">150~~0.04~~</c> damage. Allies moving through the targeted area gain <c val=\"bfd4fd\">25%</c> increased Movement Speed for <c val=\"bfd4fd\">2</c> seconds.",
+          "fullTooltip": "Rake target area, dealing <c val=\"bfd4fd\">150~~0.04~~</c> damage. For the next <c val=\"bfd4fd\">3</c> seconds, allies moving through the targeted area gain <c val=\"bfd4fd\">25%</c> increased Movement Speed for <c val=\"bfd4fd\">2</c> seconds.",
           "abilityType": "E"
         }
       ],
@@ -46301,8 +46285,22 @@
               "name": "El'druin's Flash",
               "icon": "storm_ui_icon_tyrael_eldruinsmight_b.png",
               "toggleCooldown": 0.5,
-              "fullTooltip": "Teleport to El'druin, slowing nearby enemies by <c val=\"bfd4fd\">25%</c> for <c val=\"bfd4fd\">2</c> seconds.",
+              "fullTooltip": "Teleport to El'druin, slowing nearby enemies by <c val=\"bfd4fd\">30%</c> for <c val=\"bfd4fd\">2</c> seconds.",
               "abilityType": "Q"
+            }
+          ]
+        },
+        "TyraelAspectofJustice|TyraelAspectofJusticeTalent": {
+          "trait": [
+            {
+              "nameId": "TyraelAspectofJustice",
+              "buttonId": "TyraelArchangelsWrathActive",
+              "name": "Archangel's Wrath",
+              "icon": "storm_ui_icon_tyrael_archangelswrath.png",
+              "cooldownTooltip": "Cooldown: 90 seconds",
+              "shortTooltip": "Upon dying, become invulnerable and explode",
+              "fullTooltip": "Upon dying, become Invulnerable and gain <c val=\"bfd4fd\">20%</c> Movement Speed for <c val=\"bfd4fd\">4</c> seconds. Upon expiration, explode, dealing <c val=\"bfd4fd\">450~~0.04~~</c> damage and reducing Tyrael's death timer by <c val=\"bfd4fd\">10%</c> per enemy Hero hit.<n/><n>Archangel's Wrath reduces nearby enemy Heroes' damage by </n><n/><c val=\"bfd4fd\">50%</c><n> while active and for </n><n/><c val=\"bfd4fd\">3</c> seconds when it expires.",
+              "abilityType": "Trait"
             }
           ]
         }
@@ -46316,7 +46314,7 @@
           "name": "Salvation",
           "icon": "storm_ui_icon_tyrael_righteousness.png",
           "shortTooltip": "Empower Righteousness, heal if Shield destroyed",
-          "fullTooltip": "Increase the Shield amount Tyrael gains from Righteousness by <c val=\"bfd4fd\">40%</c> and heal Tyrael for <c val=\"bfd4fd\">140~~0.04~~</c> Health if his Shield is destroyed. Does not increase the Shield amount gained by allies.",
+          "fullTooltip": "Increase the Shield amount Tyrael gains from Righteousness by <c val=\"bfd4fd\">35%</c> and heal Tyrael for <c val=\"bfd4fd\">150~~0.04~~</c> Health if his Shield is destroyed. Does not increase the Shield amount gained by allies.",
           "abilityType": "W",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -46364,17 +46362,16 @@
           ]
         },
         {
-          "nameId": "TyraelElDruinsMightBoundByLaw",
-          "buttonId": "TyraelElDruinsMightBoundByLawTalent",
-          "name": "Bound by Law",
-          "icon": "storm_ui_icon_tyrael_eldruinsmight_b.png",
-          "shortTooltip": "El'druin's Might Heals, increase Slow duration",
-          "fullTooltip": "Heroes hit by El'druin's Might heal Tyrael for <c val=\"bfd4fd\">3%</c> of his maximum Health. Tyrael's Basic Attacks against enemies Slowed by El'druin's Might increase the Slow duration by <c val=\"bfd4fd\">1</c> second, up to <c val=\"bfd4fd\">4</c> seconds.",
-          "abilityType": "Q",
+          "nameId": "TyraelMasteryRighteousnessReciprocate",
+          "buttonId": "TyraelRighteousnessReciprocateTalent",
+          "name": "Reciprocate",
+          "icon": "storm_ui_icon_tyrael_righteousness.png",
+          "shortTooltip": "Righteousness Shield explodes, can heal Tyrael",
+          "fullTooltip": "When Tyrael's Shield from Righteousness expires or is destroyed, it deals <c val=\"bfd4fd\">190~~0.04~~</c> damage to nearby Heroes and Summons.<n/><n/>For each enemy Hero damaged by Reciprocate or El'Druin's Might, Tyreal heals for <c val=\"bfd4fd\">3%</c> of his maximum Health.",
+          "abilityType": "W",
           "sort": 2,
           "abilityTalentLinkIds": [
-            "ElDruinsMightEldruinsFlash",
-            "TyraelElDruinsMight"
+            "TyraelRighteousness"
           ]
         },
         {
@@ -46393,16 +46390,17 @@
       ],
       "level7": [
         {
-          "nameId": "TyraelMasteryRighteousnessReciprocate",
-          "buttonId": "TyraelRighteousnessReciprocateTalent",
-          "name": "Reciprocate",
-          "icon": "storm_ui_icon_tyrael_righteousness.png",
-          "shortTooltip": "Righteousness Shield explodes",
-          "fullTooltip": "When Tyrael's Shield from Righteousness expires or is destroyed, it deals <c val=\"bfd4fd\">190~~0.04~~</c> damage to nearby enemies.",
-          "abilityType": "W",
+          "nameId": "TyraelBurningHalo",
+          "buttonId": "TyraelBurningHalo",
+          "name": "Burning Halo",
+          "icon": "storm_ui_icon_talent_burningrage.png",
+          "shortTooltip": "El'druin and Tyrael damage nearby enemies",
+          "fullTooltip": "Both Tyrael and El'druin deal <c val=\"bfd4fd\">15~~0.04~~</c> damage per second to nearby enemies. Teleporting increases this damage from Tyrael by <c val=\"bfd4fd\">125%</c> for <c val=\"bfd4fd\">2</c> seconds.",
+          "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
-            "TyraelRighteousness"
+            "ElDruinsMightEldruinsFlash",
+            "TyraelElDruinsMight"
           ]
         },
         {
@@ -46512,12 +46510,12 @@
       ],
       "level16": [
         {
-          "nameId": "TyraelHoradricReforging",
-          "buttonId": "TyraelElDruinsMightHoradricReforgingTalent",
-          "name": "Horadric Reforging",
-          "icon": "storm_ui_icon_talent_autoattack_cooldown.png",
-          "shortTooltip": "Basic Attacks reduce El'druin's Might cooldown",
-          "fullTooltip": "Tyrael's Basic Attacks reduce the cooldown of El'druin's Might by <c val=\"bfd4fd\">2</c> seconds.",
+          "nameId": "TyraelElDruinsMightBoundByLaw",
+          "buttonId": "TyraelElDruinsMightBoundByLawTalent",
+          "name": "Bound by Law",
+          "icon": "storm_ui_icon_tyrael_eldruinsmight_a.png",
+          "shortTooltip": "El'druin's Might Slows more initially",
+          "fullTooltip": "El'Druin's Might's Slow is increased to <c val=\"bfd4fd\">65%</c> for <c val=\"bfd4fd\">1</c> second, decaying to <c val=\"bfd4fd\">30%</c> over the remaining duration.",
           "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -46526,12 +46524,12 @@
           ]
         },
         {
-          "nameId": "TyraelBurningHalo",
-          "buttonId": "TyraelBurningHalo",
-          "name": "Burning Halo",
-          "icon": "storm_ui_icon_talent_burningrage.png",
-          "shortTooltip": "El'druin and Tyrael damage nearby enemies",
-          "fullTooltip": "Both Tyrael and El'druin deal <c val=\"bfd4fd\">18~~0.04~~</c> damage per second to nearby enemies. Teleporting increases this damage from Tyrael by <c val=\"bfd4fd\">150%</c> for <c val=\"bfd4fd\">2</c> seconds.",
+          "nameId": "TyraelHoradricReforging",
+          "buttonId": "TyraelElDruinsMightHoradricReforgingTalent",
+          "name": "Horadric Reforging",
+          "icon": "storm_ui_icon_talent_autoattack_cooldown.png",
+          "shortTooltip": "Basic Attacks reduce El'druin's Might cooldown",
+          "fullTooltip": "Tyrael's Basic Attacks reduce the cooldown of El'druin's Might by <c val=\"bfd4fd\">2</c> seconds.",
           "abilityType": "Q",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -46607,6 +46605,21 @@
           "abilityType": "Active",
           "isActive": true,
           "sort": 4
+        },
+        {
+          "nameId": "TyraelAspectofJustice",
+          "buttonId": "TyraelAspectofJusticeTalent",
+          "name": "Aspect of Justice",
+          "icon": "storm_ui_icon_tyrael_archangelswrath.png",
+          "cooldownTooltip": "Cooldown: 90 seconds",
+          "shortTooltip": "Enter Archangel's Wrath",
+          "fullTooltip": "After <c val=\"bfd4fd\">1.5</c> seconds, gain the effects of Archangel's Wrath without dying. Cooldown is reduced by <c val=\"bfd4fd\">10%</c> for each enemy Hero hit by the explosion.",
+          "abilityType": "Trait",
+          "isActive": true,
+          "sort": 5,
+          "abilityTalentLinkIds": [
+            "TyraelArchangelsWrathDummy"
+          ]
         }
       ]
     }
@@ -50679,7 +50692,7 @@
           "name": "Repulsion",
           "icon": "storm_ui_icon_wizard_waveofforce.png",
           "shortTooltip": "Increases cast range and knockback distance",
-          "fullTooltip": "Increases Wave of Force knockback distance by <c val=\"bfd4fd\">150%</c> and increases its cast range by <c val=\"bfd4fd\">100%</c>.",
+          "fullTooltip": "Increases Wave of Force knockback distance by <c val=\"bfd4fd\">175%</c> and increases its cast range by <c val=\"bfd4fd\">100%</c>.",
           "abilityType": "Heroic",
           "sort": 2,
           "abilityTalentLinkIds": [
