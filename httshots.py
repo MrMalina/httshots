@@ -27,12 +27,12 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "1.3.2"
+pkg_version = "1.3.2b"
 pkg_author = "MrMalina"
 
 # initialization of constant
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
-HOTS_VERSION = "94714"
+HOTS_VERSION = "95213"
 
 # Declaration global variables
 stream_replays = []
@@ -210,6 +210,8 @@ def load(argv:list) -> None:
     fonts.add('big', ImageFont.truetype(ascii_ttf, 46))
     fonts.add('ch_small', ImageFont.truetype(chinese_ttf, 12))
     fonts.add('ch_default', ImageFont.truetype(chinese_ttf, 16))
+
+    # return
 
     # Image upload format
     if config.image_upload == 1:
