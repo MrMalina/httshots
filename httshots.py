@@ -27,12 +27,12 @@ from . import addons, bot, parser, visual
 # >> GLOBAL VARIABLES
 # ======================================================================
 pkg_name = "HTTSHoTS"
-pkg_version = "1.3.2b"
+pkg_version = "1.3.2c"
 pkg_author = "MrMalina"
 
 # initialization of constant
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
-HOTS_VERSION = "95213"
+HOTS_VERSION = "95301"
 
 # Declaration global variables
 stream_replays = []

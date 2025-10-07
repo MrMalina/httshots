@@ -150,7 +150,7 @@
           "icon": "storm_ui_icon_abathur_spawnlocust.png",
           "cooldownTooltip": "Cooldown: 15 seconds",
           "shortTooltip": "Spawn locusts that attack down the nearest lane",
-          "fullTooltip": "Spawns a Locust to attack down the nearest lane every <c val=\"bfd4fd\">15</c> seconds. Locusts last for <c val=\"bfd4fd\">16</c> seconds, have <c val=\"bfd4fd\">350~~0.04~~</c> health and deal <c val=\"bfd4fd\">46~~0.04~~</c> damage with each Basic Attack, dealing <c val=\"bfd4fd\">25%</c> bonus damage to enemy Structures.",
+          "fullTooltip": "Spawns a Locust to attack down the nearest lane every <c val=\"bfd4fd\">15</c> seconds. Locusts last for <c val=\"bfd4fd\">16</c> seconds, have <c val=\"bfd4fd\">350~~0.04~~</c> health and deal <c val=\"bfd4fd\">58~~0.04~~</c> damage with each Basic Attack, dealing <c val=\"bfd4fd\">25%</c> bonus damage to enemy Structures.",
           "abilityType": "Trait",
           "isActive": false
         }
@@ -6591,9 +6591,10 @@
           "buttonId": "AzmodanPride",
           "name": "Pride",
           "icon": "storm_ui_icon_azmodan_globeofannihilation.png",
-          "shortTooltip": "Max Annihilation empowers Globe",
-          "fullTooltip": "After gaining <c val=\"bfd4fd\">400</c> Annihilation, the area of Globe of Annihilation is increased by <c val=\"bfd4fd\">15%</c> and it deals <c val=\"bfd4fd\">125</c> additional damage.",
+          "shortTooltip": "<c val=\"e4b800\">Quest:</c> Max Annihilation empowers Globe",
+          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Gain <c val=\"bfd4fd\">400</c> stacks of Annihilation.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After gaining <c val=\"bfd4fd\">400</c> Annihilation, the area of Globe of Annihilation is increased by <c val=\"bfd4fd\">15%</c> and it deals <c val=\"bfd4fd\">125</c> additional damage.",
           "abilityType": "Q",
+          "isQuest": true,
           "sort": 3,
           "abilityTalentLinkIds": [
             "AzmodanGlobeOfAnnihilation"
@@ -11722,9 +11723,9 @@
           "buttonId": "DehakaBrushstalker",
           "name": "Brushstalker",
           "icon": "storm_ui_icon_dehaka_mount.png",
-          "cooldownTooltip": "Cooldown: 75 seconds",
+          "cooldownTooltip": "Cooldown: 240 seconds",
           "shortTooltip": "Burrow to a bush on the Battleground.",
-          "fullTooltip": "Activate to burrow to a bush on the Battleground.<n/><n/><c val=\"00ff90\">Passive:</c> Gain <c val=\"bfd4fd\">20%</c> movement speed while in a bush and for <c val=\"bfd4fd\">2</c> seconds after leaving.",
+          "fullTooltip": "Activate to burrow to a bush on the Battleground.<n/><n/><c val=\"00ff90\">Passive:</c> Gain <c val=\"bfd4fd\">20%</c> movement speed while in a bush and for <c val=\"bfd4fd\">2</c> seconds after leaving. <n/><n/><c val=\"00ff90\">Passive:</c> Gathering a Regeneration Globe reduces the cooldown of Brushstalker by <c val=\"bfd4fd\">40</c> seconds.",
           "abilityType": "Z"
         }
       ],
@@ -12098,7 +12099,7 @@
           "name": "Apex Predator",
           "icon": "storm_ui_icon_dehaka_brushstalker.png",
           "shortTooltip": "Reduced Brushstalker cooldown, cast time",
-          "fullTooltip": "Reduces Brushstalker's cooldown by <c val=\"bfd4fd\">50</c> seconds and the cast time by <c val=\"bfd4fd\">0.5</c> seconds.",
+          "fullTooltip": "Reduces Brushstalker's cooldown by <c val=\"bfd4fd\">0##ERROR##</c> seconds and the cast time by <c val=\"bfd4fd\">0.5</c> seconds.",
           "abilityType": "Z",
           "sort": 4,
           "abilityTalentLinkIds": [
@@ -12288,7 +12289,7 @@
           "name": "Hatred",
           "icon": "storm_ui_icon_valla_hatred.png",
           "shortTooltip": "Basic Attacks grant bonus Attack Damage and Move Speed temporarily",
-          "fullTooltip": "Basic Attacks grant a stack of Hatred, up to <c val=\"bfd4fd\">10</c>. Each Hatred stack increases Basic Attack damage by <c val=\"bfd4fd\">8%</c> and Movement Speed by <c val=\"bfd4fd\">1%</c>. Lasts <c val=\"bfd4fd\">5</c> seconds.",
+          "fullTooltip": "Basic Attacks grant a stack of Hatred, up to <c val=\"bfd4fd\">10</c>. Each Hatred stack increases Basic Attack damage by <c val=\"bfd4fd\">0%</c> and Movement Speed by <c val=\"bfd4fd\">0%</c>. Lasts <c val=\"bfd4fd\">5</c> seconds.",
           "abilityType": "Trait",
           "isActive": false,
           "isPassive": true
@@ -12489,7 +12490,7 @@
           "name": "Hot Pursuit",
           "icon": "storm_ui_icon_valla_hatred.png",
           "shortTooltip": "Increase Hatred Move Speed bonus",
-          "fullTooltip": "Increase the Movement Speed bonus of each stack of Hatred to <c val=\"bfd4fd\">2%</c>.",
+          "fullTooltip": "Increase the Movement Speed bonus of each stack of Hatred to <c val=\"bfd4fd\">1%</c>.",
           "abilityType": "Trait",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -15080,7 +15081,7 @@
           "name": "Pixie Boost",
           "icon": "storm_ui_icon_brightwing_pixiedust.png",
           "shortTooltip": "Pixie Dust grants an additional burst of speed",
-          "fullTooltip": "Pixie Dust gives <c val=\"bfd4fd\">50%</c> bonus Movement Speed, decaying to <c val=\"bfd4fd\">20%</c> over <c val=\"bfd4fd\">3</c> seconds.",
+          "fullTooltip": "Increase Pixie Dust's Movement Speed bonus to <c val=\"bfd4fd\">50%</c>, decaying to <c val=\"bfd4fd\">20%</c> over <c val=\"bfd4fd\">3</c> seconds.",
           "abilityType": "E",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -23517,10 +23518,17 @@
         "KaelthasPhoenix|KaelthasPhoenix|Heroic": {
           "heroic": [
             {
-              "nameId": "KaelthasPhoenixRetarget",
+              "nameId": "KaelthasPhoenixRetargetPhoenixAbility",
               "buttonId": "KaelthasPhoenixRetarget",
               "name": "Phoenix Retarget",
               "icon": "storm_ui_icon_kaelthas_phoenix_retarget.png",
+              "charges": {
+                "countMax": 3,
+                "countUse": 1,
+                "countStart": 3,
+                "hideCount": false,
+                "recastCooldown": 1.0
+              },
               "fullTooltip": "Send the Phoenix to a different area.",
               "abilityType": "Heroic"
             }
@@ -23658,7 +23666,7 @@
           "name": "Sun King's Fury",
           "icon": "storm_ui_icon_kaelthas_livingbomb.png",
           "shortTooltip": "Living Bomb deals more damage after spreading",
-          "fullTooltip": "Living Bombs that spread to enemy Heroes deal <c val=\"bfd4fd\">35%</c> more damage.",
+          "fullTooltip": "Living Bombs that have spread to enemy Heroes deal <c val=\"bfd4fd\">35%</c> more damage.",
           "abilityType": "W",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -23818,7 +23826,7 @@
           "name": "Rebirth",
           "icon": "storm_ui_icon_kaelthas_phoenix.png",
           "shortTooltip": "Increases Phoenix duration and may retarget",
-          "fullTooltip": "Increases Phoenix duration by <c val=\"bfd4fd\">100%</c>. While alive, the Phoenix may be ordered to move to a different location.",
+          "fullTooltip": "Increases Phoenix duration by <c val=\"bfd4fd\">100%</c>. While alive, the Phoenix may be ordered to move to a different location. Stores <c val=\"bfd4fd\">3</c> charges.",
           "abilityType": "Heroic",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -26030,7 +26038,7 @@
           "name": "Spectral Leech",
           "icon": "storm_ui_icon_talent_autoattack_heal.png",
           "shortTooltip": "Basic Attacks deal extra damage and heal",
-          "fullTooltip": "Basic Attacks against enemy Heroes deal bonus damage equal to <c val=\"bfd4fd\">2.5%</c> of the Hero's maximum Health and heal Leoric for twice that amount.",
+          "fullTooltip": "Basic Attacks against enemy Heroes deal bonus damage to the primary target damage equal <c val=\"bfd4fd\">2.5%</c> of the Hero's maximum Health and heal Leoric for <c val=\"bfd4fd\">200%</c> of the bonus damage dealt.",
           "abilityType": "Passive",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -26893,7 +26901,7 @@
           "name": "Select Baleog",
           "icon": "storm_ui_icon_lostvikings_selectbaleog.png",
           "shortTooltip": "<c val=\"bfd4fd\">Baleog</c> deals splash damage to enemies behind his attack target",
-          "fullTooltip": "Baleog's Basic Attacks deal <c val=\"bfd4fd\">50%</c> splash damage to enemies behind his attack target.",
+          "fullTooltip": "Baleog's Basic Attacks deal <c val=\"bfd4fd\">50%</c> damage to enemies behind his attack target.",
           "abilityType": "Active"
         },
         {
@@ -26981,7 +26989,7 @@
           "name": "Explosive Attacks",
           "icon": "storm_ui_icon_lostvikings_selectbaleog.png",
           "shortTooltip": "Increases Baleog splash to non-Heroic enemies",
-          "fullTooltip": "Increases Baleog's splash damage against non-Heroes to <c val=\"bfd4fd\">100%</c>.",
+          "fullTooltip": "Baleog's Basic Attack splash damage against non-Heroes is no longer reduced by <c val=\"bfd4fd\">50%</c>.",
           "abilityType": "Passive",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -27183,7 +27191,7 @@
           "name": "Impatience Is a Virtue",
           "icon": "storm_ui_icon_talent_autoattack_cooldown.png",
           "shortTooltip": "Vikings' attacks reduce cooldowns of all Vikings",
-          "fullTooltip": "Enemies damaged by a Viking's Basic Attack reduce the cooldown of all Viking Abilities by <c val=\"bfd4fd\">0.31</c> seconds.",
+          "fullTooltip": "Enemies damaged by a Viking's Basic Attack reduce the cooldown of all Viking Abilities by <c val=\"bfd4fd\">0.3125</c> seconds.",
           "abilityType": "Passive",
           "sort": 2
         },
@@ -27424,7 +27432,7 @@
                 "name": "Select Baleog",
                 "icon": "storm_ui_icon_lostvikings_selectbaleog.png",
                 "shortTooltip": "<c val=\"bfd4fd\">Baleog</c> deals splash damage to enemies behind his attack target",
-                "fullTooltip": "Baleog's Basic Attacks deal <c val=\"bfd4fd\">50%</c> splash damage to enemies behind his attack target.",
+                "fullTooltip": "Baleog's Basic Attacks deal <c val=\"bfd4fd\">50%</c> damage to enemies behind his attack target.",
                 "abilityType": "Active"
               },
               {
@@ -27495,7 +27503,7 @@
           "innerRadius": 0.5,
           "radius": 0.5,
           "sight": 13.0,
-          "speed": 5.56577,
+          "speed": 4.8398,
           "scalingLinkId": "HeroDummyVeterancy",
           "descriptors": [
             "Escaper",
@@ -28145,8 +28153,8 @@
           "name": "Party Mix",
           "icon": "storm_ui_icon_lucio_crossfade_all.png",
           "toggleCooldown": 0.5,
-          "shortTooltip": "<c val=\"e4b800\">Quest:</c> Increase Crossfade range, max Mana",
-          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Play Lúcio's Crossfade tracks to nearby allies. Multiple allies provide additional time.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> For every <c val=\"bfd4fd\">1</c> Minute played, permanently increase Lucio's maximum Mana by <c val=\"bfd4fd\">10</c>. <n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> Once you have played for <c val=\"bfd4fd\">8</c> minutes or more, permanently increase Crossfade's range by <c val=\"bfd4fd\">20%</c>.",
+          "shortTooltip": "<c val=\"e4b800\">Quest:</c> Increase Crossfade radius, max Mana",
+          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Play Lúcio's Crossfade tracks to nearby allies. Multiple allies provide additional time.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> For every <c val=\"bfd4fd\">1</c> Minute played, permanently increase Lúcio's maximum Mana by <c val=\"bfd4fd\">10</c>. <n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> Once you have played for <c val=\"bfd4fd\">8</c> minutes or more, permanently increase Crossfade's range by <c val=\"bfd4fd\">140%</c>.",
           "abilityType": "W",
           "isQuest": true,
           "sort": 1,
@@ -28188,7 +28196,7 @@
           "name": "Subwoofer",
           "icon": "storm_ui_icon_lucio_soundwave.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Empower Soundwave",
-          "fullTooltip": "Enemies within the first half of Soundwave's range are knocked back <c val=\"bfd4fd\">-100%</c> further.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Hit <c val=\"bfd4fd\">3</c> enemy Heroes with a single Soundwave.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> Increase Soundwave's arc by <c val=\"bfd4fd\">50%</c> and its range by <c val=\"bfd4fd\">20%</c>.",
+          "fullTooltip": "Enemies within the first half of Soundwave's range are knocked back <c val=\"bfd4fd\">75%</c> further.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Hit <c val=\"bfd4fd\">3</c> enemy Heroes with a single Soundwave.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> Increase Soundwave's arc by <c val=\"bfd4fd\">50%</c> and its range by <c val=\"bfd4fd\">20%</c>.",
           "abilityType": "Q",
           "isQuest": true,
           "sort": 1,
@@ -28258,7 +28266,7 @@
           "icon": "storm_ui_icon_lucio_fineshrine.png",
           "cooldownTooltip": "Cooldown: 20 seconds",
           "shortTooltip": "Drop a boombox that plays Crossfade",
-          "fullTooltip": "Place a boombox that plays Lúcio's active Crossfade track. Its volume adjusts with Amp It Up. Allied Heroes near the boombox gain <c val=\"bfd4fd\">5</c> Armor.<n/><n/>Crossfade tracks do not stack.",
+          "fullTooltip": "Place a boombox that plays Lúcio's active Crossfade track. Its volume adjusts with Amp It Up. Allied Heroes near the boombox gain <c val=\"bfd4fd\">5</c> Armor.<n/><n/>Crossfade tracks from Lúcio and the Boombox do not stack.",
           "abilityType": "Active",
           "isActive": true,
           "sort": 3
@@ -31194,7 +31202,7 @@
           "name": "Bedside Manner",
           "icon": "storm_ui_icon_medic_displacementgrenade_c.png",
           "shortTooltip": "Displacement Grenade empowers Basic Attacks",
-          "fullTooltip": "Heroes hit by Displacement Grenade will take an additional <c val=\"bfd4fd\">6%</c> of maximum Health as damage from Lt. Morales's next Basic Attack against them.<n/><n/><c val=\"00ff90\">Passive:</c> Basic Attacks against Heroes deal an additional <c val=\"bfd4fd\">1%</c> of maximum Health as damage.",
+          "fullTooltip": "Basic Attacks against enemy Heroes deal bonus damage equal to <c val=\"bfd4fd\">1%</c> of their maximum Health. Hitting an enemy Hero with Displacement Grenade increases the next instance of this damage against them to <c val=\"bfd4fd\">6%</c> for <c val=\"bfd4fd\">6</c> seconds.",
           "abilityType": "E",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -33943,7 +33951,7 @@
           "name": "Perfect Storm",
           "icon": "storm_ui_icon_muradin_stormbolt.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Hitting Heroes empowers Storm Bolt",
-          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every time Muradin hits an enemy Hero with a Basic Attack, increase Storm Bolt's damage by <c val=\"bfd4fd\">0.75</c>. If an enemy Hero is killed within <c val=\"bfd4fd\">3</c> seconds of being hit by a Storm Bolt increase its damage by an additional <c val=\"bfd4fd\">10</c>.",
+          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Repeatable Quest:</c> Basic Attacks against enemy Heroes permanently increases Storm Bolt's damage by <c val=\"bfd4fd\">0.75</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Repeatable Quest:</c> If an enemy Hero is killed within <c val=\"bfd4fd\">3</c> seconds of being hit by a Storm Bolt, permanently increase its damage by <c val=\"bfd4fd\">10</c>.",
           "abilityType": "Q",
           "isQuest": true,
           "sort": 1,
@@ -38484,7 +38492,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 75</s>",
           "cooldownTooltip": "Cooldown: 45 seconds",
           "shortTooltip": "Activate to heal",
-          "fullTooltip": "Heal Raynor for <c val=\"bfd4fd\">25%</c> of his maximum Health over <c val=\"bfd4fd\">1</c> second. Raynor's Basic Attacks lower the cooldown of this by <c val=\"bfd4fd\">0.5</c> seconds, doubled against Heroes.",
+          "fullTooltip": "Heal Raynor for <c val=\"bfd4fd\">25%</c> of his maximum Health over <c val=\"bfd4fd\">1</c> second. Raynor's Basic Attacks reduce this cooldown by <c val=\"bfd4fd\">0.5</c> seconds, increased to <c val=\"bfd4fd\">1</c> second against Heroes.",
           "abilityType": "E"
         }
       ],
@@ -38724,7 +38732,7 @@
           "name": "Fuel The Rush",
           "icon": "storm_ui_icon_raynor_split_debilitatingrounds.png",
           "shortTooltip": "Increase Adrenaline Rush cooldown reduction",
-          "fullTooltip": "Reduce the Mana cost of Adrenaline Rush from <c val=\"bfd4fd\">75</c> to <c val=\"bfd4fd\">45</c>. While Inspire is active, increase Adrenaline Rush's cooldown reduction from Basic Attacks by <c val=\"bfd4fd\">300%</c>.",
+          "fullTooltip": "While Inspire is active, Adrenaline Rush's cooldown reduction from Basic Attacks is increased to <c val=\"bfd4fd\">2.25</c> seconds against non-Heroes, and to <c val=\"bfd4fd\">4.5</c> seconds against Heroes.<n/><n/><c val=\"00ff90\">Passive:</c> Reduce the Mana cost of Adrenaline Rush from <c val=\"bfd4fd\">75</c> to <c val=\"bfd4fd\">45</c>.",
           "abilityType": "Passive",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -38738,7 +38746,7 @@
           "name": "Unstable Compound",
           "icon": "storm_ui_icon_raynor_acquireweakspot.png",
           "shortTooltip": "Give 'Em Some Pepper area increased, reduces cooldowns",
-          "fullTooltip": "Increase the area of Give 'Em Some Pepper by <c val=\"bfd4fd\">15%</c>. Each enemy Hero hit by Give 'Em Some Pepper grants Raynor <c val=\"bfd4fd\">10</c> Mana and reduces the cooldown of Penetrating Round by <c val=\"bfd4fd\">1.5</c> seconds.",
+          "fullTooltip": "Increase the radius of Give 'Em Some Pepper by <c val=\"bfd4fd\">15%</c>. Each enemy Hero hit by Give 'Em Some Pepper grants Raynor <c val=\"bfd4fd\">10</c> Mana and reduces the cooldown of Penetrating Round by <c val=\"bfd4fd\">1.5</c> seconds.",
           "abilityType": "Trait",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -38813,7 +38821,7 @@
           "name": "Give Me More!",
           "icon": "storm_ui_icon_raynor_split_debilitatingrounds.png",
           "shortTooltip": "Empower Adrenaline Rush and Inspire",
-          "fullTooltip": "Increase Adrenaline Rush healing by <c val=\"bfd4fd\">50%</c>. While Inspire is active, gain <c val=\"bfd4fd\">1</c> Basic Attack range.",
+          "fullTooltip": "While Inspire is active, gain <c val=\"bfd4fd\">1</c> Basic Attack range.<n/><n/><c val=\"00ff90\">Passive:</c> Increase Adrenaline Rush duration by <c val=\"bfd4fd\">0.5</c> seconds, increasing the total amount healed by <c val=\"bfd4fd\">12.5%</c> of Raynor's maximum Health.",
           "abilityType": "E",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -41525,7 +41533,7 @@
           "name": "Playtime!",
           "icon": "storm_ui_icon_stitches_slam.png",
           "shortTooltip": "Basic Attacks reduce Slam cooldown",
-          "fullTooltip": "Basic Attacks reduce the cooldown of Slam by <c val=\"bfd4fd\">0.75</c> seconds and restores <c val=\"bfd4fd\">5</c> Mana. Hitting Heroes with the inner area of Slam reduces its cooldown by <c val=\"bfd4fd\">1.5</c> seconds.",
+          "fullTooltip": "Basic Attacks restore <c val=\"bfd4fd\">5</c> Mana and reduce Slam's cooldown by <c val=\"bfd4fd\">0.75</c> seconds.<n/><n/>For each enemy Hero hit by Slam's inner area, restore <c val=\"bfd4fd\">5</c> Mana and reduce its cooldown by <c val=\"bfd4fd\">1.5</c> seconds.",
           "abilityType": "W",
           "sort": 1,
           "abilityTalentLinkIds": [
@@ -43941,12 +43949,12 @@
           "sort": 2
         },
         {
-          "nameId": "GenericTalentFollowThrough",
-          "buttonId": "GenericFollowThroughTalent",
-          "name": "Follow Through",
+          "nameId": "ThrallElementalAssault",
+          "buttonId": "ThrallElementalAssault",
+          "name": "Elemental Assault",
           "icon": "storm_ui_icon_talent_autoattack_damage.png",
           "shortTooltip": "Abilities increase Basic Attack damage",
-          "fullTooltip": "After using an Ability, your next Basic Attack within <c val=\"bfd4fd\">6</c> seconds deals <c val=\"bfd4fd\">40%</c> additional damage.",
+          "fullTooltip": "After using an Ability, Thrall's next Basic Attack within <c val=\"bfd4fd\">4</c> seconds deals <c val=\"bfd4fd\">45%</c> more damage.",
           "abilityType": "Passive",
           "sort": 3
         }
@@ -45115,7 +45123,7 @@
           "name": "Focus Fire",
           "icon": "storm_ui_icon_tracer_reload_b.png",
           "shortTooltip": "Unloading a magazine on an enemy does bonus damage",
-          "fullTooltip": "If an entire ammo magazine is unloaded on an enemy, the last bullet will deal <c val=\"bfd4fd\">80~~0.04~~</c> bonus damage. This is equal to <c val=\"bfd4fd\">35%</c> of the total magazine.",
+          "fullTooltip": "If an entire ammo magazine is unloaded on an enemy within <c val=\"bfd4fd\">2</c> seconds, the last bullet will deal <c val=\"bfd4fd\">80~~0.04~~</c> bonus damage. This is equal to <c val=\"bfd4fd\">35%</c> of the total magazine.",
           "abilityType": "Trait",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -46367,7 +46375,7 @@
           "name": "Reciprocate",
           "icon": "storm_ui_icon_tyrael_righteousness.png",
           "shortTooltip": "Righteousness Shield explodes, can heal Tyrael",
-          "fullTooltip": "When Tyrael's Shield from Righteousness expires or is destroyed, it deals <c val=\"bfd4fd\">190~~0.04~~</c> damage to nearby Heroes and Summons.<n/><n/>For each enemy Hero damaged by Reciprocate or El'Druin's Might, Tyreal heals for <c val=\"bfd4fd\">3%</c> of his maximum Health.",
+          "fullTooltip": "When Tyrael's Shield from Righteousness expires or is destroyed, it deals <c val=\"bfd4fd\">190~~0.04~~</c> damage to nearby Heroes and Summons.<n/><n/>For each enemy Hero damaged by Reciprocate or El'Druin's Might, Tyrael heals for <c val=\"bfd4fd\">3%</c> of his maximum Health.",
           "abilityType": "W",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -47241,7 +47249,7 @@
       "amount": 1975.0,
       "scale": 0.04,
       "type": "Health",
-      "regenRate": 4.1093,
+      "regenRate": 4.114583333333333,
       "regenScale": 0.04
     },
     "energy": {
@@ -47424,21 +47432,6 @@
             }
           ]
         },
-        "UtherMasteryHolyShock|UtherHolyLightHolyShockTalent": {
-          "basic": [
-            {
-              "nameId": "UtherHolyShock",
-              "buttonId": "UtherHolyLight",
-              "name": "Holy Light",
-              "icon": "storm_ui_icon_uther_holylight.png",
-              "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 80</s>",
-              "cooldownTooltip": "Cooldown: 12 seconds",
-              "shortTooltip": "Heal an allied Hero and Uther",
-              "fullTooltip": "Heal target allied Hero for <c val=\"bfd4fd\">362~~0.04~~</c> Health. When used on a target other than Uther, also heal Uther for <c val=\"bfd4fd\">181~~0.04~~</c> Health.",
-              "abilityType": "Q"
-            }
-          ]
-        },
         "UtherEternalDevotion|UtherEternalDevotion|Trait": {
           "basic": [
             {
@@ -47463,13 +47456,12 @@
           "name": "Silver Touch",
           "icon": "storm_ui_icon_uther_holylight.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Mitigate damage to improve Holy Light",
-          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Reduce damage from Heroic sources with Devotion.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After reducing damage <c val=\"bfd4fd\">40</c> times, Holy Light's Mana cost is reduced from <c val=\"bfd4fd\">80</c> to <c val=\"bfd4fd\">60</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After reducing damage <c val=\"bfd4fd\">80</c> times, Holy Light's Mana cost is reduced to <c val=\"bfd4fd\">40</c>, and its range is increased by <c val=\"bfd4fd\">50%</c>.",
+          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Reduce damage from Heroic sources with Devotion.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After reducing damage <c val=\"bfd4fd\">40</c> times, Holy Light's Mana cost is reduced from <c val=\"bfd4fd\">80</c> to <c val=\"bfd4fd\">0##ERROR##</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After reducing damage <c val=\"bfd4fd\">80</c> times, Holy Light's Mana cost is reduced to <c val=\"bfd4fd\">0##ERROR##</c>, and its range is increased by <c val=\"bfd4fd\">50%</c>.",
           "abilityType": "Q",
           "isQuest": true,
           "sort": 1,
           "abilityTalentLinkIds": [
-            "UtherHolyLight",
-            "UtherHolyShock"
+            "UtherHolyLight"
           ]
         },
         {
@@ -47506,15 +47498,13 @@
           "nameId": "UtherMasteryHolyShock",
           "buttonId": "UtherHolyLightHolyShockTalent",
           "name": "Holy Shock",
-          "icon": "storm_ui_icon_uther_holylight.png",
-          "shortTooltip": "Holy Light can deal damage",
-          "fullTooltip": "Holy Light can be used on an enemy to do <c val=\"bfd4fd\">40%</c> of its healing amount as damage. When used this way, Uther receives its self-healing benefits, its cooldown is reduced by <c val=\"bfd4fd\">6</c> seconds, and it refunds <c val=\"bfd4fd\">45</c> Mana.",
-          "abilityType": "Q",
-          "sort": 1,
-          "abilityTalentLinkIds": [
-            "UtherHolyLight",
-            "UtherHolyShock"
-          ]
+          "icon": "storm_ui_icon_uther_holyshock.png",
+          "cooldownTooltip": "Cooldown: 6 seconds",
+          "shortTooltip": "Cast Holy Light on an enemy, dealing damage",
+          "fullTooltip": "Activate to deal <c val=\"bfd4fd\">145~~0.04~~</c> damage to the target enemy, and gain the self-healing benefits of Holy Light. Shares a cooldown with Holy Light.",
+          "abilityType": "Active",
+          "isActive": true,
+          "sort": 1
         },
         {
           "nameId": "UtherHammerOfJusticePursuitOfJustice",
@@ -47554,8 +47544,7 @@
           "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
-            "UtherHolyLight",
-            "UtherHolyShock"
+            "UtherHolyLight"
           ]
         },
         {
@@ -47629,8 +47618,7 @@
           "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
-            "UtherHolyLight",
-            "UtherHolyShock"
+            "UtherHolyLight"
           ]
         },
         {
@@ -47666,12 +47654,11 @@
           "name": "Beacon of Light",
           "icon": "storm_ui_icon_uther_holylight.png",
           "shortTooltip": "Increase Holy Light self-healing",
-          "fullTooltip": "Uther receives <c val=\"bfd4fd\">125%</c> bonus self-healing when targeting others with Holy Light.  This bonus is increased to <c val=\"bfd4fd\">250%</c> while he is below <c val=\"bfd4fd\">50%</c> Health.",
+          "fullTooltip": "Uther receives <c val=\"bfd4fd\">125%</c> bonus self-healing when targeting others with Holy Light. This bonus is increased to <c val=\"bfd4fd\">250%</c> while he is below <c val=\"bfd4fd\">50%</c> Health.",
           "abilityType": "Q",
           "sort": 1,
           "abilityTalentLinkIds": [
-            "UtherHolyLight",
-            "UtherHolyShock"
+            "UtherHolyLight"
           ]
         },
         {
@@ -47695,7 +47682,7 @@
           "toggleCooldown": 0.5,
           "cooldownTooltip": "Cooldown: 60 seconds",
           "shortTooltip": "Reduce Mana cost, cooldown of next ability",
-          "fullTooltip": "Activate to reduce the Mana cost of Uther's next Basic Ability by <c val=\"bfd4fd\">50 </c>and its cooldown by <c val=\"bfd4fd\">10</c> seconds.",
+          "fullTooltip": "Activate to reduce the Mana cost of Uther's next Basic Ability by <c val=\"bfd4fd\">50</c> and its cooldown by <c val=\"bfd4fd\">10</c> seconds.",
           "abilityType": "Active",
           "isActive": true,
           "sort": 3
@@ -48180,7 +48167,7 @@
           "name": "Slice and Dice",
           "icon": "storm_ui_icon_valeera_eviscerate.png",
           "shortTooltip": "Eviscerate grants Attack Speed",
-          "fullTooltip": "Eviscerating an enemy with <c val=\"bfd4fd\">3</c> Combo Points grants <c val=\"bfd4fd\">150%</c> Attack Speed. Lasts <c val=\"bfd4fd\">3</c> seconds or <c val=\"bfd4fd\">3</c> Basic Attacks.<n/><n/><c val=\"00ff90\">Passive:</c> Basic Attacks restore <c val=\"bfd4fd\">2</c> Energy.",
+          "fullTooltip": "Eviscerating an enemy with <c val=\"bfd4fd\">3</c> Combo Points grants <c val=\"bfd4fd\">400%</c> Attack Speed. Lasts <c val=\"bfd4fd\">3</c> seconds or <c val=\"bfd4fd\">3</c> Basic Attacks.<n/><n/><c val=\"00ff90\">Passive:</c> Basic Attacks restore <c val=\"bfd4fd\">2</c> Energy.",
           "abilityType": "E",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -48475,7 +48462,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 50</s>",
           "cooldownTooltip": "Cooldown: 8 seconds",
           "shortTooltip": "Damage and Slow enemies in a line and heal Varian",
-          "fullTooltip": "Create a shockwave that travels in a straight line, dealing <c val=\"bfd4fd\">150~~0.04~~</c> damage and Slowing enemies by <c val=\"bfd4fd\">35%</c> for <c val=\"bfd4fd\">1.5</c> seconds. Each enemy hit heals Varian for <c val=\"bfd4fd\">35~~0.04~~</c>, increased to <c val=\"bfd4fd\">140~~0.04~~</c> against Heroes.",
+          "fullTooltip": "Create a shockwave that travels in a straight line, dealing <c val=\"bfd4fd\">150~~0.04~~</c> damage and Slowing enemies by <c val=\"bfd4fd\">-100%</c> for <c val=\"bfd4fd\">1.5</c> seconds. Each enemy hit heals Varian for <c val=\"bfd4fd\">35~~0.04~~</c>, increased to <c val=\"bfd4fd\">140~~0.04~~</c> against Heroes.",
           "abilityType": "Q"
         },
         {
@@ -48536,7 +48523,7 @@
           "name": "Twin Blades of Fury",
           "icon": "storm_ui_icon_varian_twinbladesoffury.png",
           "shortTooltip": "Gain Attack Speed, Lose Damage<n/>Basic Attacks reduce Heroic Strike cooldown",
-          "fullTooltip": "Basic Attacks reduce Heroic Strike's cooldown by <c val=\"bfd4fd\">9</c> seconds, and increase Varian's Movement Speed by <c val=\"bfd4fd\">30%</c> for <c val=\"bfd4fd\">2</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Attack Speed increased by <c val=\"bfd4fd\">100%</c>.<n/><c val=\"00ff90\">Passive:</c> Base Attack Damage reduced by <c val=\"bfd4fd\">25%</c>.",
+          "fullTooltip": "Basic Attacks reduce Heroic Strike's cooldown by an additional <c val=\"bfd4fd\">7</c> seconds, and increase Varian's Movement Speed by <c val=\"bfd4fd\">30%</c> for <c val=\"bfd4fd\">2</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Attack Speed increased by <c val=\"bfd4fd\">100%</c>.<n/><c val=\"00ff90\">Passive:</c> Base Attack Damage reduced by <c val=\"bfd4fd\">25%</c>.",
           "abilityType": "Heroic",
           "isActive": false,
           "isPassive": true
@@ -48640,7 +48627,7 @@
           "name": "Lion's Maw",
           "icon": "storm_ui_icon_varian_lionsfang.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Hit Heroes to empower Lion's Fang",
-          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every time Lion's Fang hits a Hero, increase its damage by <c val=\"bfd4fd\">7</c>, up to <c val=\"bfd4fd\">175</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After hitting <c val=\"bfd4fd\">25</c> Heroes, the Slow is increased to <c val=\"bfd4fd\">50%</c> and its duration is increased to <c val=\"bfd4fd\">2</c> seconds.",
+          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every time Lion's Fang hits a Hero, increase its damage by <c val=\"bfd4fd\">7</c>, up to <c val=\"bfd4fd\">175</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After hitting <c val=\"bfd4fd\">25</c> Heroes, the Slow is increased to <c val=\"bfd4fd\">-100%</c> and its duration is increased to <c val=\"bfd4fd\">2</c> seconds.",
           "abilityType": "Q",
           "isQuest": true,
           "sort": 1,
@@ -48722,7 +48709,7 @@
           "name": "Twin Blades of Fury",
           "icon": "storm_ui_icon_varian_twinbladesoffury.png",
           "shortTooltip": "Gain Attack Speed, Lose Damage<n/>Basic Attacks reduce Heroic Strike cooldown",
-          "fullTooltip": "Basic Attacks reduce Heroic Strike's cooldown by <c val=\"bfd4fd\">9</c> seconds, and increase Varian's Movement Speed by <c val=\"bfd4fd\">30%</c> for <c val=\"bfd4fd\">2</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Attack Speed increased by <c val=\"bfd4fd\">100%</c>.<n/><c val=\"00ff90\">Passive:</c> Base Attack Damage reduced by <c val=\"bfd4fd\">25%</c>.",
+          "fullTooltip": "Basic Attacks reduce Heroic Strike's cooldown by an additional <c val=\"bfd4fd\">7</c> seconds, and increase Varian's Movement Speed by <c val=\"bfd4fd\">30%</c> for <c val=\"bfd4fd\">2</c> seconds.<n/><n/><c val=\"00ff90\">Passive:</c> Attack Speed increased by <c val=\"bfd4fd\">100%</c>.<n/><c val=\"00ff90\">Passive:</c> Base Attack Damage reduced by <c val=\"bfd4fd\">25%</c>.",
           "abilityType": "Heroic",
           "sort": 3,
           "abilityTalentLinkIds": [
@@ -48790,7 +48777,7 @@
           "name": "Warbringer",
           "icon": "storm_ui_icon_varian_charge.png",
           "shortTooltip": "Reduce Charge cooldown, can be used on allies",
-          "fullTooltip": "Reduce Charge's cooldown by <c val=\"bfd4fd\">8</c> seconds and Mana cost from <c val=\"bfd4fd\">45</c> to <c val=\"bfd4fd\">22</c>. Additionally, Charge can be cast on allied Heroes.",
+          "fullTooltip": "Reduce Charge's cooldown by <c val=\"bfd4fd\">8</c> seconds and Mana cost from <c val=\"bfd4fd\">45</c> to <c val=\"bfd4fd\">25</c>. Additionally, Charge can be cast on allied Heroes.",
           "abilityType": "E",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -48933,7 +48920,7 @@
           "name": "Glory to the Alliance",
           "icon": "storm_ui_icon_varian_glorytothealliance.png",
           "shortTooltip": "Banner also increases healing effects",
-          "fullTooltip": "Banner now also increases health regeneration and all healing received for nearby allied Heroes by <c val=\"bfd4fd\">50%</c>, and the cooldown is reduced by <c val=\"bfd4fd\">50%</c>.",
+          "fullTooltip": "Banner now also increases health regeneration and all healing received for nearby allied Heroes by <c val=\"bfd4fd\">50%</c>, and the cooldown is reduced by <c val=\"bfd4fd\">-98%</c>.",
           "abilityType": "Passive",
           "sort": 4,
           "abilityTalentLinkIds": [
@@ -48949,7 +48936,7 @@
           "icon": "storm_ui_icon_varian_demoralizingshout.png",
           "cooldownTooltip": "Cooldown: 20 seconds",
           "shortTooltip": "Reduce damage of nearby Heroes",
-          "fullTooltip": "Activate to demoralize nearby enemy Heroes, reducing damage they deal by <c val=\"bfd4fd\">40%</c> for <c val=\"bfd4fd\">5</c> seconds.<n/><n/>Each time an enemy Hero affected by Demoralizing Shout deals damage to a Hero, reduce its cooldown and Parry's cooldown by <c val=\"bfd4fd\">2.5%</c>.",
+          "fullTooltip": "Activate to demoralize nearby enemy Heroes, reducing damage they deal by <c val=\"bfd4fd\">40%</c> for <c val=\"bfd4fd\">5</c> seconds.<n/><n/>Each time an enemy Hero affected by Demoralizing Shout deals damage to a Hero, reduce its cooldown and Parry's cooldown by <c val=\"bfd4fd\">5%</c>.",
           "abilityType": "Active",
           "isActive": true,
           "sort": 5
@@ -51487,7 +51474,7 @@
           "energyTooltip": "<s val=\"bfd4fd\" name=\"StandardTooltipDetails\">Mana: 75</s>",
           "cooldownTooltip": "Cooldown: 16 seconds",
           "shortTooltip": "Unleash a Hydralisk on an enemy",
-          "fullTooltip": "Summon a Hydralisk to attack a single target, dealing <c val=\"bfd4fd\">71~~0.05~~ </c>damage per second. Lasts <c val=\"bfd4fd\">8 </c>seconds.",
+          "fullTooltip": "Summon a Hydralisk to attack a single target, dealing <c val=\"bfd4fd\">71~~0.05~~</c> damage per second. The Hydralisk lasts <c val=\"bfd4fd\">8</c> seconds, and has <c val=\"bfd4fd\">450~~0.045~~</c> Health.",
           "abilityType": "W"
         },
         {
@@ -51652,7 +51639,7 @@
           "icon": "storm_ui_icon_zagara_infest.png",
           "toggleCooldown": 0.5,
           "shortTooltip": "Increases nearby allied Ranged Minion's damage",
-          "fullTooltip": "Nearby Ranged Minions deal an additional <c val=\"bfd4fd\">125%</c> damage, plus an additional<c val=\"bfd4fd\"> 1%</c> per <c val=\"bfd4fd\">1000</c> Siege damage Zagara has dealt. Can be toggled on or off.",
+          "fullTooltip": "Nearby Ranged Minions deal an additional <c val=\"bfd4fd\">100%</c> damage, plus an additional<c val=\"bfd4fd\"> 1%</c> per <c val=\"bfd4fd\">1000</c> Siege damage Zagara has dealt. Can be toggled on or off.",
           "abilityType": "Active",
           "isActive": true,
           "sort": 3
@@ -51854,7 +51841,7 @@
           "name": "Mutalisk",
           "icon": "storm_ui_icon_zagara_hunterkillermuta.png",
           "shortTooltip": "Hunter Killer summons a Mutalisk instead",
-          "fullTooltip": "Reduce the cooldown of Hunter Killer by <c val=\"bfd4fd\">4</c> seconds. Hunter Killer now spawns a Mutalisk. Mutalisks have a bounce attack and last for <c val=\"bfd4fd\">30</c> seconds.",
+          "fullTooltip": "Reduce the cooldown of Hunter Killer by <c val=\"bfd4fd\">4</c> seconds. Hunter Killer now spawns a Mutalisk. Mutalisks have a bounce attack, last for <c val=\"bfd4fd\">30</c> seconds, and have <c val=\"#TooltipNumbers>420~~0.045~~</c> Health.",
           "abilityType": "W",
           "sort": 2,
           "abilityTalentLinkIds": [
@@ -53090,7 +53077,7 @@
           "name": "Master Warp-Blade",
           "icon": "storm_ui_icon_talent_autoattack_damage.png",
           "shortTooltip": "Bonus damage every third Basic Attack",
-          "fullTooltip": "Every third consecutive Basic Attack against the same target deals <c val=\"bfd4fd\">125%</c> bonus damage.",
+          "fullTooltip": "Every third consecutive Basic Attack against the same target deals <c val=\"bfd4fd\">125%</c> more damage.",
           "abilityType": "Passive",
           "sort": 1,
           "abilityTalentLinkIds": [
