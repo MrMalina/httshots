@@ -158,6 +158,14 @@ def add_heroes(image, replay, max_stats, map_stat):
     rplayer = Image.open(hots.paths.utils / 'playerred.png').convert('RGBA')
     glow = Image.open(hots.paths.utils / 'portrait.png').convert('RGBA')
 
+    vc_party1 = Image.open(hots.paths.stats / 'vc_party1.png')
+    vc_party2 = Image.open(hots.paths.stats / 'vc_party2.png')
+    vc_party3 = Image.open(hots.paths.stats / 'vc_party3.png')
+    vc_party4 = Image.open(hots.paths.stats / 'vc_party4.png')
+
+    icons = [vc_party1, vc_party2, vc_party3, vc_party4]
+    partys = []
+
     add = 120
     rng = 60
 
@@ -166,6 +174,11 @@ def add_heroes(image, replay, max_stats, map_stat):
 
     if map_stat:
         stats.append(map_stat)
+
+    if hots.stream_pregame:
+        pre_game = hots.stream_pregame[-1]
+    else:
+        pre_game = None
 
     _players = list(replay.players.values())
     for y, userid in enumerate(replay.sort_ids):
@@ -205,6 +218,16 @@ def add_heroes(image, replay, max_stats, map_stat):
         hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
 
         draw.text((155, add+(y*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
+
+        if pre_game is not None:
+            party = pre_game.players[userid].party
+
+            if party != 0 and not party in partys:
+                partys.append(party)
+
+            if party:
+                icon = icons[partys.index(party)]
+                image.paste(icon, (270, add+(y*rng)+4), mask=icon)
 
         x = 360
         for stat in stats:

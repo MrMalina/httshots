@@ -8,6 +8,9 @@ from glob import glob
 
 from importlib import import_module
 
+# httshots
+from httshots import httshots
+
 
 # ======================================================================
 # >> ALL DECLARATION
@@ -33,4 +36,5 @@ def load_addons(cfg):
         if not _name in cfg:
             continue
         if cfg[_name].isdigit() and int(cfg[_name]) == 1:
+            httshots.print_log('LoadAddon', _name, level=3)
             getattr(mod, "load")()

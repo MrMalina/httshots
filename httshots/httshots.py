@@ -3,11 +3,10 @@
 # ======================================================================
 
 # Python
-import sys
 import asyncio
 import asqlite
-import requests
 
+from urllib.request import urlopen
 from ftplib import FTP, Error as FTP_Error
 from getpass import getuser
 from hashlib import md5
@@ -20,19 +19,18 @@ from imgurpython import ImgurClient
 from PIL import ImageFont
 
 # Httshots
+import httshots
 from . import addons, bot, parser, visual
 
 
 # ======================================================================
 # >> GLOBAL VARIABLES
 # ======================================================================
-pkg_name = "HTTSHoTS"
-pkg_version = "1.3.2c"
-pkg_author = "MrMalina"
-
 # initialization of constant
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
+LATEST_RELEASE_URL = "https://api.github.com/repos/MrMalina/httshots/releases/latest"
 HOTS_VERSION = "95301"
+STOPPED = 0
 
 # Declaration global variables
 stream_replays = []
@@ -58,7 +56,7 @@ current_dir = None
 # ======================================================================
 # >> Load
 # ======================================================================
-def load(argv:list) -> None:
+def load(argv:list, full_load) -> None:
     """Инициализация модулей и запуск бота"""
 
     global accounts, strings, \
@@ -77,20 +75,13 @@ def load(argv:list) -> None:
 
     data_replay = ConfigObj(str(current_dir / 'data' / 'replay.ini'))
 
-    for param in config.all_params:
-        print_log('BotConfigParamNotFound', param, level=5)
-
     # Проверка новой версии
-    try:
-        check_version = requests.get("https://httshots.ru/version", timeout=2)
-        if check_version:
-            check_version = check_version.text
-            if check_version and check_version > pkg_version:
-                print_log('NewVersion', pkg_version, check_version, level=4)
-    except requests.exceptions.Timeout:
-        print_log('CheckVersionError', level=4)
-    except:
-        ...
+    with urlopen(LATEST_RELEASE_URL, timeout=2) as url:
+        data = json_load(url)
+        tag_name = data['tag_name']
+        version = tag_name[1:]
+        if version > httshots.pkg_version:
+            print_log('NewVersion', httshots.pkg_version, version, level=4)
 
     # Параметры запуска
     get_twitch_id = 0
@@ -211,7 +202,8 @@ def load(argv:list) -> None:
     fonts.add('ch_small', ImageFont.truetype(chinese_ttf, 12))
     fonts.add('ch_default', ImageFont.truetype(chinese_ttf, 16))
 
-    # return
+    if not full_load:
+        return
 
     # Image upload format
     if config.image_upload == 1:
@@ -273,6 +265,11 @@ def get_accounts_list(hots_folder: str) -> list:
             _accounts.append(acc)
 
     return _accounts
+
+
+def print_other_log(string, *args, level=0):
+    if config.log_level <= level:
+        print(string.format(*args))
 
 
 def print_log(string, *args, level=0):
@@ -420,17 +417,6 @@ class HeroData:
 
 class Config:
     def __init__(self, file_name):
-        self.all_params = [
-            'accounts', 'debug', 'log_level', 'use_colors', 'language', 
-            'replay_check_period', 'add_previous_games', 'duplicate_url_in_console',
-            'matches_type_to_consider', 'battlelobby_status', 'tracker_status',
-            'tracker_commands', 'send_previous_battle_lobby', 'image_upload', 
-            'end_game_dispay_match_info', 'end_game_dispay_games_info', 'ftp_site_name',
-            'ftp_ip', 'ftp_login', 'ftp_passwd', 'ftp_folder', 'imgur_client_id',
-            'imgur_client_secret', 'try_reupload_image', 'twitch_client_id', 'twitch_client_secret',
-            'twitch_bot_id', 'twitch_owner_id', 
-        ]
-
         self.config = ConfigObj(file_name)
 
         self.config.indent_type = '    '
@@ -441,8 +427,6 @@ class Config:
                 for var, val in value.items():
                     object.__setattr__(self, cvar+'_'+var, self.change_type(val))
             else:
-                if cvar in self.all_params:
-                    self.all_params.remove(cvar)
                 object.__setattr__(self, cvar, self.change_type(value))
 
         self.starting_hour = 0
@@ -610,9 +594,3 @@ class StreamReplay:
     def get_players_with_heroes(self):
         return ', '.join([f'{player.name} ({player.hero})' for \
                           player in self.info.players.values()])
-
-
-# ======================================================================
-# >> Start
-# ======================================================================
-load(sys.argv)

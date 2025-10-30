@@ -31,6 +31,9 @@ class TrackerEvents:
                               player.talent4, player.talent5, player.talent6,
                               player.talent7]
 
+            player.kda = (player.solo_kill + player.assists) / max(1, player.deaths)
+            player.kills = player.solo_kill + player.assists
+
 class Lobby:
     class Ban:
         def __init__(self, info):

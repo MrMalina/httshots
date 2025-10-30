@@ -13,7 +13,7 @@ from twitchio import eventsub
 from twitchio.exceptions import HTTPException
 
 # httshots
-import httshots
+import httshots as hots
 from httshots import httshots
 from . import bot
 from . import replays
@@ -48,6 +48,7 @@ class TwitchBot(commands.Bot):
             if e.extra['message'] == 'invalid transport and auth combination':
                 httshots.print_log('BotTransportError', level=5)
                 httshots.print_log('BotStop', level=5)
+                httshots.STOPPED = 1
 
         await events.bot_setup_hook(self)
 
@@ -200,8 +201,8 @@ class TwitchBot(commands.Bot):
         if httshots.config.score_use:
             httshots.bot.score.update_score()
 
-        httshots.print_log('BotStarted', httshots.pkg_name,
-                           httshots.pkg_author, httshots.pkg_version,
+        httshots.print_log('BotStarted', hots.pkg_name,
+                           hots.pkg_author, hots.pkg_version,
                            level=4)
 
         await events.bot_ready(self)
