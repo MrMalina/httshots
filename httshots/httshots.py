@@ -29,7 +29,7 @@ from . import addons, bot, parser, visual
 # initialization of constant
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 LATEST_RELEASE_URL = "https://api.github.com/repos/MrMalina/httshots/releases/latest"
-HOTS_VERSION = "95301"
+HOTS_VERSION = "95774"
 STOPPED = 0
 
 # Declaration global variables
