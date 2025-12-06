@@ -19530,7 +19530,7 @@
           "name": "Pursuit of Flame",
           "icon": "storm_ui_icon_guldan_felflame.png",
           "shortTooltip": "<c val=\"e4b800\">Quest:</c> Hit <c val=\"bfd4fd\">30</c> Heroes to increase area",
-          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Hit <c val=\"bfd4fd\">30</c> enemy Heroes with Fel Flame without dying.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c>Permanently increase Fel Flame's area by <c val=\"bfd4fd\">33%</c>.",
+          "fullTooltip": "<img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Hit <c val=\"bfd4fd\">30</c> enemy Heroes with Fel Flame without dying.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> Permanently increase Fel Flame's area by <c val=\"bfd4fd\">33%</c>.",
           "abilityType": "Q",
           "isQuest": true,
           "sort": 1,
@@ -24732,7 +24732,7 @@
       ],
       "level4": [
         {
-          "nameId": "KerriganRavageSharpenedBlades",
+          "nameId": "KerriganRavageRavagingFerocity",
           "buttonId": "KerriganRavageRavagingFerocity",
           "name": "Ravaging Ferocity",
           "icon": "storm_ui_icon_kerrigan_ravage.png",
@@ -42574,7 +42574,7 @@
           },
           "cooldownTooltip": "Charge Cooldown: 25 seconds",
           "shortTooltip": "Activate to convert enemy Minions",
-          "fullTooltip": "Activate to force an enemy Minion to fight for Sylvanas's team. Catapults require <c val=\"bfd4fd\">4</c> charges. Stores up to <c val=\"bfd4fd\">4</c> charges.",
+          "fullTooltip": "Activate to force an enemy Minion to fight for Sylvanas's team. Catapults require <c val=\"bfd4fd\">3</c> charges. Stores up to <c val=\"bfd4fd\">4</c> charges.",
           "abilityType": "Active"
         }
       ],
@@ -42711,8 +42711,8 @@
           ]
         },
         {
-          "nameId": "SylvanasUnfurlingShadowsShadowDagger",
-          "buttonId": "SylvanasShadowDaggerUnfurlingShadows",
+          "nameId": "SylvanasUnrelentingTorment",
+          "buttonId": "SylvanasUnrelentingTorment",
           "name": "Unrelenting Torment",
           "icon": "storm_ui_icon_sylvanas_shadowdagger.png",
           "shortTooltip": "Increase Shadow Dagger damage and duration",
@@ -53365,7 +53365,7 @@
           "icon": "storm_ui_icon_zuljin_berzerker.png",
           "toggleCooldown": 0.5,
           "shortTooltip": "Increased Attack Speed as Health gets lower",
-          "fullTooltip": "Activate to increase Basic Attack damage by <c val=\"bfd4fd\">25%</c> but consume <c val=\"bfd4fd\">2%</c> maximum Health per attack.<n/><n/><c val=\"00ff90\">Passive:</c> Zul'jin attacks <c val=\"bfd4fd\">1%</c> faster for every <c val=\"bfd4fd\">1%</c> of maximum Health missing.<n/><n/><s val=\"cbe8ff-ffffff\" name=\"StandardTooltipHeader\">You Want Axe?</s><n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every <c val=\"bfd4fd\">5</c> Basic Attacks against Heroes permanently increases Basic Attack damage by <c val=\"bfd4fd\">1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">75</c> times, Basic Attack range is increased by <c val=\"bfd4fd\">1.1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">150</c> times, Twin Cleave now revolves twice.<n/><n/>Lose 3 stacks on death.",
+          "fullTooltip": "Activate to increase Basic Attack damage by <c val=\"bfd4fd\">25%</c> but consume <c val=\"bfd4fd\">2%</c> maximum Health per attack.<n/><n/><c val=\"00ff90\">Passive:</c> Zul'jin attacks <c val=\"bfd4fd\">1%</c> faster for every <c val=\"bfd4fd\">1%</c> of maximum Health missing.<n/><n/><s val=\"cbe8ff-ffffff\" name=\"StandardTooltipHeader\">You Want Axe?</s><n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every <c val=\"bfd4fd\">5</c> Basic Attacks against Heroes permanently increases Basic Attack damage by <c val=\"bfd4fd\">1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">75</c> times, Basic Attack range is increased by <c val=\"bfd4fd\">1.1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">150</c> times, Twin Cleave now revolves twice.<n/><n/>Lose <c val=\"bfd4fd\">3</c> stacks on death.",
           "abilityType": "Trait"
         }
       ],
@@ -53461,7 +53461,7 @@
               "name": "Cancel Berserker",
               "icon": "storm_ui_icon_zuljin_berzerker_off.png",
               "toggleCooldown": 0.5,
-              "fullTooltip": "Activate to leave the berserker frenzy, reducing Zul'jin's Basic Attack damage by <c val=\"bfd4fd\">25%</c> and no longer consuming <c val=\"bfd4fd\">2%</c> of his maximum Health per attack.<n/><n/><c val=\"00ff90\">Passive:</c> Zul'jin attacks <c val=\"bfd4fd\">1%</c> faster for every <c val=\"bfd4fd\">1%</c> of maximum Health missing.<n/><n/><s val=\"cbe8ff-ffffff\" name=\"StandardTooltipHeader\">You Want Axe?</s><n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every <c val=\"bfd4fd\">5</c> Basic Attacks against Heroes permanently increases Basic Attack damage by <c val=\"bfd4fd\">1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">75</c> times, Basic Attack range is increased by <c val=\"bfd4fd\">1.1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">150</c> times, Twin Cleave now revolves twice.<n/><n/>Lose 3 stacks on death.",
+              "fullTooltip": "Activate to leave the berserker frenzy, reducing Zul'jin's Basic Attack damage by <c val=\"bfd4fd\">25%</c> and no longer consuming <c val=\"bfd4fd\">2%</c> of his maximum Health per attack.<n/><n/><c val=\"00ff90\">Passive:</c> Zul'jin attacks <c val=\"bfd4fd\">1%</c> faster for every <c val=\"bfd4fd\">1%</c> of maximum Health missing.<n/><n/><s val=\"cbe8ff-ffffff\" name=\"StandardTooltipHeader\">You Want Axe?</s><n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Quest:</c> Every <c val=\"bfd4fd\">5</c> Basic Attacks against Heroes permanently increases Basic Attack damage by <c val=\"bfd4fd\">1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">75</c> times, Basic Attack range is increased by <c val=\"bfd4fd\">1.1</c>.<n/><n/><img path=\"@UI/StormTalentInTextQuestIcon\" alignment=\"uppermiddle\" color=\"B48E4C\" width=\"20\" height=\"22\"/><c val=\"e4b800\">Reward:</c> After attacking Heroes <c val=\"bfd4fd\">150</c> times, Twin Cleave now revolves twice.<n/><n/>Lose <c val=\"bfd4fd\">3</c> stacks on death.",
               "abilityType": "Trait"
             }
           ]
