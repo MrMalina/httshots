@@ -4,5 +4,5 @@
 __path__ = extend_path(__path__, __name__)
 
 pkg_name = "HTTSHoTS"
-pkg_version = "1.4.2"
+pkg_version = "1.4.3"
 pkg_author = "MrMalina"
