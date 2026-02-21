@@ -182,6 +182,6 @@ py -m pip install -U git+https://github.com/MrMalina/httshots.git
 * Файл с информацией о героях (herodata.json) получен с помощью [HeroesDataParser](https://github.com/HeroesToolChest/HeroesDataParser)
 
 # Лицензия
-Авторские права 2025 MrMalina
+Авторские права 2026 MrMalina
 
 Исходный код этого проекта опубликован в соответствии с лицензией MIT. Для получения дополнительной информации см. прилагаемый файл [LICENSE](https://github.com/MrMalina/httshots/blob/master/LICENSE).

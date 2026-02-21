@@ -84,7 +84,11 @@ class InitData(parse.Parse):
             if userid is None or userid >= 10:
                 continue
 
-            player = players[userid]
+            if userid in players:
+                player = players[userid]
+            else:
+                player = players[0]
+
             player.hero_level = 0
 
             player.color_pref = info['m_colorPref']['m_color']

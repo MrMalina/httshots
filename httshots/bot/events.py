@@ -36,10 +36,10 @@ htts_events = HttsEvents()
 # ======================================================================
 # >> Events
 # ======================================================================
-def match_end(stream_replay):
+async def match_end(stream_replay, player):
     events = htts_events.get_callbacks("match_end")
     for _callback in events:
-        _callback(stream_replay)
+        await _callback(stream_replay, player)
 
 
 def match_start():

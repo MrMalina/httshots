@@ -29,7 +29,7 @@ from . import addons, bot, parser, visual
 # initialization of constant
 ICY_URL = "https://www.icy-veins.com/heroes/talent-calculator/{}#55.1!{}"
 LATEST_RELEASE_URL = "https://api.github.com/repos/MrMalina/httshots/releases/latest"
-HOTS_VERSION = "95918"
+HOTS_VERSION = "96477"
 STOPPED = 0
 
 # Declaration global variables
@@ -63,7 +63,8 @@ def load(argv:list, full_load) -> None:
            hero_data, data_replay, \
            battle_lobby_hash, config, \
            htts_data, imgur, tracker_events_hash, \
-           tw_bot, fonts, paths, current_dir
+           tw_bot, fonts, paths, current_dir, \
+           config_addons
 
     current_dir = Path(path.dirname(__file__))
 
@@ -224,6 +225,7 @@ def load(argv:list, full_load) -> None:
     print_log('BotHoTSVersions', HOTS_VERSION, level=3)
 
     # Загрузка аддонов
+    config_addons = ConfigObj(str(current_dir / 'config' / 'config_addons.ini'))
     addons.load_addons(config.config['addons'])
 
     # Список имён аккаунтов должен быть списком, а не строкой

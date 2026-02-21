@@ -1,4 +1,6 @@
-﻿import heroprotocol
+﻿from heroprotocol import hero_protocol
+from heroprotocol.decoders import TruncatedError
+
 from httshots import httshots
 
 omega_heroes = {
@@ -7,7 +9,7 @@ omega_heroes = {
 }
 
 def parse_content(content, pre_game):
-    events = heroprotocol.versions.latest().decode_replay_tracker_events(content)
+    events = hero_protocol.decode_replay_tracker_events(content)
 
     try:
         for event in events:
@@ -30,7 +32,7 @@ def parse_content(content, pre_game):
                 player.talents[info[1]] = info[0]
                 continue
 
-    except heroprotocol.decoders.TruncatedError:
+    except TruncatedError:
         ...
     except Exception as e:
         print('ingame', e)

@@ -205,6 +205,12 @@ class TwitchBot(commands.Bot):
                            hots.pkg_author, hots.pkg_version,
                            level=4)
 
+        # reward = await self.chat.create_custom_reward(
+                        # title="Супер-пупер награда",
+                        # cost=1000,
+                        # prompt="Бот сделает что-то крутое"
+                    # )
+
         await events.bot_ready(self)
 
         await self.endless_loop()

@@ -9,8 +9,7 @@ import mpyq
 from collections import defaultdict
 
 # Others
-import heroprotocol
-from heroprotocol import versions
+from heroprotocol import hero_protocol
 
 # httshots
 from httshots import httshots
@@ -22,21 +21,7 @@ from . import classes, parse, match, battlelobby, ingame, units
 # ======================================================================
 def get_replay(replay):
     replay = mpyq.MPQArchive(replay)
-
-    contents = replay.header['user_data_header']['content']
-    header = versions.latest().decode_replay_header(contents)
-
-    base_build = header['m_version']['m_baseBuild']
-
-    try:
-        protocol = versions.build(base_build)
-    except:
-        if base_build < int(httshots.HOTS_VERSION):
-            httshots.print_log('BotHeroprotocolBuildOld', base_build, level=5)
-        elif base_build > int(httshots.HOTS_VERSION):
-            httshots.print_log('BotHeroprotocolBuildNew', base_build, level=5)
-        return None
-    return replay, protocol
+    return replay, hero_protocol
 
 
 def get_match_info(replay, protocol):
@@ -51,7 +36,7 @@ def get_match_info(replay, protocol):
     game.add_init_data(init_data)
 
     contents = replay.header['user_data_header']['content']
-    header = heroprotocol.versions.latest().decode_replay_header(contents)
+    header = hero_protocol.decode_replay_header(contents)
     game.add_header(header)
 
     # messages = []

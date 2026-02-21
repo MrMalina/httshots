@@ -188,7 +188,7 @@ async def send_replay_info(replay_name):
     sreplay.url_adv_stats = url_adv_stats
     sreplay.url_draft = url_draft
 
-    httshots.bot.events.match_end(sreplay)
+    await httshots.bot.events.match_end(sreplay, me)
 
     httshots.print_log('SendReplayInfo', level=2)
 
