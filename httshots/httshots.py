@@ -15,7 +15,6 @@ from os import path, sep, listdir
 from time import strftime
 from pathlib import Path
 from configobj import ConfigObj, Section
-from imgurpython import ImgurClient
 from PIL import ImageFont
 
 # Httshots
@@ -39,7 +38,6 @@ streak = [0, 0]
 cur_game = [0, 0] # [date, time]
 accounts = None
 strings = None
-imgur = None
 battle_lobby_hash = None
 tracker_events_hash = None
 check_talents_task = None
@@ -62,7 +60,7 @@ def load(argv:list, full_load) -> None:
     global accounts, strings, \
            hero_data, data_replay, \
            battle_lobby_hash, config, \
-           htts_data, imgur, tracker_events_hash, \
+           htts_data, tracker_events_hash, \
            tw_bot, fonts, paths, current_dir, \
            config_addons
 
@@ -207,17 +205,13 @@ def load(argv:list, full_load) -> None:
         return
 
     # Image upload format
-    if config.image_upload == 1:
-        imgur = ImgurClient(config.imgur_client_id, config.imgur_client_secret)
-        print_log('ImgurLogin', level=3)
-
-    elif config.image_upload == 2:
+    if config.ftp_image_upload == 1:
         try:
             ftp = FTP(config.ftp_ip)
             ftp.login(config.ftp_login, config.ftp_passwd)
             ftp.close()
             print_log('FTPLogin', config.ftp_site_name, level=3)
-        except FTP_Error as e:
+        except (FTP_Error, AttributeError) as e:
             print_log('FTPLoginError', config.ftp_site_name, level=4)
             raise e
 
@@ -225,7 +219,7 @@ def load(argv:list, full_load) -> None:
     print_log('BotHoTSVersions', HOTS_VERSION, level=3)
 
     # Загрузка аддонов
-    config_addons = ConfigObj(str(current_dir / 'config' / 'config_addons.ini'))
+    config_addons = get_config_addons(current_dir / 'config')
     addons.load_addons(config.config['addons'])
 
     # Список имён аккаунтов должен быть списком, а не строкой
@@ -246,15 +240,31 @@ def load(argv:list, full_load) -> None:
             await tw_bot.setup_database()
             await tw_bot.start()
 
+    # if config.bot_type <= 1:
     try:
         asyncio.run(runner())
     except KeyboardInterrupt:
         ...
 
+    # else:
+        # ...
+
 
 # ======================================================================
 # >> Functions
 # ======================================================================
+def get_config_addons(path: Path) -> dict:
+    config = {}
+    for cfg_name in listdir(str(path)):
+        print(cfg_name)
+        if cfg_name.startswith('config_') and cfg_name.endswith('.ini'):
+            addon = cfg_name[7:][:-4]
+            config[addon] = ConfigObj(str(path / cfg_name))
+
+    print(config)
+    return config
+
+
 def get_accounts_list(hots_folder: str) -> list:
     _accounts = []
 
