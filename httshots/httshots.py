@@ -5,6 +5,7 @@
 # Python
 import asyncio
 import asqlite
+import threading
 
 from urllib.request import urlopen
 from ftplib import FTP, Error as FTP_Error
@@ -49,6 +50,8 @@ htts_data = None
 tw_bot = None
 data_replay = None
 current_dir = None
+config_addons = None
+strings_addons = None
 
 
 # ======================================================================
@@ -62,7 +65,7 @@ def load(argv:list, full_load) -> None:
            battle_lobby_hash, config, \
            htts_data, tracker_events_hash, \
            tw_bot, fonts, paths, current_dir, \
-           config_addons
+           config_addons, strings_addons
 
     current_dir = Path(path.dirname(__file__))
 
@@ -205,7 +208,7 @@ def load(argv:list, full_load) -> None:
         return
 
     # Image upload format
-    if config.ftp_image_upload == 1:
+    if config.image_upload & 1:
         try:
             ftp = FTP(config.ftp_ip)
             ftp.login(config.ftp_login, config.ftp_passwd)
@@ -213,13 +216,14 @@ def load(argv:list, full_load) -> None:
             print_log('FTPLogin', config.ftp_site_name, level=3)
         except (FTP_Error, AttributeError) as e:
             print_log('FTPLoginError', config.ftp_site_name, level=4)
-            raise e
+            return
 
     # Вывод какие версии реплеев поддерживаются
     print_log('BotHoTSVersions', HOTS_VERSION, level=3)
 
     # Загрузка аддонов
     config_addons = get_config_addons(current_dir / 'config')
+    strings_addons = get_strings_addons(current_dir / 'data', language)
     addons.load_addons(config.config['addons'])
 
     # Список имён аккаунтов должен быть списком, а не строкой
@@ -227,7 +231,7 @@ def load(argv:list, full_load) -> None:
     if isinstance(acc_names, str):
         config.accounts = (acc_names, )
 
-    async def runner() -> None:
+    async def tw_runner() -> None:
         global tw_bot
         _path = paths.data / "tokens.db"
         async with (asqlite.create_pool(str(_path)) as tdb,
@@ -240,15 +244,24 @@ def load(argv:list, full_load) -> None:
             await tw_bot.setup_database()
             await tw_bot.start()
 
-    # if config.bot_type <= 1:
-    try:
-        asyncio.run(runner())
-    except KeyboardInterrupt:
-        ...
+    async def ds_runner() -> None:
+        global ds_bot
+        ds_bot = bot.DiscordBot(config.discord_user_id)
+        await ds_bot.start(str(config.discord_token))
 
-    # else:
-        # ...
-
+    if 2 & config.image_upload:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        task2 = loop.create_task(tw_runner())
+        task1 = loop.create_task(ds_runner())
+        gathered = asyncio.gather(task1, task2)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(gathered)
+    else:
+        try:
+            asyncio.run(tw_runner())
+        except KeyboardInterrupt:
+            ...
 
 # ======================================================================
 # >> Functions
@@ -256,13 +269,21 @@ def load(argv:list, full_load) -> None:
 def get_config_addons(path: Path) -> dict:
     config = {}
     for cfg_name in listdir(str(path)):
-        print(cfg_name)
         if cfg_name.startswith('config_') and cfg_name.endswith('.ini'):
             addon = cfg_name[7:][:-4]
             config[addon] = ConfigObj(str(path / cfg_name))
 
-    print(config)
     return config
+
+
+def get_strings_addons(path: Path, language: str) -> dict:
+    strings = {}
+    for str_name in listdir(str(path)):
+        if str_name.startswith('strings_') and str_name.endswith('.ini'):
+            addon = str_name[8:][:-4]
+            strings[addon] = Strings(str(path / str_name), language)
+
+    return strings
 
 
 def get_accounts_list(hots_folder: str) -> list:

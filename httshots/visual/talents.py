@@ -176,7 +176,7 @@ def add_other_info(image, replay):
     draw.text((40, 50), text, color, font=hots.fonts.large)
 
 
-def create_image(replay):
+def create_image(replay, upload):
     _name = 'talents.png'
     hots.print_log('ImageStartCreateTalentsImage', level=0)
     hots.print_log('ImageLoadBackGround', level=0)
@@ -194,8 +194,10 @@ def create_image(replay):
     hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadTalents', level=2)
-    url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.duplicate_url_in_console:
-        hots.print_log('SendUrl', url, level=3)
-    return url
+    if upload:
+        hots.print_log('ImageUploadTalents', level=2)
+        url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
+        if hots.config.duplicate_url_in_console:
+            hots.print_log('SendUrl', url, level=3)
+        return url
+    return 0

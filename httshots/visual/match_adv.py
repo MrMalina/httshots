@@ -259,7 +259,7 @@ def get_shift(value):
     return 0
 
 
-def create_image(replay):
+def create_image(replay, upload):
     _name = 'match_adv.png'
 
     hots.print_log('ImageStartCreateMatchAdvImage', level=0)
@@ -278,8 +278,10 @@ def create_image(replay):
     hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadMatchAdv', level=2)
-    url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.duplicate_url_in_console:
-        hots.print_log('SendUrl', url, level=3)
-    return url
+    if upload:
+        hots.print_log('ImageUploadMatchAdv', level=2)
+        url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
+        if hots.config.duplicate_url_in_console:
+            hots.print_log('SendUrl', url, level=3)
+        return url
+    return 0

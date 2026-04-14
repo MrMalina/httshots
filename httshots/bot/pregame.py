@@ -24,13 +24,19 @@ async def send_battle_lobby_info(pre_game):
     httshots.cur_game[1] = time.strftime('%H-%M')
 
     httshots.print_log('NewGame', level=3)
-    url = httshots.visual.battlelobby.create_image(info)
-    text = httshots.strings['LobbyInfo'].format(url)
+    upload = httshots.config.image_upload
+    url = httshots.visual.battlelobby.create_image(info, 1 & upload)
+    if url:
+        text = httshots.strings['LobbyInfo'].format(url)
 
-    pre_game.url = url
-    httshots.stream_pregame.append(pre_game)
+        pre_game.url = url
+        httshots.stream_pregame.append(pre_game)
 
+    pre_game.url = None
     httshots.bot.events.match_start()
+
+    if 2 & upload:
+        await httshots.ds_bot._send_message('battlelobby', 'battlelobby.png')
 
     await httshots.tw_bot._send_message(text)
 
@@ -49,7 +55,7 @@ async def check_battle_lobby():
             # При обработке battlelobby была ошибка
             if pre_game is not None:
                 # Работает только для FTP
-                if httshots.config.image_upload == 2 and httshots.config.tracker_status == 1:
+                if httshots.config.image_upload and httshots.config.tracker_status == 1:
                     # Запуск отслеживания выбранных талантов
                     loop = asyncio.get_event_loop()
                     task = loop.create_task(httshots.bot.tracker.start_check_talents())

@@ -340,7 +340,7 @@ def add_others(image, info):
     return image
 
 
-def create_image(replay):
+def create_image(replay, upload):
     _name = 'draft.png'
     hots.print_log('ImageStartCreateDraftImage', level=0)
     hots.print_log('ImageLoadBackGround', level=0)
@@ -355,9 +355,11 @@ def create_image(replay):
     hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadDraft', level=2)
-    url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.duplicate_url_in_console:
-        hots.print_log('SendUrl', url, level=3)
+    if upload:
+        hots.print_log('ImageUploadDraft', level=2)
+        url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
+        if hots.config.duplicate_url_in_console:
+            hots.print_log('SendUrl', url, level=3)
 
-    return url
+        return url
+    return 0

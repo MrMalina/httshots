@@ -19,6 +19,8 @@ GAMES_INFO = 1 << 0
 GAMES_STREAK = 1 << 1
 GAMES_URL = 1 << 2
 
+UPLOAD_FTP = 1 << 0
+UPLOAD_DISCORD = 1 << 1
 
 # ======================================================================
 # >> Functions
@@ -114,30 +116,53 @@ async def send_replay_info(replay_name):
         match_info = httshots.strings['GameResultInfo'].format(status, hero_name,
                                                                map_name, map_type)
 
-    if httshots.config.image_upload:
+    image_upload = httshots.config.image_upload
+    ftp_upload = UPLOAD_FTP & image_upload
+    ds_upload = UPLOAD_DISCORD & image_upload
+    ds_files = []
+    if image_upload:
         if MATCH_STATS & display_info:
-            url_match = httshots.visual.match.create_image(info)
-            if url_match:
+            url_match = httshots.visual.match.create_image(info, ftp_upload)
+            if ftp_upload:
                 tmp = httshots.strings['GameResultInfoStats'].format(url_match)
                 match_info += tmp
 
+            if ds_upload:
+                file = httshots.ds_bot.prepare_file('match', 'match.png')
+                ds_files.append(file)
+
         if MATCH_TALENTS & display_info:
-            url_talents = httshots.visual.talents.create_image(info)
-            if url_talents:
+            url_talents = httshots.visual.talents.create_image(info, ftp_upload)
+            if ftp_upload:
                 tmp = httshots.strings['GameResultInfoTalents'].format(url_talents)
                 match_info += tmp
 
+            if ds_upload:
+                file = httshots.ds_bot.prepare_file('talents', 'talents.png')
+                ds_files.append(file)
+
         if MATCH_ADV_STATS & display_info:
-            url_adv_stats = httshots.visual.match_adv.create_image(info)
-            if url_adv_stats:
+            url_adv_stats = httshots.visual.match_adv.create_image(info, ftp_upload)
+            if ftp_upload:
                 tmp = httshots.strings['GameResultInfoStatsAdv'].format(url_adv_stats)
                 match_info += tmp
 
+            if ds_upload:
+                file = httshots.ds_bot.prepare_file('match_adv', 'match_adv.png')
+                ds_files.append(file)
+
         if MATCH_DRAFT & display_info and info.lobby.bans:
-            url_draft = httshots.visual.draft.create_image(info)
-            if url_draft:
+            url_draft = httshots.visual.draft.create_image(info, ftp_upload)
+            if ftp_upload:
                 tmp = httshots.strings['GameResultInfoDraft'].format(url_draft)
                 match_info += tmp
+
+            if ds_upload:
+                file = httshots.ds_bot.prepare_file('draft', 'draft.png')
+                ds_files.append(file)
+
+    if ds_files:
+        await httshots.ds_bot._send_files('%s - %s'%(replay_name, me.name), ds_files)
 
     await httshots.tw_bot._send_message(match_info)
 
@@ -172,10 +197,14 @@ async def send_replay_info(replay_name):
                             streak[1], streak_text)
                     games_info += tmp
 
-    if GAMES_URL & display_info and httshots.config.image_upload:
-        url_games = httshots.visual.games.create_image()
-        tmp = httshots.strings['GamesInfoUrl'].format(url_games)
-        games_info += tmp
+    if GAMES_URL & display_info and image_upload:
+        url_games = httshots.visual.games.create_image(ftp_upload)
+        if ftp_upload:
+            tmp = httshots.strings['GamesInfoUrl'].format(url_games)
+            games_info += tmp
+
+        if ds_upload:
+            await httshots.ds_bot._send_message('games', 'games.png')
 
     await httshots.tw_bot._send_message(games_info)
 

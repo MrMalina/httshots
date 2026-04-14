@@ -70,7 +70,7 @@ def add_users(image, info):
         draw.text((coords, add+(x*rng)+3), btag, WHITE, font=name_font)
 
 
-def create_image(info):
+def create_image(info, upload):
     _name = 'lobby.png'
     hots.print_log('ImageStartCreateLobbyImage', level=0)
     image = load_background()
@@ -81,8 +81,10 @@ def create_image(info):
     hots.print_log('ImageSaveImageMatch', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadBattleLobby', level=2)
-    url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.duplicate_url_in_console:
-        hots.print_log('SendUrl', url, level=3)
-    return url
+    if upload:
+        hots.print_log('ImageUploadBattleLobby', level=2)
+        url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
+        if hots.config.duplicate_url_in_console:
+            hots.print_log('SendUrl', url, level=3)
+        return url
+    return 0

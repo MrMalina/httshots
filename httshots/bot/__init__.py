@@ -6,6 +6,10 @@
 import asyncio
 import asqlite
 
+# discord
+import discord
+import discord.ext.commands as ds_commands
+
 # twitchio
 import twitchio
 from twitchio.ext import commands
@@ -20,6 +24,37 @@ from . import replays
 from . import score
 from . import pregame
 from . import events
+
+
+# ======================================================================
+# >> DiscordBot
+# ======================================================================
+class DiscordBot(ds_commands.Bot):
+    def __init__(self, userid):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        intents.dm_messages = True
+        intents.members = True
+        self.pm_userid = userid
+        super().__init__(ds_commands.when_mentioned_or('!'), intents=intents)
+
+    def prepare_file(self, file_name: str, file_path: str) -> discord.File:
+        return discord.File(httshots.paths.upload / file_path, filename=file_path, description=file_name)
+
+    async def on_ready(self):
+        self.pm_user = await self.fetch_user(self.pm_userid)
+
+        httshots.print_log('ReadyInfoDiscord', self.pm_user.name, self.pm_userid, level=4)
+
+    async def _send_message(self, message: str, file_name: dict) -> None:
+        if not file_name:
+            await self.pm_user.send(message, silent=True)
+        else:
+            file = discord.File(httshots.paths.upload / file_name)
+            await self.pm_user.send(message, file=file, silent=True)
+
+    async def _send_files(self, message: str, files: list[discord.File]) -> None:
+        await self.pm_user.send(message, files=files, silent=True)
 
 
 # ======================================================================
@@ -98,7 +133,7 @@ class TwitchBot(commands.Bot):
         self.chat = self.create_partialuser(user_id=str(self.owner_id))
 
         channel = await self.fetch_channel(self.owner_id)
-        httshots.print_log('ReadyInfo', self.user, self.bot_id,
+        httshots.print_log('ReadyInfoTwitch', self.user, self.bot_id,
                             channel.user, level=4)
 
         if httshots.config.add_previous_games == 1:
@@ -183,11 +218,12 @@ class TwitchBot(commands.Bot):
                 httshots.cur_game[0] = tmp[0][2:]
                 httshots.cur_game[1] = tmp[1][:-3].replace('.', '-')
 
-                if httshots.config.image_upload:
+                image_upload = httshots.config.image_upload
+                if image_upload:
                     # Единожды сортируем, так как чтение реплеев не обязательно по возрастающему времени
                     _replays = sorted(httshots.stream_replays, key=lambda x: x.title)
                     httshots.stream_replays = list(_replays)
-                    url_games = httshots.visual.games.create_image()
+                    url_games = httshots.visual.games.create_image(1 & image_upload)
                     httshots.stream_replays[-1].url_games = url_games
 
                 httshots.print_log('FoundPreviousGames', replayes_count,

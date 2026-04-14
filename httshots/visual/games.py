@@ -203,7 +203,7 @@ def add_other_info(image, replays):
         draw.text((25, 50), tmp, WHITE, font=hots.fonts.default)
 
 
-def create_image():
+def create_image(upload):
     _name = 'games.png'
 
     hots.print_log('ImageStartCreateGamesImage', level=0)
@@ -229,8 +229,11 @@ def create_image():
     hots.print_log('ImageSaveImageGames', level=0)
     image.save(hots.paths.upload / _name)
 
-    hots.print_log('ImageUploadGames', level=2)
-    url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
-    if hots.config.duplicate_url_in_console:
-        hots.print_log('SendUrl', url, level=3)
-    return url
+    if upload:
+        hots.print_log('ImageUploadGames', level=2)
+        url = hots.visual.upload.upload_file(hots.paths.upload / _name, _name)
+        if hots.config.duplicate_url_in_console:
+            hots.print_log('SendUrl', url, level=3)
+
+        return url
+    return 0
