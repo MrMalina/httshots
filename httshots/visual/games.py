@@ -101,9 +101,9 @@ def add_games(image, replays):
         hero_short_name = hots.htts_data.get_short_hero(tr_hero_name)
         draw.text((155, add+(x*rng)+10), hero_short_name, WHITE, font=hots.fonts.default)
 
-        for mvp in hots.visual.mvps:
-            if getattr(player, 'award_'+mvp):
-                tmp = Image.open(hots.paths.mvp / f'{hots.visual.mvps[mvp]}_{postfix}.png')
+        for key, value in hots.visual.mvps.items():
+            if getattr(player, 'award_'+key):
+                tmp = Image.open(hots.paths.mvp / f'{value}_{postfix}.png')
                 tmp = tmp.resize((48, 48))
                 image.paste(tmp, (320, add+(x*rng)+4), mask=tmp)
 

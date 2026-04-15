@@ -162,9 +162,9 @@ async def send_replay_info(replay_name):
                 ds_files.append(file)
 
     if ds_files:
-        await httshots.ds_bot._send_files('%s - %s'%(replay_name, me.name), ds_files)
+        await httshots.ds_bot.send_files('%s - %s'%(replay_name, me.name), ds_files)
 
-    await httshots.tw_bot._send_message(match_info)
+    await httshots.tw_bot.send_chat_message(match_info)
 
     # Добавляем новый реплей в список сыгранных, чтобы учесть его результат
     sreplay = httshots.StreamReplay(replay_name, me, info)
@@ -204,9 +204,9 @@ async def send_replay_info(replay_name):
             games_info += tmp
 
         if ds_upload:
-            await httshots.ds_bot._send_message('games', 'games.png')
+            await httshots.ds_bot.send_chat_message('games', 'games.png')
 
-    await httshots.tw_bot._send_message(games_info)
+    await httshots.tw_bot.send_chat_message(games_info)
 
     if httshots.config.score_use:
         httshots.bot.score.update_score()

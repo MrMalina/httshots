@@ -39,21 +39,22 @@ class DiscordBot(ds_commands.Bot):
         super().__init__(ds_commands.when_mentioned_or('!'), intents=intents)
 
     def prepare_file(self, file_name: str, file_path: str) -> discord.File:
-        return discord.File(httshots.paths.upload / file_path, filename=file_path, description=file_name)
+        _file_path = httshots.paths.upload / file_path
+        return discord.File(_file_path, filename=file_path, description=file_name)
 
     async def on_ready(self):
         self.pm_user = await self.fetch_user(self.pm_userid)
 
         httshots.print_log('ReadyInfoDiscord', self.pm_user.name, self.pm_userid, level=4)
 
-    async def _send_message(self, message: str, file_name: dict) -> None:
+    async def send_chat_message(self, message: str, file_name: dict) -> None:
         if not file_name:
             await self.pm_user.send(message, silent=True)
         else:
             file = discord.File(httshots.paths.upload / file_name)
             await self.pm_user.send(message, file=file, silent=True)
 
-    async def _send_files(self, message: str, files: list[discord.File]) -> None:
+    async def send_files(self, message: str, files: list[discord.File]) -> None:
         await self.pm_user.send(message, files=files, silent=True)
 
 
@@ -126,7 +127,7 @@ class TwitchBot(commands.Bot):
         async with self.token_database.acquire() as connection:
             await connection.execute(query)
 
-    async def _send_message(self, message: str) -> None:
+    async def send_chat_message(self, message: str) -> None:
         await self.chat.send_message(sender=self.user, message=message)
 
     async def event_ready(self) -> None:

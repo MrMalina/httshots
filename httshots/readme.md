@@ -1,4 +1,4 @@
-﻿# Heroes of the Storm Twitch bot.
+﻿# Heroes of the Storm Twitch/Discord bot.
 
 Бот содержит следующий функционал:
 * Выводит информацию о лобби во время загрузки матча (батлтеги, уровни аккаунтов, кто с кем в группе)
@@ -19,14 +19,14 @@ The bot offers the following functionality:
 * !game and !talents commands in the Twitch chat (details in the [commands section](https://github.com/MrMalina/httshots?tab=readme-ov-file#Список-команд-в-twitch-чате))
 
 ## Уточнения
-* Сохранённые изображения публикуются на Imgur или на FTP (доступ к FTP могу предоставить по запросу)
-* При использовании Imgur выбранные таланты в текущем матче не будут публиковаться
+* Сохранённые изображения публикуются в Discord и/или на FTP (доступ к FTP могу предоставить по запросу)
+* При использовании вывода в Discord выбранные таланты в текущем матче не будут публиковаться
 * Для работы бота понадобится второй twitch-аккаунт, который будет работать в качестве бота
 * Примеры изображений можно посмотреть на [сайте бота](https://httshots.ru)
 
 ## Clarifications
-* Saved images are published to Imgur or FTP (FTP access available upon request)
-* When using Imgur, selected talents for the current match will not be published
+* Saved images are published to Discord and/or FTP (FTP access available upon request)
+* When using Discord, selected talents for the current match will not be published
 * A second Twitch account will be needed to operate as the bot
 * Example images can be viewed on the [bot's website](https://httshots.ru)
 

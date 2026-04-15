@@ -4,11 +4,10 @@
 
 # Python
 import sys
-import mpyq
-
 from collections import defaultdict
 
 # Others
+import mpyq
 from heroprotocol import hero_protocol
 
 # httshots

@@ -49,6 +49,7 @@ setuptools.setup(
                       'configobj', 'imgurpython',
                       'Pillow', 'mpyq',
                       'twitchio[starlette]',
+                      'discord.py'
                       'asqlite @ git+https://github.com/Rapptz/asqlite.git',
                       'heroprotocol @ git+https://github.com/MrMalina/heroprotocol'
                      ],

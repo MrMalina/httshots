@@ -20,7 +20,7 @@ def decode_string(string):
 # >> Classes
 # ======================================================================
 class Parse:
-    def parse_data(self, section, data, cls=object):
+    def parse_data(self, section, data):
         cfg = httshots.data_replay[section]
 
         for name, attr in cfg.items():
@@ -41,7 +41,6 @@ class Parse:
                 attribute = Args(name, value)
 
             setattr(self, name, attribute)
-            # cls.__setattr__(self, name, attribute)
 
 
 class Args(Parse):

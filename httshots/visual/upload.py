@@ -63,4 +63,3 @@ def rename_file(source, destination):
         ftp.login(httshots.config.ftp_login, httshots.config.ftp_passwd)
         ftp.sendcmd('RNFR ' + source)
         ftp.sendcmd('RNTO ' + destination)
-

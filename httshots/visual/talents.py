@@ -2,10 +2,11 @@
 # >> IMPORTS
 # ======================================================================
 
+# Python
 from PIL import Image
 from PIL import ImageDraw
 
-import httshots
+# httshots
 from httshots import httshots as hots
 
 

@@ -21,7 +21,6 @@ from . import upload
 # ======================================================================
 check_name = re.compile("[a-zA-Zа-яА-Я0-9]*")
 
-
 mvps = {
     'mvp':'mvp',
     'xp': 'experienced',
