@@ -47,7 +47,7 @@ class DiscordBot(ds_commands.Bot):
 
         httshots.print_log('ReadyInfoDiscord', self.pm_user.name, self.pm_userid, level=4)
 
-    async def send_chat_message(self, message: str, file_name: dict) -> None:
+    async def send_chat_message(self, message: str, file_name: bool|dict) -> None:
         if not file_name:
             await self.pm_user.send(message, silent=True)
         else:
@@ -243,9 +243,9 @@ class TwitchBot(commands.Bot):
                            level=4)
 
         # reward = await self.chat.create_custom_reward(
-                        # title="Супер-пупер награда",
-                        # cost=1000,
-                        # prompt="Бот сделает что-то крутое"
+                        # title="Заказ героя с билдом",
+                        # cost=10000,
+                        # prompt="Приложите ссылку на icy-veins или скопируйте билд из хотса"
                     # )
 
         await events.bot_ready(self)

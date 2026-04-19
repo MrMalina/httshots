@@ -4,8 +4,6 @@
 
 # Python
 import asyncio
-import asqlite
-import threading
 
 from urllib.request import urlopen
 from ftplib import FTP, Error as FTP_Error
@@ -15,6 +13,9 @@ from json import load as json_load
 from os import path, sep, listdir
 from time import strftime
 from pathlib import Path
+
+# Others
+import asqlite
 from configobj import ConfigObj, Section
 from PIL import ImageFont
 
@@ -52,6 +53,7 @@ data_replay = None
 current_dir = None
 config_addons = None
 strings_addons = None
+ds_bot = None
 
 
 # ======================================================================
@@ -192,7 +194,7 @@ def load(argv:list, full_load) -> None:
     paths.add('data', main_path / "data")
 
     # Fonts
-    ascii_ttf = paths.ttf / 'Exo2-Bold.ttf'
+    ascii_ttf = paths.ttf / 'metronicforblizzard-bold.otf'
     # Китайский шрифт используется, если ник не соответствует регулярке [a-zA-Zа-яА-Я0-9]*
     chinese_ttf = paths.ttf / 'HanyiSentyPagoda Regular.ttf'
 
@@ -214,7 +216,7 @@ def load(argv:list, full_load) -> None:
             ftp.login(config.ftp_login, config.ftp_passwd)
             ftp.close()
             print_log('FTPLogin', config.ftp_site_name, level=3)
-        except (FTP_Error, AttributeError) as e:
+        except (FTP_Error, AttributeError):
             print_log('FTPLoginError', config.ftp_site_name, level=4)
             return
 
@@ -249,7 +251,7 @@ def load(argv:list, full_load) -> None:
         ds_bot = bot.DiscordBot(config.discord_user_id)
         await ds_bot.start(str(config.discord_token))
 
-    if 2 & config.image_upload:
+    if 2 & config.image_upload or config.activate_discord_bot:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         task2 = loop.create_task(tw_runner())
@@ -266,24 +268,24 @@ def load(argv:list, full_load) -> None:
 # ======================================================================
 # >> Functions
 # ======================================================================
-def get_config_addons(path: Path) -> dict:
-    config = {}
-    for cfg_name in listdir(str(path)):
+def get_config_addons(_path: Path) -> dict:
+    _config = {}
+    for cfg_name in listdir(str(_path)):
         if cfg_name.startswith('config_') and cfg_name.endswith('.ini'):
             addon = cfg_name[7:][:-4]
-            config[addon] = ConfigObj(str(path / cfg_name))
+            _config[addon] = ConfigObj(str(_path / cfg_name))
 
-    return config
+    return _config
 
 
-def get_strings_addons(path: Path, language: str) -> dict:
-    strings = {}
-    for str_name in listdir(str(path)):
+def get_strings_addons(_path: Path, language: str) -> dict:
+    _strings = {}
+    for str_name in listdir(str(_path)):
         if str_name.startswith('strings_') and str_name.endswith('.ini'):
             addon = str_name[8:][:-4]
-            strings[addon] = Strings(str(path / str_name), language)
+            _strings[addon] = Strings(str(_path / str_name), language)
 
-    return strings
+    return _strings
 
 
 def get_accounts_list(hots_folder: str) -> list:
@@ -418,7 +420,7 @@ class DataStrings:
         part_name = part_name.lower()
         for hero in self.reverse_heroes:
             if hero.lower().startswith(part_name):
-               return self.reverse_heroes[hero]
+                return self.reverse_heroes[hero]
 
         for rofl in self.all_rofl_names:
             if rofl.startswith(part_name):
@@ -433,16 +435,23 @@ class HeroData:
             self.hero_data = json_load(f)
 
         self.hashtalents = {}
+        self.nameid_talentlevel = {}
+
 
         for hero in self.hero_data.keys():
             talents = self.hero_data[hero]['talents']
             self.hashtalents[hero] = {}
+            self.nameid_talentlevel[hero] = {}
             for x, level in enumerate([1, 4, 7, 10, 13, 16, 20]):
                 for talent in talents['level'+str(level)]:
                     self.hashtalents[hero][talent['nameId']] = [talent['sort'], x]
+                    self.nameid_talentlevel[hero][talent['nameId']] = level
 
     def __getitem__(self, key):
         return self.hero_data[key]
+
+    def get_talentlevel_by_nameid(self, hero_name, talent_id):
+        return self.nameid_talentlevel[hero_name][talent_id]
 
     def get_talent_info_by_name(self, hero_name, talent_name):
         return self.hashtalents[hero_name][talent_name]
